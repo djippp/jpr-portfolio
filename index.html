@@ -34,14 +34,14 @@
   .intro {
     position: absolute; left: 4.06cqw; top: 17.025cqw; width: 73.25cqw;   /* colonnes 1 à 4 de la grille de 5 ; 50 px (maquette) d'air de plus sous le menu */
     margin: 0; font-family: var(--grot); color: var(--fg);
-    font-size: max(16px, 3.3cqw); line-height: 1.5; letter-spacing: -.03em; font-weight: 400;
+    font-size: max(16px, 3.3cqw); line-height: 1.3; letter-spacing: -.03em; font-weight: 400;   /* 9 nov. : 1,5 → 1,3 */
     box-sizing: border-box; padding-right: 1.25cqw;   /* 20 px (maquette) d'air à droite du bloc */
     text-wrap: pretty;
   }
   .intro p { margin: 0; }
-  .intro p + p { margin-top: 1.5em; }
+  .intro p + p { margin-top: 1.3em; }
   @container (max-width: 700px) {
-    .intro { width: auto; left: 0; right: 0; padding-right: 0; line-height: 1.38; font-size: 23px; letter-spacing: -.025em; }   /* mobile : typo plus grosse */
+    .intro { width: auto; left: 0; right: 0; padding-right: 0; line-height: 1.3; font-size: 23px; letter-spacing: -.025em; }   /* mobile : typo plus grosse */
     .intro p + p { margin-top: 1em; }
   }
   .maquette { display: block; width: 100%; height: auto; aspect-ratio: 1600 / 3602; }
@@ -86,6 +86,8 @@
   .clip > .jfoot { position: absolute; left: 0; right: 0; bottom: 0; padding-left: 0; padding-right: 0; padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px));
     color: #F2F0EB; mix-blend-mode: difference; }   /* lisible sur le noir comme sur le blanc du logo */
   .clip > .jfoot .jfoot-in { max-width: 1600px; }
+  /* 9 nov. : bureau, pied de page calé sur la marge du bas (descendantes sur la marge, voir navmorph) ; - 8 px : la marge par défaut du body de l'accueil laisse 8 px sous .clip */
+  @media (min-width: 701px) { html body .clip > .jfoot { padding-bottom: calc(100vw * var(--mr) + .1em - 7.6px + env(safe-area-inset-bottom, 0px)); } }
   .slot { position: absolute; left: 60.277%; top: 19.184%; width: 35.25%; aspect-ratio: 1536 / 1024; }
   .land { position: absolute; left: 32.375%; top: 72.776%; width: 35.25%; aspect-ratio: 1536 / 1024; }
 
@@ -2661,6 +2663,11 @@ window.__TRASH = (() => {
     html, body { overflow-x: clip; }   /* le cadre déborde de ~2 % de chaque côté : pas de défilement horizontal */
     .jnav, .jlogo, .jfoot, .jgrid, .hnav { padding-left: 0 !important; padding-right: 0 !important; }
     .jnav-in, .jfoot-in, .clip > .jfoot .jfoot-in, .jgrid .in, .hnav-in { max-width: none !important; width: var(--fw); margin-left: var(--fl) !important; margin-right: 0 !important; }
+    /* 9 nov. : le haut des lettres du menu (« portfolio », « contact ») tombe pile sur la marge du site ; avant, il était placé dans la maquette à ~30/1600 et ne suivait pas la marge (5 à 7 px trop bas à 1,6 %) */
+    .jnav-in, .hnav-in { translate: 0 calc(100vw * var(--mr) - 29.7 / 1600 * var(--fw)); }
+    /* 9 nov. : pied de page calé sur la marge du bas, en symétrie optique avec le menu : en haut, les ascendantes touchent la marge ;
+       en bas, ce sont les descendantes (.22em sous la ligne de base). Ligne de base = marge + .22em ; .15em = du bas de la ligne à la ligne de base */
+    html .jfoot, html .clip > .jfoot { padding-bottom: calc(100vw * var(--mr) + .07em + env(safe-area-inset-bottom, 0px)); }
     .jcopy { padding-left: calc(var(--fl) + 65 / 1600 * var(--fw)) !important; padding-right: calc(var(--fl) + 65 / 1600 * var(--fw)) !important; }
     .jcopy .tm { left: calc(var(--fl) + 65 / 1600 * var(--fw)) !important; }
     .jcopy .x { right: calc(var(--fl) + 65 / 1600 * var(--fw)) !important; }
@@ -2816,7 +2823,7 @@ window.__TRASH = (() => {
   .jcopy .em { transform-style: preserve-3d; will-change: transform; }
   .jcopy .tm, .jcopy .bar { display: none !important; }
   .jcopy .em .caret { margin-right: calc(-1 * (max(2px, .055em) + .04em)); }   /* le curseur ne compte pas dans le centrage : c'est l'adresse seule qui est centrée */
-  html:has(.jcopy.on) .mnav a[data-contact] { text-decoration: line-through; text-decoration-thickness: 1.5px; }
+  html:has(.jcopy.on) .mnav a[data-contact] { text-decoration: line-through; text-decoration-thickness: 1px; }
   @media (max-width: 700px) { .jcopy { row-gap: 4px; padding: 0 16px !important; } }
   @keyframes jtbar { to { transform: scaleX(0); } }
 </style>

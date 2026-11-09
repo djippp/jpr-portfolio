@@ -16,6 +16,8 @@
     color-scheme: dark;
   }
   html, body { margin: 0; background: var(--paper); color: var(--ink); }
+  /* 9 nov. : le menu et le pied de page gardent le lissage par défaut, comme sur les autres pages (en « antialiased », le menu paraissait plus maigre sur Mac) */
+  .jnav, .jnav *, .mnav, .mnav *, .jfoot, .jfoot * { -webkit-font-smoothing: auto; -moz-osx-font-smoothing: auto; }
   body { font-family: var(--grot); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
   a { color: inherit; }
   ::selection { background: #F2F0EB; color: #000; }
@@ -50,21 +52,39 @@
   /* ---------- énoncé en grand (col. 1-3) + petit texte (col. 5) ---------- */
   .say { margin-top: calc(260 * var(--u)); align-items: start; }
   /* même typo que l’accueil et le texte de fin du portfolio ; colonnes 1 à 3 (la 4 reste vide pour laisser respirer le texte de la colonne 5) ; alinéa calé sur la colonne 2 */
-  .say .big { grid-column: 1 / 4; margin: 0; font: 400 max(16px, calc(52.8 * var(--u)))/1.5 var(--grot); letter-spacing: -.03em; text-wrap: pretty; text-indent: calc(298 * var(--u) - .06em); }
+  .say .big { grid-column: 1 / 4; margin: 0; font: 400 max(16px, calc(52.8 * var(--u)))/1.3 var(--grot); letter-spacing: -.03em; text-wrap: pretty; text-indent: calc(298 * var(--u) - .06em); }   /* 9 nov. : interligne 1,5 → 1,3 (grand format) */
   .say .bigw { grid-column: 1 / 5; }   /* jusqu’au bout de la col. 4 ; le petit texte garde la col. 5 */   /* l’énoncé en deux paragraphes, chacun avec son alinéa sur la col. 2 */
   .say .big + .big { margin-top: .75em; }
   /* comme l’accueil et le portfolio : en remontant vers le haut de l’écran, les lignes s’enroulent vers l’arrière sur un tambour */
   .say .bigw { grid-row: 1; }
   /* fin de page (provisoire) : un dernier gros texte, de la col. 3 à la col. 5, pour faire changement */
   .fin { margin-top: calc(260 * var(--u)); }
-  .fin .big { grid-column: 3 / 6;   /* les 3 dernières colonnes (6 nov. : col. 4–5 essayé, retour à 3 col.) */ margin: 0; font: 400 max(16px, calc(52.8 * var(--u)))/1.5 var(--grot); letter-spacing: -.03em; text-wrap: pretty; }
+  .fin .big { grid-column: 3 / 6;   /* les 3 dernières colonnes (6 nov. : col. 4–5 essayé, retour à 3 col.) */ margin: 0; font: 400 max(16px, calc(52.8 * var(--u)))/1.3 var(--grot); letter-spacing: -.03em; text-wrap: pretty; }
   @media (min-width: 701px) { .fin .big { text-indent: calc(298 * var(--u) - .06em); } }   /* alinéa d'une colonne : la 1re ligne part au début de la col. 4 */
   .fin .big a { white-space: nowrap; text-decoration: underline; text-decoration-thickness: max(1px, calc(2 * var(--u))); text-underline-offset: .14em; }
   .fin .big a:hover { text-decoration: line-through; }
-  @media (max-width: 700px) { .fin { margin-top: 80px; } .fin .big { font-size: 23px; line-height: 1.38; letter-spacing: -.025em; } }
+  @media (max-width: 700px) { .fin { margin-top: 80px; } .fin .big { font-size: 23px; line-height: 1.3; letter-spacing: -.025em; } }
   .say .side { grid-column: 5; grid-row: 2; padding-top: 0; margin-top: calc(80 * var(--u)); }   /* sous le gros texte, toujours en col. 5 */
   .say .side a, .cv-links a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .2em; }
   .say .side a:hover, .cv-links a:hover { text-decoration-thickness: 2px; }
+
+  /* ---------- l'énoncé (9 nov.) : à la fin du 3e paragraphe, « puis les briser. » passe à la ligne et sort de la grille d'une demi-colonne ---------- */
+  /* 9 nov. : quand la grille apparaît, seul l'énoncé reste plein ; le reste de l'approche passe en transparence comme le reste de la page */
+  /* 9 nov. (2) : plus de transparence superposée — tout passe à un seul gris foncé plein, l'énoncé reste blanc */
+  :root { --dim: #282725; }
+  main :is(p, h2, h3, span, a, b, li, dt, dd, small, em, strong, figcaption, div):not(.rv), .jfoot, .jfoot * { transition: color .3s ease, border-color .3s ease, text-decoration-color .3s ease; }
+  html.jgrid-peek main > :not(:has([data-grid])), html.jgrid-peek main > :not(:has([data-grid])) *,
+  html.jgrid-peek .jfoot, html.jgrid-peek .jfoot *,
+  html.jgrid-peek .say .big, html.jgrid-peek .say .side, html.jgrid-peek .say .side * { color: var(--dim) !important; border-color: var(--dim) !important; text-decoration-color: var(--dim) !important; }
+  html.jgrid-peek { --rule: var(--dim); }
+  /* 9 nov. (3) : la grille aussi dans ce gris plein ; l'énoncé passe au-dessus d'elle pour que les pointillés ne coupent pas ses lettres */
+  html.jgrid-peek .jgrid i, html.jgrid-peek .jgrid .c { --ln: var(--dim); }
+  html.jgrid-peek .say .mt { position: relative; z-index: 100000; }
+  html.jgrid-peek .jnav, html.jgrid-peek .mnav { z-index: 100001; }   /* le menu et le logo aussi : aucun pointillé ne les traverse */
+  html.jgrid-peek .say .mt, html.jgrid-peek .say .mt * { color: var(--ink); }
+  .say .nw { white-space: nowrap; }   /* « par-dessus » ne se coupe pas au trait d'union */
+  .say .brk { display: block; text-indent: 0; margin-left: calc(298 * var(--u) + 139 * var(--u) - .04em); }   /* début de la col. 2 + une demi-colonne : volontairement hors grille */
+  @media (max-width: 700px) { .say .brk { margin-left: calc(var(--mc) + var(--mcol) / 2); } }
 
   /* ---------- CV : chaque section sur un filet, le titre en col. 1, le contenu sur les col. 2 à 5 ---------- */
   .sec { margin-top: calc(220 * var(--u)); }
@@ -84,9 +104,9 @@
   .tags { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(5, auto); grid-auto-flow: column; column-gap: calc(20 * var(--u)); row-gap: .15em; }   /* se lit colonne par colonne : du plus stratégique au plus spécialisé */
   .tags span { white-space: nowrap; }
   /* survol de « Systèmes de design » : la grille apparaît et tout le reste passe en transparence ; seul le mot reste en blanc */
-  main > *, .jnav, .mnav, .jfoot, .tags span, #ex { transition: opacity .3s ease; }
-  html.jgrid-peek main > :not(:has([data-grid])), html.jgrid-peek .jnav, html.jgrid-peek .mnav, html.jgrid-peek .jfoot,
-  html.jgrid-peek .tags span:not([data-grid]), html.jgrid-peek #ex { opacity: .15; }
+  /* les images ne peuvent pas « devenir gris » : elles seules passent en transparence (rien ne se superpose à elles) */
+  .phw, .cvcard { transition: opacity .3s ease; }
+  html.jgrid-peek .phw, html.jgrid-peek .cvcard { opacity: .15; }
   .cv-links { grid-column: 2 / 6; display: flex; flex-wrap: wrap; gap: 14px 40px; font: 400 clamp(16px, calc(19 * var(--u)), 20px)/1.3 var(--grot); }
   /* CV : la page elle-même, posée de biais comme une carte de la spirale ; au survol elle se redresse et avance */
   .cvsec { align-items: start; }
@@ -178,7 +198,7 @@
     .intro .b { margin-top: 0; }
     .s { font-size: 15px; }   /* 8 nov. : Petite mobile = 15 px, comme l'Interface */
     .say { margin-top: 72px; }
-    .say .big { font-size: 23px; line-height: 1.38; letter-spacing: -.025em; }   /* mobile : comme l’accueil */
+    .say .big { font-size: 23px; line-height: 1.3; letter-spacing: -.025em; }   /* mobile : comme l’accueil */
     .say .side { padding-top: 28px; }
     .sec, .sec + .sec { margin-top: 64px; }
     .sec h2 { margin-bottom: 22px; }
@@ -232,7 +252,7 @@
       font: 400 15px/1 "PP Mori", "Host Grotesk", "Helvetica Neue", Arial, sans-serif; letter-spacing: -.01em; mix-blend-mode: difference; }
     .mnav span { display: flex; gap: 18px; }
     .mnav a { color: #F2F0EB; text-decoration: none; pointer-events: auto; padding: 10px 0; }
-    .mnav a[aria-current] { text-decoration: line-through; text-decoration-thickness: 1.5px; }
+    .mnav a[aria-current] { text-decoration: line-through; text-decoration-thickness: 1px; }
   }
   @media (max-width: 700px) {
     .jnav { overflow: hidden; height: 200px; }   /* 7 nov. : 200 px comme l'accueil, sinon le dégradé de 200 px était coupé net à 56 px */
@@ -250,7 +270,7 @@
 <path d="M756.612 59.2238C751.925 58.3817 748.883 56.3812 747.928 53.5127C747.517 52.2806 747.459 51.4127 747.706 50.1716C748.33 47.0345 750.663 44.6581 754.177 43.5797C754.974 43.3356 755.445 43.2801 756.721 43.2814C759.109 43.2852 759.961 43.6262 763.507 46.0013C764.081 46.3849 765.02 46.8886 765.594 47.1184C766.572 47.5098 766.739 47.5369 768.215 47.5369H769.79L770.908 46.988C773.279 45.8256 774.731 43.3679 774.706 40.5627C774.68 37.7446 773.173 35.4225 770.618 34.2666C770.152 34.0561 769.356 33.6945 768.85 33.4633C767.639 32.9118 767.005 32.341 766.552 31.3943C765.862 29.9491 766.132 28.3889 767.269 27.2653C768.67 25.8808 770.107 25.5166 774.181 25.5166C776.552 25.5166 777.124 25.5553 778 25.7775C779.785 26.2295 781.021 27.2007 781.744 28.7221C782.186 29.6546 783.085 30.0162 783.911 29.5939C784.109 29.4919 784.608 29.0295 785.019 28.5672C786.355 27.0613 788.389 25.9945 790.586 25.6496C791.29 25.5398 793.869 25.5114 799.848 25.5476C807.81 25.5967 808.173 25.6096 809.13 25.8731C812.971 26.9295 815.025 28.8113 815.954 32.124C816.219 33.0655 816.727 33.524 817.506 33.5227C818.155 33.5227 818.395 33.3677 819.682 32.1253C821.455 30.4114 823.585 28.9482 826.188 27.6566C833.122 24.2148 839.95 25.0529 843.036 29.7244C843.928 31.074 844.276 32.319 844.276 34.1697C844.277 35.3902 844.223 35.8164 843.969 36.559C843.4 38.2315 842.859 39.0258 841.135 40.7216C839.448 42.3812 839.254 42.7079 839.444 43.5681C839.551 44.0485 840.18 44.6426 841.016 45.0533C841.375 45.229 842.813 45.7662 844.213 46.2454C849.771 48.1504 851.737 49.3334 852.762 51.3908C853.598 53.0736 853.642 54.7151 852.892 56.3476C851.803 58.7201 848.803 59.8825 845.768 59.1076C843.449 58.516 842.379 57.7889 838.994 54.5136C836.071 51.6839 835.33 51.1131 833.965 50.6365C832.509 50.1277 831.366 50.2439 830.446 50.9943C829.781 51.5367 829.393 52.1993 828.952 53.5489C828.74 54.1921 828.445 54.914 828.294 55.1568C827.578 56.305 826.12 56.4483 825.209 55.4603C824.859 55.0793 824.545 54.4542 823.923 52.8967C822.186 48.5585 820.134 45.9625 817.638 44.9474C816.754 44.5871 815.605 44.5328 814.916 44.8183C814.667 44.9203 814.187 45.2742 813.849 45.6048C812.671 46.7542 811.05 47.6325 809.177 48.1362C808.212 48.3958 807.716 48.4242 802.588 48.5042C797.486 48.5843 796.977 48.6127 796.232 48.8568C793.979 49.5917 792.878 50.9814 792.528 53.5231C792.211 55.831 791.706 56.9649 790.512 58.0446C789.352 59.0946 787.796 59.5286 786.229 59.2406C783.576 58.7511 782.232 56.6124 782.232 52.8838C782.232 51.4528 781.761 50.7011 780.862 50.7011C780.393 50.7011 779.977 50.9659 779.443 51.5987C776.441 55.1646 771.538 57.8884 766.051 59.0378C764.6 59.3413 764.066 59.3852 761.223 59.4291C758.465 59.4718 757.832 59.4434 756.612 59.2238ZM802.155 42.1707C805.017 41.7922 807.219 40.4827 808.15 38.6061C808.479 37.9435 808.525 37.7085 808.524 36.6882C808.524 35.717 808.473 35.4303 808.214 34.9446C807.428 33.4607 806.476 32.7129 804.553 32.0684L803.305 31.6513H799.26C795.384 31.6513 795.175 31.6642 794.237 31.9535C792.052 32.629 790.673 33.6725 789.944 35.2029C789.662 35.7945 789.604 36.098 789.604 37.0111C789.604 37.9913 789.653 38.2096 790.052 39.0555C790.867 40.7771 792.591 41.8529 795.04 42.1668C796.263 42.3244 800.978 42.3269 802.155 42.1707ZM830.033 41.069C832.843 40.3509 835.159 38.0133 834.902 36.1561C834.598 33.9592 832.27 32.833 829.317 33.4529C825.791 34.1917 823.264 37.0963 824.241 39.2828C824.91 40.7823 826.235 41.4552 828.272 41.3325C828.799 41.3002 829.591 41.1814 830.033 41.069Z" fill-rule="evenodd" clip-rule="evenodd" fill="#F2F0EB"/>
 <path fill="#F2F0EB" transform="translate(747.55 25.5) translate(100.4 0.3) scale(1.6) translate(-99.54 -0.17)" fill-rule="evenodd" d="M99.54,3.29c0-1.82,1.33-3.12,3.14-3.12s3.12,1.32,3.12,3.12-1.3,3.12-3.12,3.12-3.14-1.32-3.14-3.12ZM105.1,3.29c.01-1.47-.98-2.49-2.42-2.49s-2.47,1.01-2.44,2.49c-.03,1.48.97,2.49,2.44,2.49s2.44-1.04,2.42-2.49ZM101.566 4.565H102.011V3.607H102.714C102.9 3.607 102.958 3.665 103.001 3.782L103.293 4.565H103.774L103.453 3.734C103.38 3.545 103.304 3.447 103.071 3.41V3.392C103.442 3.315 103.639 3.075 103.639 2.736C103.639 2.314 103.326 2.015 102.87 2.015H101.566ZM102.765 3.243H102.011V2.39H102.79C103.049 2.39 103.198 2.547 103.198 2.802C103.198 3.075 103.031 3.243 102.765 3.243Z"/>
 </g></g>
-<rect x="1203" y="39.6" width="34" height="2.4" fill="#F2F0EB"/><defs><clipPath id="clip0_89_3">
+<rect x="1203" y="38" width="34" height="1.4" fill="#F2F0EB"/><defs><clipPath id="clip0_89_3">
 <rect width="113" height="35" fill="white" transform="translate(747 25)"/>
 </clipPath></defs></svg>
 <a href="../portfolio/index.html" target="_top" aria-label="portfolio" style="left:3.6%;width:5.6%;top:21.5%;height:36%"></a>
@@ -275,7 +295,7 @@
   <section class="grid say" aria-label="Approche">
     <div class="bigw rv"><p class="big">Je vois chaque projet un peu comme une énigme&nbsp;: il existe une combinaison plus juste que toutes les autres, et vingt ans de métier m’aident à la trouver. J’itère, encore et encore, jusqu’à ce que la vision soit claire.</p>
     <p class="big">Je cherche la forme la plus simple qui en dise le plus, puis je la pousse jusqu’à ce qu’elle tienne partout&nbsp;: sur un écran de téléphone comme sur une façade. Moins d’effets, plus d’intention.</p>
-    <p class="big">Ce site en est un exemple&nbsp;: un logo souple, presque tracé à la main, posé sur des pixels d’une autre époque. Comme un vieil échantillon dans une chanson pop, c’est le contraste qui fait vibrer l’ensemble.</p></div>   <!-- 6 nov. : le contraste logo organique / 1 bit -->
+    <p class="big">Ce site en est un exemple&nbsp;: une grille stricte, des marges réglées au pixel près et, <span class="nw">par-dessus</span>, un logo souple, presque tracé à la main, et des pixels d’une autre époque. Tout est aligné pour que chaque écart se remarque. <span class="mt" data-grid="auto">Maîtriser les codes, <span class="brk">puis les briser.</span></span></p></div>   <!-- 9 nov. : le paragraphe se termine sur l’énoncé ; « puis les briser. » sort de la grille d’une demi-colonne, et la grille pointillée apparaît quand il passe au milieu de l’écran -->
     <div class="s side rv">
       <p>Hors de l’écran, je cherche encore la bonne combinaison&nbsp;: au bâton avec les Frites Sauce (équipe légendaire), au piano, entre Stréliski, Yann&nbsp;Tiersen et mes propres compositions, et au gym, entre séries et répétitions.</p>
       <p>Ouvert aux collaborations et aux mandats à distance.</p>
@@ -288,7 +308,7 @@
   <section class="sec" aria-labelledby="ex">
     <div class="grid">
       <h2 id="ex" class="rv">Expertises</h2>
-      <p class="tags rv"><span>Direction artistique</span><span>Conception créative</span><span>Identité visuelle</span><span data-grid>Systèmes de design</span><span>Encadrement créatif</span><span>Design UX/UI</span><span>Motion design et vidéo</span><span>Design et code</span><span>Direction artistique de l’IA</span></p>
+      <p class="tags rv"><span>Direction artistique</span><span>Conception créative</span><span>Identité visuelle</span><span>Systèmes de design</span><span>Encadrement créatif</span><span>Design UX/UI</span><span>Motion design et vidéo</span><span>Design et code</span><span>Direction artistique de l’IA</span></p>
     </div>
   </section>
 
@@ -652,28 +672,33 @@
 })();
 </script>
 <script>
-// « Systèmes de design » : au survol, la vraie grille du site apparaît (comme la touche G) ; au toucher, 2 secondes
+// la vraie grille du site apparaît au survol d'un déclencheur [data-grid] (comme la touche G) ; au toucher, 2 secondes
+// 9 nov. : « Systèmes de design » n'en est plus un ; seul l'énoncé « puis les briser. » montre la grille
+// 9 nov. : plusieurs déclencheurs possibles ([data-grid]) ; l'énoncé (data-grid="auto") montre aussi la grille de lui-même sur bureau,
+// quand il passe au milieu de l'écran : on voit que « puis les briser. » sort de la grille
 (() => {
-  const el = document.querySelector('[data-grid]'); if (!el) return;
+  const els = [...document.querySelectorAll('[data-grid]')]; if (!els.length) return;
   const root = document.documentElement; let t = 0;
-  const on = () => { clearTimeout(t); root.classList.remove('jgrid-peek'); void root.offsetWidth; root.classList.add('jgrid-peek'); };
+  const on = (el) => { clearTimeout(t); root.classList.remove('jgrid-peek'); root.dataset.peek = el.dataset.grid || 'sys'; void root.offsetWidth; root.classList.add('jgrid-peek'); };
   const off = () => { clearTimeout(t); root.classList.remove('jgrid-peek'); };
-  el.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') on(); });
-  el.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') off(); });
-  el.addEventListener('pointerup', (e) => { if (e.pointerType !== 'mouse') { on(); t = setTimeout(off, 2000); } });
-  // 7 nov. : sur mobile (pas de survol), la grille apparaît d'elle-même quand le mot passe au milieu de l'écran, environ 2 s,
-  // et s'efface plus tôt si on continue de défiler ; une seule fois à chaque passage du mot
-  if (matchMedia('(hover: none)').matches && 'IntersectionObserver' in window) {
-    // 7 nov. (ter) : déclenchée seulement quand le centre du mot passe dans la zone centrale de l'écran (42 à 58 % de la hauteur) ;
-    // calculé au défilement plutôt qu'avec un IntersectionObserver : dans une iframe (la visionneuse de Claude), la marge
-    // « rootMargin » est ignorée et la grille s'allumait dès que le mot entrait par le bas. Effacée après ~2 s ; réarmée quand le mot sort de l'écran.
-    let seen = false, raf = 0;
-    const check = () => { raf = 0;
-      const r = el.getBoundingClientRect(), c = (r.top + r.bottom) / 2, h = innerHeight;
-      if (!seen && c > h * .42 && c < h * .58) { seen = true; on(); t = setTimeout(off, 2200); }
-      else if (seen && (r.bottom < 0 || r.top > h)) { off(); seen = false; } };
-    addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(check); }, { passive: true });
-  }
+  const touch = matchMedia('(hover: none)').matches;
+  els.forEach((el) => {
+    el.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') on(el); });
+    el.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') off(); });
+    el.addEventListener('pointerup', (e) => { if (e.pointerType !== 'mouse') { on(el); t = setTimeout(off, 2000); } });
+  });
+  // 7 nov. (ter) : déclenchée seulement quand le centre de l'élément passe dans la zone centrale de l'écran (42 à 58 % de la hauteur) ;
+  // calculé au défilement (dans une iframe, rootMargin est ignoré). Effacée après ~2 s ; réarmée quand l'élément sort de l'écran.
+  // Sur mobile : tous les déclencheurs ; sur bureau : seulement l'énoncé (les autres ont le survol)
+  // 9 nov. (bis) : sur bureau, plus d'apparition automatique : la grille se découvre au survol de l'énoncé ; sur mobile (pas de survol), elle reste automatique
+  const auto = els.filter(() => touch);
+  if (!auto.length) return;
+  const seen = new Map(); let raf = 0;
+  const check = () => { raf = 0; const h = innerHeight;
+    auto.forEach((el) => { const r = el.getBoundingClientRect(), c = (r.top + r.bottom) / 2;
+      if (!seen.get(el) && c > h * .42 && c < h * .58) { seen.set(el, true); on(el); t = setTimeout(off, 2200); }
+      else if (seen.get(el) && (r.bottom < 0 || r.top > h)) { if (root.dataset.peek === (el.dataset.grid || 'sys')) off(); seen.set(el, false); } }); };
+  addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(check); }, { passive: true });
 })();
 </script>
 <!-- le cadre de la maquette de 1600 : sur bureau, il occupe toute la largeur et ses marges de 65 tombent à --mr de l'écran
@@ -693,6 +718,11 @@
     html, body { overflow-x: clip; }   /* le cadre déborde de ~2 % de chaque côté : pas de défilement horizontal */
     .jnav, .jlogo, .jfoot, .jgrid, .hnav { padding-left: 0 !important; padding-right: 0 !important; }
     .jnav-in, .jfoot-in, .clip > .jfoot .jfoot-in, .jgrid .in, .hnav-in { max-width: none !important; width: var(--fw); margin-left: var(--fl) !important; margin-right: 0 !important; }
+    /* 9 nov. : le haut des lettres du menu (« portfolio », « contact ») tombe pile sur la marge du site ; avant, il était placé dans la maquette à ~30/1600 et ne suivait pas la marge (5 à 7 px trop bas à 1,6 %) */
+    .jnav-in, .hnav-in { translate: 0 calc(100vw * var(--mr) - 29.7 / 1600 * var(--fw)); }
+    /* 9 nov. : pied de page calé sur la marge du bas, en symétrie optique avec le menu : en haut, les ascendantes touchent la marge ;
+       en bas, ce sont les descendantes (.22em sous la ligne de base). Ligne de base = marge + .22em ; .15em = du bas de la ligne à la ligne de base */
+    html .jfoot, html .clip > .jfoot { padding-bottom: calc(100vw * var(--mr) + .07em + env(safe-area-inset-bottom, 0px)); }
     .jcopy { padding-left: calc(var(--fl) + 65 / 1600 * var(--fw)) !important; padding-right: calc(var(--fl) + 65 / 1600 * var(--fw)) !important; }
     .jcopy .tm { left: calc(var(--fl) + 65 / 1600 * var(--fw)) !important; }
     .jcopy .x { right: calc(var(--fl) + 65 / 1600 * var(--fw)) !important; }
@@ -848,7 +878,7 @@
   .jcopy .em { transform-style: preserve-3d; will-change: transform; }
   .jcopy .tm, .jcopy .bar { display: none !important; }
   .jcopy .em .caret { margin-right: calc(-1 * (max(2px, .055em) + .04em)); }   /* le curseur ne compte pas dans le centrage : c'est l'adresse seule qui est centrée */
-  html:has(.jcopy.on) .mnav a[data-contact] { text-decoration: line-through; text-decoration-thickness: 1.5px; }
+  html:has(.jcopy.on) .mnav a[data-contact] { text-decoration: line-through; text-decoration-thickness: 1px; }
   @media (max-width: 700px) { .jcopy { row-gap: 4px; padding: 0 16px !important; } }
   @keyframes jtbar { to { transform: scaleX(0); } }
 </style>

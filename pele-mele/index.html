@@ -7,9 +7,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500&display=swap">
 <style>
-  /* Layout: a 7000 × 4900 white board, panned and zoomed like a design canvas. The 1-bit « pêle-mêle »
-     title is the centre of the board, blown up raw; a handful of fragments sit around it, untouched,
-     with Figma-style file labels. Nav and HUD invert over whatever passes under them. Single light look. */
+  /* Layout: an off-white board, panned and zoomed like a design canvas, with eleven sharp portfolio photos scattered loosely and nine blurred ones behind on two slower layers (parallax). Nav and HUD invert over whatever passes under them. Single light look. */
   /* PP Mori, fournie avec la page (dossier fonts/) */
   @font-face { font-family: "PP Mori"; font-weight: 400; font-style: normal; font-display: swap; src: url("fonts/PPMori-Regular.woff2") format("woff2"); }
   @font-face { font-family: "PP Mori"; font-weight: 500; font-style: normal; font-display: swap; src: url("fonts/PPMori-Semibold.woff2") format("woff2"); }
@@ -42,13 +40,26 @@
   .viewport { position: fixed; inset: 0; overflow: hidden; cursor: grab; touch-action: none; background: var(--paper); }
   .viewport.dragging { cursor: grabbing; }
   .viewport:focus-visible { outline: none; }
-  .board { position: absolute; left: 0; top: 0; width: 7000px; height: 4900px; transform-origin: 0 0; will-change: transform; }
+  .board { position: absolute; left: 0; top: 0; width: 3560px; height: 2600px; transform-origin: 0 0; will-change: transform; }
+  /* 9 nov. (essai « nuée ») : trois plans de profondeur, comme la spirale du portfolio. Le plan du fond et celui du milieu
+     glissent moins vite que le tableau (parallaxe) et sont flous ; au survol, une pièce revient au net. */
+  .layer { position: absolute; left: 0; top: 0; width: 3560px; height: 2600px; transform-origin: 0 0; will-change: transform; pointer-events: none; }
+  .board { pointer-events: none; }
+  .board > *, .layer > * { pointer-events: auto; }
+  .layer .it { transition: filter .5s ease, opacity .5s ease, scale .5s cubic-bezier(.2, .8, .2, 1); }
+  .layer.far .it { filter: blur(var(--b, 8px)); opacity: .85; }
+  .layer.mid .it { filter: blur(var(--b, 3px)); }
+  .layer .it:hover { filter: blur(0); opacity: 1; scale: 1.06; outline: none; }
+  .it.ph img { box-shadow: none; }
 
   .it { position: absolute; left: var(--x); top: var(--y); width: var(--w); margin: 0; }
+  .it video { display: block; width: 100%; height: auto; pointer-events: none; }
   .it img { display: block; width: 100%; height: auto; max-width: none; user-select: none; -webkit-user-drag: none; }
   .px img { image-rendering: pixelated; }
   /* sélection façon outil de design : un filet noir, rien de plus */
-  .it:hover { outline: calc(1px / var(--z, 1)) solid var(--ink); }
+  /* 9 nov. (galerie) : plus d'étiquettes ni de filet ; au survol, l'image avance à peine */
+  .board .it { transition: scale .5s cubic-bezier(.2, .8, .2, 1); }
+  .board .it:hover { scale: 1.02; }
   /* étiquette de fichier au-dessus de chaque élément, toujours à la même taille à l'écran */
   .lbl {
     position: absolute; left: 0; right: 0; bottom: 100%; padding-bottom: calc(6px / var(--z, 1));
@@ -61,8 +72,7 @@
   .hero { cursor: inherit; }
   /* 6 nov. : le gif en multiply : son blanc prend le blanc cassé du fond, le noir reste noir.
      Le tableau reçoit la couleur du fond, sinon le mélange se ferait sur du transparent (le tableau est son propre calque). */
-  .hero img { mix-blend-mode: multiply; }
-  .board { background: var(--paper); }
+  /* le gif est maintenant transparent (noir sur rien) : les pièces du fond se voient à travers les lettres */
 
   /* emplacement photo à venir */
   .slotph { aspect-ratio: 4 / 3; border: 3px solid var(--ink); display: grid; place-items: center; font: 400 30px/1.2 var(--grot); text-align: center; }
@@ -81,17 +91,36 @@
 
   /* ---------- interface : du texte, inversé lui aussi ---------- */
   .hud {
-    position: fixed; z-index: 20; bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-    display: flex; gap: 18px; align-items: baseline; font: 400 13px/1 var(--grot); color: #F2F0EB; mix-blend-mode: difference;
+    position: fixed; z-index: 20; display: flex; gap: 1.1em; align-items: baseline;
+    font: 400 max(12px, calc(19.5 / 1600 * var(--fw))) / 1 var(--grot); letter-spacing: -.01em; color: #F2F0EB; mix-blend-mode: difference;
     font-variant-numeric: tabular-nums;
+    /* 9 nov. : calés sur la marge du site comme le pied de page des autres pages : le texte touche la marge à gauche et à droite,
+       et en bas ce sont les descendantes qui la touchent (ligne de base = marge + .22em ; .15em = du bas de la ligne à la ligne de base) */
+    bottom: calc(16px + .07em + env(safe-area-inset-bottom, 0px));
   }
-  .hud.l { left: max(28px, env(safe-area-inset-left, 0px)); }
-  .hud.r { right: max(28px, env(safe-area-inset-right, 0px)); gap: 4px; }
-  /* 7 nov. : mobile, sur les marges de 16 px : la ligne de base des repères à 16 px du bas (les boutons gardent leur zone de toucher) */
-  @media (max-width: 700px) { .hud { bottom: calc(14px + env(safe-area-inset-bottom, 0px)); } .hud.l { left: max(16px, env(safe-area-inset-left, 0px)); } .hud.r { right: max(9px, env(safe-area-inset-right, 0px)); } .hud.r button { padding: 12px 7px 0; } }
-  .hud button { font: inherit; color: inherit; background: none; border: 0; padding: 6px 7px; cursor: pointer; }
-  .hud button:hover { text-decoration: underline; text-underline-offset: 4px; }
-  .hud button:focus-visible { outline: 1px solid currentColor; }
+  /* 9 nov. : trois repères sur la grille du site : le zoom en col. 1, x y en col. 2 (sous « pêle-mêle »), le nom du projet survolé à droite.
+     Le zoom reste en col. 1 sur mobile aussi (x y y est masqué) : il ne change pas de place d'un écran à l'autre */
+  .hud.l { left: max(16px, env(safe-area-inset-left, 0px)); }
+  .hud.z { left: max(16px, env(safe-area-inset-left, 0px)); gap: .9em; }
+  @media (max-width: 700px) { .hud.l { display: none; } }   /* mobile : pas la place pour trois repères ; le zoom prend la col. 1, le nom garde la droite */
+  .hud.r { right: max(16px, env(safe-area-inset-right, 0px)); }
+  @media (min-width: 701px) {
+    .hud { bottom: calc(100vw * var(--mr) + .07em + env(safe-area-inset-bottom, 0px)); }
+    .hud.z { left: calc(100vw * var(--mr)); } .hud.r { right: calc(100vw * var(--mr)); }
+    .hud.l { left: calc(var(--fl) + 363 / 1600 * var(--fw)); }
+  }
+  /* le nom du projet, comme la légende de la spirale du portfolio : les lettres se tapent en léger glitch, de droite à gauche */
+  .pcap { pointer-events: none; white-space: nowrap; max-width: calc(100vw - 50% - 16px); transition: opacity .35s ease; }
+  .pcap:not(.on) { opacity: 0; }
+  @media (max-width: 700px) { .pcap { white-space: normal; text-align: right; line-height: 1.25; max-width: calc(100vw - 16px - 2 * var(--mc, 74px)); } }   /* mobile : un nom long passe sur deux lignes au lieu de déborder sur le zoom */
+  .pcap .g { opacity: 0; }
+  .pcap .g.x { opacity: .45; }
+  .pcap .g.in { opacity: 1; transition: opacity .3s cubic-bezier(.23, 1, .32, 1); }
+  @media (prefers-reduced-motion: reduce) { .pcap .g { opacity: 1; } }
+  .hud button { position: relative; font: inherit; letter-spacing: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+  .hud button::after { content: ""; position: absolute; inset: -14px -.45em; }   /* la zone de clic reste généreuse, sans décaler le texte */
+  .hud button:hover { text-decoration: underline; text-underline-offset: .2em; text-decoration-thickness: 1px; }
+  .hud button:focus-visible { outline: 1px solid currentColor; outline-offset: 3px; }
   @media (max-width: 640px) {
     .hud.l .hint { display: none; }
   }
@@ -114,7 +143,7 @@
       font: 400 15px/1 "PP Mori", "Host Grotesk", "Helvetica Neue", Arial, sans-serif; letter-spacing: -.01em; mix-blend-mode: difference; }
     .mnav span { display: flex; gap: 18px; }
     .mnav a { color: #F2F0EB; text-decoration: none; pointer-events: auto; padding: 10px 0; }
-    .mnav a[aria-current] { text-decoration: line-through; text-decoration-thickness: 1.5px; }
+    .mnav a[aria-current] { text-decoration: line-through; text-decoration-thickness: 1px; }
   }
   @media (max-width: 700px) {
     .jnav { overflow: hidden; height: 200px; }   /* 7 nov. : 200 px comme l'accueil, sinon le dégradé de 200 px était coupé net à 56 px */
@@ -132,7 +161,7 @@
 <path d="M756.612 59.2238C751.925 58.3817 748.883 56.3812 747.928 53.5127C747.517 52.2806 747.459 51.4127 747.706 50.1716C748.33 47.0345 750.663 44.6581 754.177 43.5797C754.974 43.3356 755.445 43.2801 756.721 43.2814C759.109 43.2852 759.961 43.6262 763.507 46.0013C764.081 46.3849 765.02 46.8886 765.594 47.1184C766.572 47.5098 766.739 47.5369 768.215 47.5369H769.79L770.908 46.988C773.279 45.8256 774.731 43.3679 774.706 40.5627C774.68 37.7446 773.173 35.4225 770.618 34.2666C770.152 34.0561 769.356 33.6945 768.85 33.4633C767.639 32.9118 767.005 32.341 766.552 31.3943C765.862 29.9491 766.132 28.3889 767.269 27.2653C768.67 25.8808 770.107 25.5166 774.181 25.5166C776.552 25.5166 777.124 25.5553 778 25.7775C779.785 26.2295 781.021 27.2007 781.744 28.7221C782.186 29.6546 783.085 30.0162 783.911 29.5939C784.109 29.4919 784.608 29.0295 785.019 28.5672C786.355 27.0613 788.389 25.9945 790.586 25.6496C791.29 25.5398 793.869 25.5114 799.848 25.5476C807.81 25.5967 808.173 25.6096 809.13 25.8731C812.971 26.9295 815.025 28.8113 815.954 32.124C816.219 33.0655 816.727 33.524 817.506 33.5227C818.155 33.5227 818.395 33.3677 819.682 32.1253C821.455 30.4114 823.585 28.9482 826.188 27.6566C833.122 24.2148 839.95 25.0529 843.036 29.7244C843.928 31.074 844.276 32.319 844.276 34.1697C844.277 35.3902 844.223 35.8164 843.969 36.559C843.4 38.2315 842.859 39.0258 841.135 40.7216C839.448 42.3812 839.254 42.7079 839.444 43.5681C839.551 44.0485 840.18 44.6426 841.016 45.0533C841.375 45.229 842.813 45.7662 844.213 46.2454C849.771 48.1504 851.737 49.3334 852.762 51.3908C853.598 53.0736 853.642 54.7151 852.892 56.3476C851.803 58.7201 848.803 59.8825 845.768 59.1076C843.449 58.516 842.379 57.7889 838.994 54.5136C836.071 51.6839 835.33 51.1131 833.965 50.6365C832.509 50.1277 831.366 50.2439 830.446 50.9943C829.781 51.5367 829.393 52.1993 828.952 53.5489C828.74 54.1921 828.445 54.914 828.294 55.1568C827.578 56.305 826.12 56.4483 825.209 55.4603C824.859 55.0793 824.545 54.4542 823.923 52.8967C822.186 48.5585 820.134 45.9625 817.638 44.9474C816.754 44.5871 815.605 44.5328 814.916 44.8183C814.667 44.9203 814.187 45.2742 813.849 45.6048C812.671 46.7542 811.05 47.6325 809.177 48.1362C808.212 48.3958 807.716 48.4242 802.588 48.5042C797.486 48.5843 796.977 48.6127 796.232 48.8568C793.979 49.5917 792.878 50.9814 792.528 53.5231C792.211 55.831 791.706 56.9649 790.512 58.0446C789.352 59.0946 787.796 59.5286 786.229 59.2406C783.576 58.7511 782.232 56.6124 782.232 52.8838C782.232 51.4528 781.761 50.7011 780.862 50.7011C780.393 50.7011 779.977 50.9659 779.443 51.5987C776.441 55.1646 771.538 57.8884 766.051 59.0378C764.6 59.3413 764.066 59.3852 761.223 59.4291C758.465 59.4718 757.832 59.4434 756.612 59.2238ZM802.155 42.1707C805.017 41.7922 807.219 40.4827 808.15 38.6061C808.479 37.9435 808.525 37.7085 808.524 36.6882C808.524 35.717 808.473 35.4303 808.214 34.9446C807.428 33.4607 806.476 32.7129 804.553 32.0684L803.305 31.6513H799.26C795.384 31.6513 795.175 31.6642 794.237 31.9535C792.052 32.629 790.673 33.6725 789.944 35.2029C789.662 35.7945 789.604 36.098 789.604 37.0111C789.604 37.9913 789.653 38.2096 790.052 39.0555C790.867 40.7771 792.591 41.8529 795.04 42.1668C796.263 42.3244 800.978 42.3269 802.155 42.1707ZM830.033 41.069C832.843 40.3509 835.159 38.0133 834.902 36.1561C834.598 33.9592 832.27 32.833 829.317 33.4529C825.791 34.1917 823.264 37.0963 824.241 39.2828C824.91 40.7823 826.235 41.4552 828.272 41.3325C828.799 41.3002 829.591 41.1814 830.033 41.069Z" fill-rule="evenodd" clip-rule="evenodd" fill="#F2F0EB"/>
 <path fill="#F2F0EB" transform="translate(747.55 25.5) translate(100.4 0.3) scale(1.6) translate(-99.54 -0.17)" fill-rule="evenodd" d="M99.54,3.29c0-1.82,1.33-3.12,3.14-3.12s3.12,1.32,3.12,3.12-1.3,3.12-3.12,3.12-3.14-1.32-3.14-3.12ZM105.1,3.29c.01-1.47-.98-2.49-2.42-2.49s-2.47,1.01-2.44,2.49c-.03,1.48.97,2.49,2.44,2.49s2.44-1.04,2.42-2.49ZM101.566 4.565H102.011V3.607H102.714C102.9 3.607 102.958 3.665 103.001 3.782L103.293 4.565H103.774L103.453 3.734C103.38 3.545 103.304 3.447 103.071 3.41V3.392C103.442 3.315 103.639 3.075 103.639 2.736C103.639 2.314 103.326 2.015 102.87 2.015H101.566ZM102.765 3.243H102.011V2.39H102.79C103.049 2.39 103.198 2.547 103.198 2.802C103.198 3.075 103.031 3.243 102.765 3.243Z"/>
 </g></g>
-<rect x="363" y="39.6" width="90" height="2.4" fill="#F2F0EB"/><defs><clipPath id="clip0_89_3">
+<rect x="363" y="38" width="90" height="1.4" fill="#F2F0EB"/><defs><clipPath id="clip0_89_3">
 <rect width="113" height="35" fill="white" transform="translate(747 25)"/>
 </clipPath></defs></svg>
 <a href="../portfolio/index.html" target="_top" aria-label="portfolio" style="left:3.6%;width:5.6%;top:21.5%;height:36%"></a>
@@ -144,90 +173,78 @@
 <div class="mnav"><span><a href="../portfolio/index.html" target="_top">portfolio</a><a href="#" aria-current="page">pêle-mêle</a></span><span><a href="../info/index.html" target="_top">info</a><a href="#" data-contact>contact</a></span></div>
 
 <main class="viewport" id="vp" tabindex="0" aria-label="Pêle-mêle : un grand tableau à explorer. Glisse ou utilise les flèches pour te déplacer.">
+  <div class="layer far" id="lfar" data-p=".55">
+    <figure data-n="Solyt" class="it ph" style="--x:3007px;--y:41px;--w:163px;--b:8.0px" aria-hidden="true"><img draggable="false" src="projects/solyt/04.webp" alt="" width="1600" height="1105"></figure>
+    <figure data-n="Solyt" class="it ph" style="--x:3200px;--y:561px;--w:153px;--b:6.9px" aria-hidden="true"><img draggable="false" src="projects/solyt/02.webp" alt="" width="1600" height="1369"></figure>
+    <figure data-n="Lait carboneutre" class="it ph" style="--x:3140px;--y:1282px;--w:209px;--b:8.3px" aria-hidden="true"><img draggable="false" src="projects/lait-carboneutre.webp" alt="" width="760" height="845"></figure>
+    <figure data-n="Solyt" class="it ph" style="--x:1311px;--y:1627px;--w:142px;--b:6.0px" aria-hidden="true"><img draggable="false" src="projects/solyt/09.webp" alt="" width="1600" height="1200"></figure>
+    <figure data-n="Solyt" class="it ph" style="--x:1701px;--y:1866px;--w:194px;--b:7.0px" aria-hidden="true"><img draggable="false" src="projects/solyt/03.webp" alt="" width="1600" height="1216"></figure>
+  </div>
+  <div class="layer mid" id="lmid" data-p=".8">
+    <figure data-n="Hôpital de Montréal pour enfants" class="it ph" style="--x:1811px;--y:1413px;--w:288px;--b:2.5px" aria-hidden="true"><img draggable="false" src="projects/hme.webp" alt="" width="760" height="845"></figure>
+    <figure data-n="SQDI" class="it ph" style="--x:3272px;--y:94px;--w:272px;--b:3.6px" aria-hidden="true"><img draggable="false" src="projects/sqdi.webp" alt="" width="760" height="845"></figure>
+    <figure data-n="Solyt" class="it ph" style="--x:3066px;--y:881px;--w:286px;--b:3.9px" aria-hidden="true"><img draggable="false" src="projects/solyt/10.webp" alt="" width="1600" height="1304"></figure>
+    <figure data-n="Solyt" class="it ph" style="--x:2318px;--y:1675px;--w:285px;--b:3.6px" aria-hidden="true"><img draggable="false" src="projects/solyt/16.webp" alt="" width="1600" height="1418"></figure>
+  </div>
   <div class="board" id="board">
-
-    <figure class="it px hero" style="--x:2500px;--y:1700px;--w:2000px" data-anim="pm:3:260">
-      <span class="lbl"><b>pêle-mêle.gif</b><i>358 × 268 · 1 bit · ×5,6</i></span>
-      <img draggable="false" src="a/pm-0.png" alt="« pêle-mêle » en lettres de rançon pixel, noir sur blanc, qui changent de motif" width="358" height="268">
-    </figure>
-
-    <figure class="it" style="--x:210px;--y:298px;--w:700px">
-      <span class="lbl"><b>hall.webp</b><i>1100 × 825</i></span>
-      <img draggable="false" src="a/lobby.webp" alt="Illustration couleur : moi avec un café devant une porte d'ascenseur violette à hublot" width="1100" height="825">
-    </figure>
-
-    <figure class="it" style="--x:245px;--y:1698px;--w:300px">
-      <span class="lbl"><b>cote.webp</b><i>étude</i></span>
-      <img draggable="false" src="a/mac-side.webp" alt="Photo de côté du Macintosh Classic II" width="560" height="692">
-    </figure>
-    <figure class="it" style="--x:875px;--y:1872px;--w:300px">
-      <span class="lbl"><b>dos.webp</b><i>étude</i></span>
-      <img draggable="false" src="a/mac-back.webp" alt="Photo de dos du Macintosh Classic II, avec ses ports" width="560" height="676">
-    </figure>
-
-    <figure class="it px" style="--x:280px;--y:3098px;--w:512px" data-anim="folio:4:150">
-      <span class="lbl"><b>nav-portfolio.gif</b><i>512 × 368</i></span>
-      <img draggable="false" src="a/folio-0.png" alt="« portfolio » en pixels, qui ondule" width="512" height="368">
-    </figure>
-
-    <figure class="it" style="--x:5705px;--y:262px;--w:380px">
-      <span class="lbl"><b>classic-ii.webp</b><i>1991</i></span>
-      <img draggable="false" src="a/mac-front.webp" alt="Macintosh Classic II de face, le hall à l'écran" width="700" height="916">
-    </figure>
-
-    <figure class="it" style="--x:5495px;--y:1592px;--w:760px">
-      <span class="lbl"><b>accueil.webp</b><i>1200 × 760</i></span>
-      <img draggable="false" src="a/home.webp" alt="Maquette de la page d'accueil : texte blanc sur noir et le Macintosh posé sur le texte" width="1200" height="760">
-    </figure>
-
-    <figure class="it px" style="--x:5635px;--y:2888px;--w:512px">
-      <span class="lbl"><b>hall-1bit.png</b><i>Atkinson · 512 × 386</i></span>
-      <img draggable="false" src="a/hall-1bit.png" alt="Le hall tramé en noir et blanc 1 bit" width="512" height="386">
-    </figure>
-
-    <section class="it" style="--x:1925px;--y:4095px;--w:640px" aria-label="Petit piano jouable">
-      <span class="lbl"><b>piano</b><i>touches A à K</i></span>
-      <div class="keys" id="keys"></div>
-    </section>
-
-    <figure class="it" style="--x:3325px;--y:4095px;--w:400px">
-      <span class="lbl"><b>piano.jpg</b><i>à venir</i></span>
-      <div class="slotph">[ moi, au piano ]</div>
-    </figure>
-
-    <p class="it txt" style="--x:4270px;--y:4095px;--w:560px">Essais, restes d’atelier, fausses pistes. Ce qui ne rentre pas dans un portfolio.</p>
+    <!-- 9 nov. : moi au piano (« Plus tôt », Alexandra Stréliski), en boucle muette de 8,6 s : le seul élément qui bouge, juste à gauche de la vue de départ (on la découvre en glissant) ; au clic, la prise complète avec le son (a/piano-son.mp4, chargée seulement à ce moment) -->
+    <figure data-n="Piano · Plus tôt, Alexandra Stréliski" class="it vid" style="--x:755px;--y:763px;--w:470px"><video src="a/piano.mp4" poster="a/piano.jpg" width="640" height="794" autoplay muted loop playsinline disablepictureinpicture preload="auto" aria-hidden="true"></video></figure>
+    <figure data-n="Collège Sainte-Marcelline" class="it" style="--x:2416px;--y:1022px;--w:429px"><img draggable="false" src="projects/sainte-marcelline.webp" alt="" width="760" height="844"></figure>
+    <figure data-n="Solyt" class="it" style="--x:2824px;--y:1875px;--w:533px"><img draggable="false" src="projects/solyt/05.webp" alt="" width="1600" height="1512"></figure>
+    <figure data-n="Jardins Mirabel" class="it" style="--x:1137px;--y:2019px;--w:441px"><img draggable="false" src="projects/jardins-mirabel.webp" alt="" width="760" height="844"></figure>
+    <figure data-n="Solyt" class="it" style="--x:1560px;--y:734px;--w:527px"><img draggable="false" src="projects/solyt/13.webp" alt="" width="1600" height="1333"></figure>
+    <figure data-n="Arsenal de la créativité" class="it" style="--x:2px;--y:1199px;--w:392px"><img draggable="false" src="projects/arsenal.webp" alt="" width="760" height="844"></figure>
+    <figure data-n="Fraser &amp; Gauthier" class="it" style="--x:1776px;--y:1417px;--w:422px"><img draggable="false" src="projects/fraser-gauthier.webp" alt="" width="760" height="844"></figure>
+    <figure data-n="Solyt" class="it" style="--x:2562px;--y:299px;--w:388px"><img draggable="false" src="projects/solyt/11.webp" alt="" width="1600" height="1717"></figure>
+    <figure data-n="Maison Trinitaire" class="it" style="--x:1850px;--y:2108px;--w:394px"><img draggable="false" src="projects/maison-trinitaire.webp" alt="" width="760" height="845"></figure>
+    <figure data-n="Solyt" class="it" style="--x:291px;--y:1895px;--w:448px"><img draggable="false" src="projects/solyt/07.webp" alt="" width="1500" height="1644"></figure>
+    <figure data-n="Marie de France" class="it" style="--x:116px;--y:166px;--w:394px"><img draggable="false" src="projects/marie-de-france.webp" alt="" width="760" height="845"></figure>
+    <figure data-n="Solyt" class="it" style="--x:1866px;--y:115px;--w:523px"><img draggable="false" src="projects/solyt/08.webp" alt="" width="1600" height="1200"></figure>
   </div>
 </main>
 
 <div class="hud l" aria-live="off">
   <span id="coords">x 0 y 0</span>
 </div>
-<div class="hud r" role="group" aria-label="Zoom">
+<div class="hud z" role="group" aria-label="Zoom">
   <button type="button" id="zOut" aria-label="Dézoomer">−</button>
   <button type="button" id="zReset" aria-label="Revenir à 100 %">100 %</button>
   <button type="button" id="zIn" aria-label="Zoomer">+</button>
-  <button type="button" id="zFit" aria-label="Tout voir">tout voir</button>
 </div>
+<div class="hud r pcap" id="pcap" aria-live="polite"><span class="nm"></span></div>
 
 <script>
 (() => {
-  const BW = 7000, BH = 4900, HERO = { x: 3500, y: 2450 };
+  const BW = 3560, BH = 2600, VID = { x: 755, y: 763, w: 470, h: 583 };   // la vidéo du piano : en haut à gauche du mur, juste hors de l'écran (à gauche) à l'arrivée   // la vue de départ est centrée sur la vidéo du piano
   const vp = document.getElementById('vp'), board = document.getElementById('board');
   const coords = document.getElementById('coords'), zReset = document.getElementById('zReset');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // caméra : coin haut-gauche de l'écran, en coordonnées du tableau, et zoom
   const cam = { x: 0, y: 0, z: 1 };
+  const LAYERS = [...document.querySelectorAll('.layer')].map((el) => [el, parseFloat(el.dataset.p)]);
+  const drift = { x: 0, y: 0 }, dtg = { x: 0, y: 0 }; let draf = 0;
+  if (!reduce && matchMedia('(hover: hover)').matches) addEventListener('pointermove', (e) => {
+    dtg.x = (innerWidth / 2 - e.clientX) / (innerWidth / 2); dtg.y = (innerHeight / 2 - e.clientY) / (innerHeight / 2);
+    if (!draf) { const step = () => { drift.x += (dtg.x - drift.x) * .06; drift.y += (dtg.y - drift.y) * .06; render();
+      draf = Math.abs(dtg.x - drift.x) + Math.abs(dtg.y - drift.y) > .002 ? requestAnimationFrame(step) : 0; }; draf = requestAnimationFrame(step); }
+  });
   let vx = 0, vy = 0, anim = null;
   const clampZ = (z) => Math.max(0.15, Math.min(3, z));
   const clampCam = () => {
     const w = innerWidth / cam.z, h = innerHeight / cam.z, m = 300;
-    cam.x = Math.max(-m - Math.max(0, w - BW) / 2, Math.min(BW - w + m, cam.x));
+    cam.x = Math.max(-m - Math.max(0, w - BW) / 2, Math.min(BW - w + m * 2, cam.x));   // un peu plus de jeu à droite : sur un petit écran, la vue de départ doit pouvoir cacher la vidéo à gauche
     cam.y = Math.max(-m - Math.max(0, h - BH) / 2, Math.min(BH - h + m, cam.y));
   };
   const render = () => {
     clampCam();
     board.style.transform = `scale(${cam.z}) translate(${-cam.x}px, ${-cam.y}px)`;
+    // les plans du fond : ils glissent moins vite (facteur p) autour du centre du tableau, et dérivent un peu avec la souris
+    const Cx = cam.x + innerWidth / cam.z / 2, Cy = cam.y + innerHeight / cam.z / 2;
+    LAYERS.forEach(([el, p]) => {
+      const lx = BW / 2 + (Cx - BW / 2) * p, ly = BH / 2 + (Cy - BH / 2) * p;
+      el.style.transform = `translate(${innerWidth / 2 + drift.x * (1 - p) * 40}px, ${innerHeight / 2 + drift.y * (1 - p) * 40}px) scale(${cam.z}) translate(${-lx}px, ${-ly}px)`;
+    });
     vp.style.setProperty('--z', cam.z);
     const cx = Math.round(cam.x + innerWidth / cam.z / 2), cy = Math.round(cam.y + innerHeight / cam.z / 2);
     coords.textContent = `x ${cx}  y ${cy}`;
@@ -250,10 +267,14 @@
   };
   const centerOn = (bx, by, z) => flyTo(bx - innerWidth / z / 2, by - innerHeight / z / 2, z);
 
-  // vue de départ : le titre remplit l'écran, les fragments dépassent sur les bords
+  // vue de départ : le milieu de la galerie, quatre ou cinq images de large ; elles débordent des bords
   const start = () => {
-    cam.z = clampZ(innerWidth < 640 ? innerWidth / 2150 : Math.min(innerWidth / 2700, innerHeight / 2100));
-    cam.x = HERO.x - innerWidth / cam.z / 2; cam.y = HERO.y - 40 - innerHeight / cam.z / 2; render();
+    // 9 nov. : on ne voit pas la vidéo en arrivant ; elle attend 30 px à gauche de l'écran, à mi-hauteur :
+    // le premier petit glissement vers la droite la découvre, comme une surprise
+    const mob = innerWidth < 640;
+    cam.z = clampZ(mob ? innerWidth / 710 : Math.min(innerWidth / 2250, innerHeight / 1500));
+    cam.x = VID.x + VID.w + 30 / cam.z;
+    cam.y = VID.y + VID.h / 2 - innerHeight * .45 / cam.z; render();
   };
 
   // glisser pour se déplacer, avec élan ; pincer pour zoomer
@@ -328,78 +349,82 @@
   document.getElementById('zIn').onclick = () => zoomAt(cam.z * 1.25, ...mid());
   document.getElementById('zOut').onclick = () => zoomAt(cam.z / 1.25, ...mid());
   zReset.onclick = () => zoomAt(1, ...mid());
-  document.getElementById('zFit').onclick = () => { const z = clampZ(Math.min(innerWidth / BW, innerHeight / BH) * 0.92); centerOn(BW / 2, BH / 2, z); };
+
+
+  // 9 nov. : le nom du projet au survol (au toucher sur mobile), en bas à droite, avec l'effet de lettres de la spirale :
+  // les dernières lettres changent à sec, ce qui dépasse apparaît de droite à gauche, un signe au hasard puis la vraie lettre
+  const cap = document.getElementById('pcap'), capNm = cap.querySelector('.nm');
+  const GL = 'abcdefghijklmnopqrstuvwxyz0123456789#%&*+=/<>';
+  const typeCap = (el, to) => {
+    const from = el.__txt || '', tok = (el.__tok || 0) + 1; el.__tok = tok; el.__txt = to;
+    if (reduce) { el.textContent = to; return; }
+    const keep = Math.min(from.length, to.length), extra = to.length - keep;
+    el.textContent = '';
+    for (let i = 0; i < extra; i++) {
+      const c = to[i], g = document.createElement('span'); g.className = 'g'; g.textContent = c; el.appendChild(g);
+      if (c === ' ') { g.classList.add('in'); continue; }
+      const d = (extra - 1 - i) * 22;
+      setTimeout(() => { if (el.__tok !== tok) return; g.textContent = GL[Math.random() * GL.length | 0]; g.classList.add('x'); }, d);
+      setTimeout(() => { if (el.__tok !== tok) return; g.textContent = c; g.classList.remove('x'); g.classList.add('in'); }, d + 70);
+    }
+    el.append(to.slice(extra));
+  };
+  let capCur = '', capT = 0;
+  const showCap = (n) => {
+    clearTimeout(capT);
+    if (!n) { capCur = ''; cap.classList.remove('on'); capT = setTimeout(() => { capNm.__txt = ''; }, 400); return; }
+    if (n !== capCur) { capCur = n; typeCap(capNm, n); }
+    cap.classList.add('on');
+  };
+  const hoverOk = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  // la vidéo du piano : la boucle muette ; un clic (ou un toucher) lance la prise complète, avec le son, depuis le début ; un autre clic la coupe
+  const vidFig = board.querySelector('.it.vid'), vid = vidFig && vidFig.querySelector('video');
+  let sound = false;
+  const label = (it) => it === vidFig ? it.dataset.n + (hoverOk ? ' · clic' : ' · touche') + (sound ? ' pour couper' : ' pour le son') : it.dataset.n;
+  const toLoop = () => { sound = false; vid.muted = true; vid.loop = true; vid.src = 'a/piano.mp4'; vid.play().catch(() => {}); };
+  const toggleSound = () => {
+    if (!vid) return;
+    if (sound) toLoop();
+    else { sound = true; vid.src = 'a/piano-son.mp4'; vid.loop = false; vid.muted = false; vid.currentTime = 0; vid.play().catch(toLoop); }
+    capCur = ''; showCap(label(vidFig)); if (!hoverOk) { clearTimeout(capT); capT = setTimeout(() => showCap(''), 3200); }
+  };
+  if (vid) {
+    vid.addEventListener('ended', () => { if (sound) { toLoop(); if (cap.classList.contains('on')) { capCur = ''; showCap(label(vidFig)); } } });
+    // un clic sans glisser (le tableau capture le pointeur pour le glisser : on retrouve la vidéo sous le point)
+    let p0 = null;
+    vp.addEventListener('pointerdown', (e) => { p0 = { x: e.clientX, y: e.clientY }; });
+    vp.addEventListener('pointerup', (e) => {
+      if (!p0 || Math.hypot(e.clientX - p0.x, e.clientY - p0.y) > 8) return;
+      if (document.elementsFromPoint(e.clientX, e.clientY).some((el) => el === vidFig || vidFig.contains(el))) toggleSound();
+    });
+    vidFig.style.cursor = 'pointer';
+    // clavier : Entrée ou espace sur la vidéo
+    vidFig.tabIndex = 0; vidFig.setAttribute('role', 'button'); vidFig.setAttribute('aria-label', 'Piano : Plus tôt, d\'Alexandra Stréliski. Activer pour écouter avec le son.');
+    vidFig.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggleSound(); } });
+  }
+  if (hoverOk) {
+    vp.addEventListener('pointerover', (e) => { if (vp.classList.contains('dragging')) return; const it = e.target.closest('.it[data-n]'); if (it) showCap(label(it)); });
+    vp.addEventListener('pointerout', (e) => { const it = e.target.closest('.it[data-n]'); if (it && !it.contains(e.relatedTarget)) showCap(''); });
+  } else {
+    // toucher : un tap sans glisser montre le nom quelques secondes
+    let t0 = null;
+    vp.addEventListener('pointerdown', (e) => { t0 = { x: e.clientX, y: e.clientY }; });
+    vp.addEventListener('pointerup', (e) => {
+      if (!t0 || Math.hypot(e.clientX - t0.x, e.clientY - t0.y) > 8) return;
+      const it = document.elementsFromPoint(e.clientX, e.clientY).map((el) => el.closest && el.closest('.it[data-n]')).find(Boolean);
+      if (it && it.classList.contains('vid')) return;   // la vidéo : le toucher sert au son (plus bas)
+      showCap(it ? label(it) : ''); if (it) capT = setTimeout(() => showCap(''), 2600);
+    });
+  }
+
+  // mouvement réduit demandé : la vidéo reste sur sa première image
+  if (reduce) board.querySelectorAll('video').forEach((v) => { v.removeAttribute('autoplay'); v.pause(); });
 
   // gifs 1 bit animés
   if (!reduce) board.querySelectorAll('[data-anim]').forEach((it) => {
     const [name, n, ms] = it.dataset.anim.split(':'); const img = it.querySelector('img');
     const frames = Array.from({ length: +n }, (_, i) => { const im = new Image(); im.src = `a/${name}-${i}.png`; return im.src; });
     let i = 0; setInterval(() => { i = (i + 1) % frames.length; img.src = frames[i]; }, +ms);
-  });
-
-  // petit piano : un vrai son de piano, synthétisé (harmoniques légèrement désaccordées, marteau, résonance de la caisse)
-  const keysEl = document.getElementById('keys');
-  const NOTES = [['C', 261.63, 'a'], ['D', 293.66, 's'], ['E', 329.63, 'd'], ['F', 349.23, 'f'], ['G', 392.0, 'g'], ['A', 440.0, 'h'], ['B', 493.88, 'j'], ['C', 523.25, 'k']];
-  const BLACK = [[0, 277.18, 'w'], [1, 311.13, 'e'], [3, 369.99, 't'], [4, 415.3, 'y'], [5, 466.16, 'u']];
-  const LABEL = { C: 'do', D: 'ré', E: 'mi', F: 'fa', G: 'sol', A: 'la', B: 'si' };
-  let ac = null, out = null;
-  const audio = () => {
-    if (ac) return ac;
-    ac = new (window.AudioContext || window.webkitAudioContext)();
-    const comp = ac.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 3; comp.connect(ac.destination);
-    out = ac.createGain(); out.gain.value = 0.9; out.connect(comp);
-    // petite salle : une réverbération courte, fabriquée à partir de bruit qui s'éteint
-    const len = Math.floor(ac.sampleRate * 1.8), ir = ac.createBuffer(2, len, ac.sampleRate);
-    for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2); }
-    const verb = ac.createConvolver(); verb.buffer = ir; const wet = ac.createGain(); wet.gain.value = 0.16;
-    out.connect(verb).connect(wet).connect(comp);
-    return ac;
-  };
-  const PARTIALS = [1, 0.55, 0.36, 0.2, 0.13, 0.08, 0.05, 0.03];
-  const play = (f, btn) => {
-    try {
-      audio(); if (ac.state === 'suspended') ac.resume();
-      const t = ac.currentTime + 0.005, dur = 3.2 * Math.pow(261.63 / f, 0.35);
-      // filtre qui se referme : le son est brillant à l'attaque puis s'arrondit
-      const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 0.6;
-      lp.frequency.setValueAtTime(Math.min(16000, f * 12), t); lp.frequency.exponentialRampToValueAtTime(Math.max(600, f * 2.5), t + 1.2);
-      const bus = ac.createGain(); bus.gain.value = 0.32; bus.connect(lp).connect(out);
-      PARTIALS.forEach((amp, k) => {
-        const n = k + 1, o = ac.createOscillator(), g = ac.createGain();
-        o.type = 'sine'; o.frequency.value = f * n * Math.sqrt(1 + 0.00035 * n * n);   // inharmonicité des cordes
-        o.detune.value = (k % 2 ? 1 : -1) * 1.5;
-        const d = dur / (1 + k * 0.7);
-        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(amp, t + 0.004);
-        g.gain.exponentialRampToValueAtTime(amp * 0.35, t + 0.08 + 0.05 * k);
-        g.gain.exponentialRampToValueAtTime(0.0001, t + d);
-        o.connect(g).connect(bus); o.start(t); o.stop(t + d + 0.05);
-      });
-      // le marteau : un tout petit coup de bruit filtré
-      const nb = ac.createBuffer(1, Math.floor(ac.sampleRate * 0.03), ac.sampleRate), nd = nb.getChannelData(0);
-      for (let i = 0; i < nd.length; i++) nd[i] = (Math.random() * 2 - 1) * (1 - i / nd.length);
-      const ns = ac.createBufferSource(), bp = ac.createBiquadFilter(), ng = ac.createGain();
-      ns.buffer = nb; bp.type = 'bandpass'; bp.frequency.value = Math.min(8000, f * 6); bp.Q.value = 1.2; ng.gain.value = 0.12;
-      ns.connect(bp).connect(ng).connect(out); ns.start(t);
-    } catch (e) { /* pas de son, pas grave */ }
-    btn.classList.add('on'); setTimeout(() => btn.classList.remove('on'), 160);
-  };
-  const byKey = {};
-  NOTES.forEach(([n, f, k]) => {
-    const b = document.createElement('button'); b.type = 'button'; b.className = 'white'; b.textContent = LABEL[n];
-    b.setAttribute('aria-label', `${LABEL[n]} (touche ${k.toUpperCase()})`);
-    b.addEventListener('pointerdown', (e) => { e.stopPropagation(); play(f, b); });
-    b.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); play(f, b); } });
-    keysEl.appendChild(b); byKey[k] = [f, b];
-  });
-  BLACK.forEach(([i, f, k]) => {
-    const b = document.createElement('button'); b.type = 'button'; b.className = 'black';
-    b.style.left = `calc(${(i + 1) * 12.5}% - 3.5%)`; b.setAttribute('aria-label', `dièse (touche ${k.toUpperCase()})`);
-    b.addEventListener('pointerdown', (e) => { e.stopPropagation(); play(f, b); });
-    keysEl.appendChild(b); byKey[k] = [f, b];
-  });
-  addEventListener('keydown', (e) => {
-    if (e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
-    const hit = byKey[e.key.toLowerCase()]; if (hit) play(...hit);
   });
 
   addEventListener('resize', render);
@@ -424,6 +449,11 @@
     html, body { overflow-x: clip; }   /* le cadre déborde de ~2 % de chaque côté : pas de défilement horizontal */
     .jnav, .jlogo, .jfoot, .jgrid, .hnav { padding-left: 0 !important; padding-right: 0 !important; }
     .jnav-in, .jfoot-in, .clip > .jfoot .jfoot-in, .jgrid .in, .hnav-in { max-width: none !important; width: var(--fw); margin-left: var(--fl) !important; margin-right: 0 !important; }
+    /* 9 nov. : le haut des lettres du menu (« portfolio », « contact ») tombe pile sur la marge du site ; avant, il était placé dans la maquette à ~30/1600 et ne suivait pas la marge (5 à 7 px trop bas à 1,6 %) */
+    .jnav-in, .hnav-in { translate: 0 calc(100vw * var(--mr) - 29.7 / 1600 * var(--fw)); }
+    /* 9 nov. : pied de page calé sur la marge du bas, en symétrie optique avec le menu : en haut, les ascendantes touchent la marge ;
+       en bas, ce sont les descendantes (.22em sous la ligne de base). Ligne de base = marge + .22em ; .15em = du bas de la ligne à la ligne de base */
+    html .jfoot, html .clip > .jfoot { padding-bottom: calc(100vw * var(--mr) + .07em + env(safe-area-inset-bottom, 0px)); }
     .jcopy { padding-left: calc(var(--fl) + 65 / 1600 * var(--fw)) !important; padding-right: calc(var(--fl) + 65 / 1600 * var(--fw)) !important; }
     .jcopy .tm { left: calc(var(--fl) + 65 / 1600 * var(--fw)) !important; }
     .jcopy .x { right: calc(var(--fl) + 65 / 1600 * var(--fw)) !important; }
@@ -579,7 +609,7 @@
   .jcopy .em { transform-style: preserve-3d; will-change: transform; }
   .jcopy .tm, .jcopy .bar { display: none !important; }
   .jcopy .em .caret { margin-right: calc(-1 * (max(2px, .055em) + .04em)); }   /* le curseur ne compte pas dans le centrage : c'est l'adresse seule qui est centrée */
-  html:has(.jcopy.on) .mnav a[data-contact] { text-decoration: line-through; text-decoration-thickness: 1.5px; }
+  html:has(.jcopy.on) .mnav a[data-contact] { text-decoration: line-through; text-decoration-thickness: 1px; }
   @media (max-width: 700px) { .jcopy { row-gap: 4px; padding: 0 16px !important; } }
   @keyframes jtbar { to { transform: scaleX(0); } }
 </style>

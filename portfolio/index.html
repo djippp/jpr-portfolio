@@ -62,10 +62,10 @@
   /* le paragraphe de fin : même corps, même colonne que le texte d'intro de l'accueil */
   .outro { position: relative; z-index: 1; background: var(--paper); padding: 18vh max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); }
   .outro p { max-width: 1600px; margin: 0 auto; box-sizing: border-box; padding: 0 calc(var(--fw) * (1 - 4.06 / 100 - 73.25 / 100)) 0 calc(var(--fw) * 4.06 / 100);
-    font: 400 max(16px, calc(var(--fw) * .033))/1.5 var(--grot); letter-spacing: -.03em; color: var(--ink); text-wrap: pretty; }   /* même typo que l'accueil */
-  .outro p + p { margin-top: 1.5em; }
+    font: 400 max(16px, calc(var(--fw) * .033))/1.3 var(--grot); letter-spacing: -.03em; color: var(--ink); text-wrap: pretty; }   /* 9 nov. : interligne 1,5 → 1,3 */   /* même typo que l'accueil */
+  .outro p + p { margin-top: 1.3em; }
   .outro p:first-child { text-indent: calc(298 / 1600 * var(--fw) - .06em); }   /* alinéa calé sur « pele mele », comme l'accueil */
-  @media (max-width: 700px) { .outro p { padding: 0; font-size: 23px; line-height: 1.38; letter-spacing: -.025em; } .outro p:first-child { text-indent: calc(var(--mc) - .06em); } }   /* 7 nov. : alinéa d'une colonne mobile */   /* mobile : même typo que l'accueil */
+  @media (max-width: 700px) { .outro p { padding: 0; font-size: 23px; line-height: 1.3; letter-spacing: -.025em; } .outro p:first-child { text-indent: calc(var(--mc) - .06em); } }   /* 7 nov. : alinéa d'une colonne mobile */   /* mobile : même typo que l'accueil */
   /* petite typo de la page Info, utilisée dans la fiche projet (le texte de fin, essayé en petit dans la 5e colonne le 6 nov., est revenu en grand) */
   :root { --os: clamp(14px, calc(16.5 / 1600 * var(--fw)), 17px); }
   body.outro-in .views { opacity: 0; pointer-events: none; }
@@ -310,7 +310,7 @@
       font: 400 15px/1 "PP Mori", "Host Grotesk", "Helvetica Neue", Arial, sans-serif; letter-spacing: -.01em; }
     .mnav span { display: flex; gap: 18px; }
     .mnav a { color: #F2F0EB; text-decoration: none; pointer-events: auto; padding: 10px 0; }
-    .mnav a[aria-current] { text-decoration: line-through; text-decoration-thickness: 1.5px; }
+    .mnav a[aria-current] { text-decoration: line-through; text-decoration-thickness: 1px; }
   }
   @media (max-width: 700px) {
     .jnav svg { visibility: hidden; }
@@ -329,7 +329,7 @@
 <text x="65" y="44" fill="#F2F0EB" style="font: 400 19.5px var(--grot); letter-spacing: -.01em">portfolio</text>
 <text x="363" y="44" fill="#F2F0EB" style="font: 400 19.5px var(--grot); letter-spacing: -.01em">pêle-mêle</text>
 
-<rect x="65" y="39.6" width="75" height="2.4" fill="#F2F0EB"/><defs><clipPath id="clip0_89_3">
+<rect x="65" y="38" width="75" height="1.4" fill="#F2F0EB"/><defs><clipPath id="clip0_89_3">
 <rect width="107" height="35" fill="#F2F0EB" transform="translate(747 25)"/>
 </clipPath></defs></svg>
 <a href="#" aria-current="page" aria-label="portfolio" style="left:3.6%;width:5.6%;top:21.5%;height:36%"></a>
@@ -1553,6 +1553,11 @@
     html, body { overflow-x: clip; }   /* le cadre déborde de ~2 % de chaque côté : pas de défilement horizontal */
     .jnav, .jlogo, .jfoot, .jgrid, .hnav { padding-left: 0 !important; padding-right: 0 !important; }
     .jnav-in, .jfoot-in, .clip > .jfoot .jfoot-in, .jgrid .in, .hnav-in { max-width: none !important; width: var(--fw); margin-left: var(--fl) !important; margin-right: 0 !important; }
+    /* 9 nov. : le haut des lettres du menu (« portfolio », « contact ») tombe pile sur la marge du site ; avant, il était placé dans la maquette à ~30/1600 et ne suivait pas la marge (5 à 7 px trop bas à 1,6 %) */
+    .jnav-in, .hnav-in { translate: 0 calc(100vw * var(--mr) - 29.7 / 1600 * var(--fw)); }
+    /* 9 nov. : pied de page calé sur la marge du bas, en symétrie optique avec le menu : en haut, les ascendantes touchent la marge ;
+       en bas, ce sont les descendantes (.22em sous la ligne de base). Ligne de base = marge + .22em ; .15em = du bas de la ligne à la ligne de base */
+    html .jfoot, html .clip > .jfoot { padding-bottom: calc(100vw * var(--mr) + .07em + env(safe-area-inset-bottom, 0px)); }
     .jcopy { padding-left: calc(var(--fl) + 65 / 1600 * var(--fw)) !important; padding-right: calc(var(--fl) + 65 / 1600 * var(--fw)) !important; }
     .jcopy .tm { left: calc(var(--fl) + 65 / 1600 * var(--fw)) !important; }
     .jcopy .x { right: calc(var(--fl) + 65 / 1600 * var(--fw)) !important; }
@@ -1708,7 +1713,7 @@
   .jcopy .em { transform-style: preserve-3d; will-change: transform; }
   .jcopy .tm, .jcopy .bar { display: none !important; }
   .jcopy .em .caret { margin-right: calc(-1 * (max(2px, .055em) + .04em)); }   /* le curseur ne compte pas dans le centrage : c'est l'adresse seule qui est centrée */
-  html:has(.jcopy.on) .mnav a[data-contact] { text-decoration: line-through; text-decoration-thickness: 1.5px; }
+  html:has(.jcopy.on) .mnav a[data-contact] { text-decoration: line-through; text-decoration-thickness: 1px; }
   @media (max-width: 700px) { .jcopy { row-gap: 4px; padding: 0 16px !important; } }
   @keyframes jtbar { to { transform: scaleX(0); } }
 </style>
