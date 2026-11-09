@@ -1,0 +1,1305 @@
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>JPR Info</title>
+<style>html.pt-in::after{content:"";position:fixed;inset:0;z-index:5999;background:#000;pointer-events:none;animation:pt-kill 0s 3s forwards}@keyframes pt-kill{to{visibility:hidden}}</style><script>if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("pt-in")</script>
+<meta name="description" content="Jean-Philippe Rousseau, directeur artistique à Montréal : parcours, expertises et CV.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500&display=swap">
+<style>
+  @font-face { font-family: "PP Mori"; font-weight: 400; font-style: normal; font-display: swap; src: url("fonts/PPMori-Regular.woff2") format("woff2"); }
+  @font-face { font-family: "PP Mori"; font-weight: 500; font-style: normal; font-display: swap; src: url("fonts/PPMori-Semibold.woff2") format("woff2"); }
+  :root {
+    --paper: #000; --ink: #F2F0EB; --muted: #8C897F; --rule: rgba(242, 240, 235, .16);
+    --grot: "PP Mori", "Host Grotesk", "Helvetica Neue", Arial, sans-serif;
+    --u: calc(var(--fw) / 1600);   /* 1 unité de la maquette de 1600 px */
+    color-scheme: dark;
+  }
+  html, body { margin: 0; background: var(--paper); color: var(--ink); }
+  body { font-family: var(--grot); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  ::selection { background: #F2F0EB; color: #000; }
+
+  /* ---------- grille : 5 colonnes de 278, gouttières de 20, marges de 65 (sur 1600), comme le menu ---------- */
+  .page { max-width: 1600px; margin: 0 auto; padding: 0 max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); }
+  .grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); column-gap: calc(20 * var(--u)); padding: 0 calc(65 * var(--u)); }
+  .s { font: 400 clamp(14px, calc(16.5 * var(--u)), 17px)/1.5 var(--grot); letter-spacing: -.005em; }   /* petit texte */
+  .s p { margin: 0; }
+  .s p + p { margin-top: .9em; }
+  .muted { color: var(--muted); }
+
+  /* ---------- haut : petit texte (col. 1), photo (col. 4-5), deuxième texte décalé (col. 2) ---------- */
+  .intro { padding-top: calc(200 * var(--u) + 20px); }   /* 6 nov. : un peu moins d’air en haut (avant : 285) */
+  .intro .a { grid-column: 1; grid-row: 1; }
+  .intro .b { grid-column: 2; grid-row: 2; margin-top: calc(120 * var(--u)); align-self: start; }
+  .intro .ph { grid-column: 4 / 6; grid-row: 1 / 3; margin: 0; align-self: start; }
+  .intro .ph img { display: block; width: 100%; height: auto; aspect-ratio: 1000 / 1208; object-fit: cover; background: #111; }
+  .intro .ph figcaption { margin-top: 10px; }
+  /* portrait : apparition par paliers de pixels (façon GIF entrelacé) + grain argentique animé */
+  .intro .ph.rv { opacity: 1; transform: none; }
+  .phw { position: relative; overflow: hidden; }
+  .phw .px { position: absolute; inset: 0; width: 100%; height: 100%; background: #000; image-rendering: pixelated; }
+  .phw .px.done { display: none; }
+  .phw .grain { position: absolute; inset: -50%; pointer-events: none; background-image: var(--grain); background-size: 120px 120px; mix-blend-mode: overlay; opacity: .08; animation: grain .8s steps(1) infinite; }
+  @keyframes grain { 0% { transform: translate(0, 0); } 12.5% { transform: translate(-7%, 4%); } 25% { transform: translate(5%, -9%); } 37.5% { transform: translate(-11%, -3%); } 50% { transform: translate(9%, 8%); } 62.5% { transform: translate(-4%, 11%); } 75% { transform: translate(12%, -6%); } 87.5% { transform: translate(-9%, -10%); } }
+  @media (prefers-reduced-motion: reduce) { .phw .grain { animation: none; } .phw .px { display: none; } }
+  .intro h1 { margin: 0 0 1.1em; font: 400 clamp(14px, calc(16.5 * var(--u)), 17px)/1.3 var(--grot); color: var(--ink); }
+  .intro h1 span { display: block; color: var(--muted); }
+  .vh { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+  /* ---------- énoncé en grand (col. 1-3) + petit texte (col. 5) ---------- */
+  .say { margin-top: calc(260 * var(--u)); align-items: start; }
+  /* même typo que l’accueil et le texte de fin du portfolio ; colonnes 1 à 3 (la 4 reste vide pour laisser respirer le texte de la colonne 5) ; alinéa calé sur la colonne 2 */
+  .say .big { grid-column: 1 / 4; margin: 0; font: 400 max(16px, calc(52.8 * var(--u)))/1.5 var(--grot); letter-spacing: -.03em; text-wrap: pretty; text-indent: calc(298 * var(--u) - .06em); }
+  .say .bigw { grid-column: 1 / 5; }   /* jusqu’au bout de la col. 4 ; le petit texte garde la col. 5 */   /* l’énoncé en deux paragraphes, chacun avec son alinéa sur la col. 2 */
+  .say .big + .big { margin-top: .75em; }
+  /* comme l’accueil et le portfolio : en remontant vers le haut de l’écran, les lignes s’enroulent vers l’arrière sur un tambour */
+  .say .bigw { grid-row: 1; }
+  /* fin de page (provisoire) : un dernier gros texte, de la col. 3 à la col. 5, pour faire changement */
+  .fin { margin-top: calc(260 * var(--u)); }
+  .fin .big { grid-column: 3 / 6;   /* les 3 dernières colonnes (6 nov. : col. 4–5 essayé, retour à 3 col.) */ margin: 0; font: 400 max(16px, calc(52.8 * var(--u)))/1.5 var(--grot); letter-spacing: -.03em; text-wrap: pretty; }
+  @media (min-width: 701px) { .fin .big { text-indent: calc(298 * var(--u) - .06em); } }   /* alinéa d'une colonne : la 1re ligne part au début de la col. 4 */
+  .fin .big a { white-space: nowrap; text-decoration: underline; text-decoration-thickness: max(1px, calc(2 * var(--u))); text-underline-offset: .14em; }
+  .fin .big a:hover { text-decoration: line-through; }
+  @media (max-width: 700px) { .fin { margin-top: 80px; } .fin .big { font-size: 23px; line-height: 1.38; letter-spacing: -.025em; } }
+  .say .side { grid-column: 5; grid-row: 2; padding-top: 0; margin-top: calc(80 * var(--u)); }   /* sous le gros texte, toujours en col. 5 */
+  .say .side a, .cv-links a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .2em; }
+  .say .side a:hover, .cv-links a:hover { text-decoration-thickness: 2px; }
+
+  /* ---------- CV : chaque section sur un filet, le titre en col. 1, le contenu sur les col. 2 à 5 ---------- */
+  .sec { margin-top: calc(220 * var(--u)); }
+  .sec + .sec { margin-top: calc(110 * var(--u)); }
+  .sec > .grid { border-top: 1px solid var(--rule); padding-top: 22px; margin: 0 calc(65 * var(--u)); padding-left: 0; padding-right: 0; }
+  /* une seule taille pour les titres, les expertises et le cimetière : celle de « Direction artistique » */
+  .sec h2 { grid-column: 1; margin: 0; font: 400 clamp(20px, calc(30 * var(--u)), 32px)/1.35 var(--grot); letter-spacing: -.02em; }
+  .rows { grid-column: 2 / 6; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: calc(20 * var(--u)); }
+  .row { display: contents; }
+  .row > * { padding: 4px 0 calc(40 * var(--u) + 14px); }
+  .row .when { grid-column: 1; }
+  .row .when b { display: block; font-weight: 400; color: var(--ink); }
+  .row .what { grid-column: 2; font: 400 clamp(16px, calc(19 * var(--u)), 20px)/1.3 var(--grot); letter-spacing: -.01em; }
+  .row .desc { grid-column: 3 / 5; }
+  .tags { grid-column: 2 / 6; margin: 0; font: 400 clamp(20px, calc(30 * var(--u)), 32px)/1.35 var(--grot); letter-spacing: -.02em; }
+  /* une expertise par ligne, sur deux colonnes de la grille : plus de points orphelins en début ou fin de ligne */
+  .tags { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(5, auto); grid-auto-flow: column; column-gap: calc(20 * var(--u)); row-gap: .15em; }   /* se lit colonne par colonne : du plus stratégique au plus spécialisé */
+  .tags span { white-space: nowrap; }
+  /* survol de « Systèmes de design » : la grille apparaît et tout le reste passe en transparence ; seul le mot reste en blanc */
+  main > *, .jnav, .mnav, .jfoot, .tags span, #ex { transition: opacity .3s ease; }
+  html.jgrid-peek main > :not(:has([data-grid])), html.jgrid-peek .jnav, html.jgrid-peek .mnav, html.jgrid-peek .jfoot,
+  html.jgrid-peek .tags span:not([data-grid]), html.jgrid-peek #ex { opacity: .15; }
+  .cv-links { grid-column: 2 / 6; display: flex; flex-wrap: wrap; gap: 14px 40px; font: 400 clamp(16px, calc(19 * var(--u)), 20px)/1.3 var(--grot); }
+  /* CV : la page elle-même, posée de biais comme une carte de la spirale ; au survol elle se redresse et avance */
+  .cvsec { align-items: start; }
+  .cvcard { grid-column: 2; display: block; perspective: 900px; outline-offset: 6px; }
+  .cvcard img { display: block; width: 100%; height: auto;   /* 7 nov. : plus d'ombre (noire sur fond noir, invisible : du poids pour rien) */
+    transform: rotate(-4deg) rotateY(14deg) translateZ(0); transform-origin: 50% 60%; transition: transform .7s cubic-bezier(.2, .7, .2, 1), filter .5s; filter: brightness(.86); }
+  .cvcard:hover img, .cvcard:focus-visible img { transform: none; filter: none; }
+  .cvtxt { grid-column: 4; }
+  .cvtxt a, .cvmail a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .2em; }
+  .cvtxt a:hover, .cvmail a:hover { text-decoration-thickness: 2px; }
+  /* le lien du CV à la taille des expertises et du cimetière ; « PDF, 1 page » reste en petit, dessous */
+  .cvtxt .dl { display: inline-block; font: 400 clamp(20px, calc(30 * var(--u)), 32px)/1.35 var(--grot); letter-spacing: -.02em; white-space: nowrap; text-underline-offset: .18em; }
+  @media (max-width: 700px) { .cvtxt .dl { font-size: 23px; } }   /* 8 nov. : styles unifiés, Moyenne mobile = 23 px */
+  .cvmail { grid-column: 5; }
+  @media (max-width: 700px) { .cvcard { width: 62%; margin: 8px 0 28px 6%; } .cvmail { margin-top: 22px; } }
+  /* CV en grand : la carte se redresse et s’envole au centre (même geste que l’ouverture d’un projet dans le portfolio) */
+  .cvcard { cursor: zoom-in; }
+  /* 7 nov. : au défilement, la feuille arrive en flottant (de plus bas, plus penchée, plus loin) et se pose à sa place ;
+     puis elle reste en suspens, avec un très léger balancement, comme une feuille dans l'air */
+  .cvcard { transform-style: preserve-3d; will-change: transform; }
+  .cvv { position: fixed; inset: 0; z-index: 8000; background: rgba(0, 0, 0, 0); transition: background-color .45s ease; }
+  .cvv[hidden] { display: none; }
+  .cvv.on { background: rgba(0, 0, 0, .94); }
+  .cvv-sc { position: absolute; inset: 0; overflow: auto; overscroll-behavior: contain; display: grid; padding: 72px 16px 96px; box-sizing: border-box; cursor: zoom-out; scrollbar-width: none; }
+  .cvv-sc::-webkit-scrollbar { display: none; }
+  .cvv-sc:focus { outline: none; }
+  .cvv-img { display: block; width: min(calc((100vh - 168px) * 1800 / 2329), 100%); height: auto; cursor: default; transform-origin: 0 0; margin: auto; }   /* centré, sans jamais couper le haut si l’image dépasse */
+  .cvv-x, .cvv-dl { opacity: 0; transition: opacity .35s ease; }
+  .cvv.on .cvv-dl { opacity: 1; transition-delay: .25s; }
+  .cvv.on .cvv-x { opacity: 1; transition: background-color .25s, color .25s, opacity .35s ease .25s; }   /* le délai ne touche que l’apparition, pas le survol */
+  /* fermer : en toutes lettres, à la place de « contact » dans le menu (même bouton que la fiche projet du portfolio) */
+  .cvv-x { --u2: calc(var(--fw) / 1600); --bx: .56em; position: absolute;
+    top: calc(42 * var(--u2) - .95em); right: calc(var(--fl) + 65 * var(--u2) - var(--bx));
+    padding: .34em var(--bx) .4em; border: 0; border-radius: 6px; background: #000; color: #F2F0EB; cursor: pointer;
+    font: 400 max(12px, calc(19.5 * var(--u2)))/1 var(--grot); letter-spacing: -.01em; transition: background-color .25s, color .25s, opacity .35s ease; }   /* 8 nov. : graisse 400, comme tout le site */
+  .cvv-x:hover { background: #F2F0EB; color: #000; }
+  .cvv-dl { position: absolute; left: 50%; bottom: max(22px, env(safe-area-inset-bottom, 0px)); translate: -50% 0; padding: .55em .8em .62em; border-radius: 4px; background: #F2F0EB; color: #000; text-decoration: none; font: 400 max(12px, calc(19.5 / 1600 * var(--fw, 100vw)))/1 var(--grot); letter-spacing: -.01em; white-space: nowrap; }   /* 8 nov. : style Interface */
+  @media (max-width: 700px) { .cvv-dl { font-size: 15px; } }
+  .cvv-dl:hover { background: #d9d6cf; }
+  .cvv-x:focus-visible, .cvv-dl:focus-visible { outline: 1px solid #F2F0EB; outline-offset: 3px; }
+  html.cvopen { overflow: hidden; }
+  .cvv-gl { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; visibility: hidden; }   /* la feuille souple, seulement pendant le vol */
+  .rip code { font: inherit; }   /* le code garde la typo de la page : la blague tient dans la syntaxe, pas dans une police mono */
+  /* souris : « fermer » suit le curseur (pastille claire, comme le « retour » de la fiche), et s'efface sur la page du CV, où un clic ne ferme pas */
+  .cvv.follow .cvv-x { top: 0; left: 0; right: auto; pointer-events: none; background: #F2F0EB; color: #000; font-weight: 400; will-change: transform; }
+  .cvv.follow.on .cvv-x { transition: opacity .25s ease; }
+  .cvv.follow .cvv-x.off { opacity: 0; }
+  .cvv.follow .cvv-sc { cursor: none; }
+  @media (max-width: 700px) { .cvv-sc { padding: 68px 16px 88px; } .cvv-img { width: 100%; } .cvv-x { --bx: .62em; top: 15px; right: calc(16px - var(--bx)); font-size: 15px; font-weight: 400; padding: .42em var(--bx) .48em; } }
+  /* cimetière : les noms barrés (le même trait que la page en cours du menu), les années, une épitaphe */
+  .rip h2 span { display: block; }   /* le sous-titre, même taille, en gris */
+  .rip .rows { font: 400 clamp(20px, calc(30 * var(--u)), 32px)/1.35 var(--grot); letter-spacing: -.02em; }
+  .rip .row > * { padding-bottom: calc(24 * var(--u) + 8px); }
+  .rip .row .what { font: inherit; }
+  .rip .row .what { grid-column: 1 / 3; }
+  .rip .row .when { grid-column: 3; }
+  .rip .row .desc { grid-column: 4 / 5; margin: 0; font-style: normal; }   /* épitaphe dans la dernière colonne de la page */
+  /* l'épitaphe en petit texte, posée sur la ligne de base du nom : les noms barrés dominent */
+  .rip .rows { align-items: baseline; }
+  .rip .row .desc { font: 400 clamp(14px, calc(16.5 * var(--u)), 17px)/1.5 var(--grot); letter-spacing: -.005em; }
+  @media (max-width: 700px) { .rip .row .desc { font-size: 15px; } }   /* 8 nov. : Petite mobile = 15 px */
+  /* test (bureau, souris) : l'épitaphe n'a plus sa colonne ; au survol du nom, la date se transforme en épitaphe (les chiffres deviennent des lettres, la suite se tape) */
+  html.rip-fx .rip .row .desc { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }   /* toujours lue par les lecteurs d'écran */
+  html.rip-fx .rip .row .when { grid-column: 3 / 5; white-space: nowrap; }
+  html.rip-fx .rip .row .what s { cursor: default; }
+  .rip s { text-decoration-thickness: 1px; text-decoration-color: currentColor; }
+  .rip .row.on .what s { text-decoration: none; }   /* au survol : la barre disparaît */
+  .rip .desc i { font-style: normal; color: var(--ink); }   /* bout de code Lingo, en clair */
+  /* fin : le texte se pose presque sur le pied de page — l'espace entre les lettres est égal à la marge du site (collé, assumé), comme au portfolio */
+  .end { height: calc(var(--fl) + 65 * var(--u) - .01854 * var(--fw) + 27.6px); }   /* corrigé d'après la mesure (le pied de page est à la taille du menu) */
+
+  /* apparition douce des blocs au défilement */
+  .rv { opacity: 0; transform: translateY(28px); transition: opacity .8s ease, transform 1s cubic-bezier(.2, .7, .2, 1); }
+  .rv.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .rv { opacity: 1; transform: none; transition: none; } }
+
+  /* ---------- menu : même entête que l'accueil et le portfolio (dégradé doux, pas d'inversion) ---------- */
+  .jnav { mix-blend-mode: normal !important; }
+  .jnav::before { content: ""; position: absolute; left: 0; right: 0; top: 0; pointer-events: none; height: calc(84 / 1600 * var(--fw) + 190px);
+    background: linear-gradient(rgba(0,0,0,0.900) 0%, rgba(0,0,0,0.899) 5%, rgba(0,0,0,0.892) 10%, rgba(0,0,0,0.876) 15%, rgba(0,0,0,0.848) 20%, rgba(0,0,0,0.807) 25%, rgba(0,0,0,0.753) 30%, rgba(0,0,0,0.688) 35%, rgba(0,0,0,0.614) 40%, rgba(0,0,0,0.534) 45%, rgba(0,0,0,0.450) 50%, rgba(0,0,0,0.366) 55%, rgba(0,0,0,0.286) 60%, rgba(0,0,0,0.212) 65%, rgba(0,0,0,0.147) 70%, rgba(0,0,0,0.093) 75%, rgba(0,0,0,0.052) 80%, rgba(0,0,0,0.024) 85%, rgba(0,0,0,0.008) 90%, rgba(0,0,0,0.001) 95%, rgba(0,0,0,0.000) 100%); }   /* 7 nov. : exactement le dégradé de l'accueil et du portfolio */
+  .mnav { mix-blend-mode: normal !important; }
+
+  /* ---------- mobile : une seule colonne, dans l'ordre de lecture ---------- */
+  @media (max-width: 700px) {
+    .grid, .rows { display: block; padding: 0; }
+    .sec > .grid { margin: 0; }
+    .intro { padding-top: 120px; }
+    .intro .ph { margin: 28px 0; }
+    .intro .b { margin-top: 0; }
+    .s { font-size: 15px; }   /* 8 nov. : Petite mobile = 15 px, comme l'Interface */
+    .say { margin-top: 72px; }
+    .say .big { font-size: 23px; line-height: 1.38; letter-spacing: -.025em; }   /* mobile : comme l’accueil */
+    .say .side { padding-top: 28px; }
+    .sec, .sec + .sec { margin-top: 64px; }
+    .sec h2 { margin-bottom: 22px; }
+    .row { display: block; padding-bottom: 26px; }
+    .row > * { padding: 0; }
+    .row .what { margin: 6px 0 8px; }
+    .sec h2, .rip .rows { font-size: 23px; }   /* 8 nov. : Moyenne mobile = Grande mobile (23 px) : une seule taille au lieu de 22/23/24 */
+    .tags { font-size: 23px; grid-template-columns: 1fr; grid-template-rows: none; grid-auto-flow: row; }
+    .end { height: 23.3px; }   /* 16 px entre les lettres, la marge mobile */
+    .jnav::before { height: 200px; background: linear-gradient(rgba(0,0,0,0.860) 0%, rgba(0,0,0,0.859) 5%, rgba(0,0,0,0.853) 10%, rgba(0,0,0,0.837) 15%, rgba(0,0,0,0.810) 20%, rgba(0,0,0,0.771) 25%, rgba(0,0,0,0.720) 30%, rgba(0,0,0,0.658) 35%, rgba(0,0,0,0.587) 40%, rgba(0,0,0,0.510) 45%, rgba(0,0,0,0.430) 50%, rgba(0,0,0,0.350) 55%, rgba(0,0,0,0.273) 60%, rgba(0,0,0,0.202) 65%, rgba(0,0,0,0.140) 70%, rgba(0,0,0,0.089) 75%, rgba(0,0,0,0.050) 80%, rgba(0,0,0,0.023) 85%, rgba(0,0,0,0.007) 90%, rgba(0,0,0,0.001) 95%, rgba(0,0,0,0.000) 100%); }   /* mobile : le même que l'accueil */
+  }
+  /* 7 nov. : mobile en grille de 5 colonnes (comme le bureau), gouttières de 12 px. Les petits textes deviennent des colonnes étroites et hautes,
+     en escalier (col. 2, puis col. 3) ; le gros texte garde la pleine largeur avec un alinéa d'une colonne. */
+  @media (max-width: 700px) {
+    :root { --mcol: calc((100vw - 32px - 48px) / 5); --mc: calc(var(--mcol) + 12px); }
+    .grid { display: grid !important; grid-template-columns: repeat(5, minmax(0, 1fr)); column-gap: 12px; padding-left: 0 !important; padding-right: 0 !important; }
+    .intro .a { grid-column: 2 / 6; grid-row: 1; }
+    .intro .ph { grid-column: 1 / 5; grid-row: 2; margin: 28px 0 !important; }
+    .intro .b { grid-column: 3 / 6; grid-row: 3; margin-top: 0; }
+    .say .bigw { grid-column: 1 / -1; grid-row: 1; }
+    .say .big { text-indent: calc(var(--mc) - .06em); }
+    .say .side { grid-column: 3 / 6; grid-row: 2; margin-top: 0; }
+    .sec h2 { grid-column: 1 / -1; grid-row: 1; }
+    .sec .rows, .sec .tags { grid-column: 2 / 6; grid-row: 2; }
+    .tags span { white-space: normal; }
+    .cvsec h2 { grid-column: 1 / -1; }
+    .cvsec .cvcard { grid-column: 1 / 4; width: 92% !important; margin: 8px 0 28px 6% !important; }   /* la feuille penchée ne sort pas de la marge */
+    .cvsec .cvtxt { grid-column: 3 / 6; }
+    .fin .big { grid-column: 1 / -1; text-indent: calc(var(--mc) - .06em); }
+    /* la grille montrée par « Systèmes de design » : les 5 colonnes du mobile */
+    .jgrid i { left: calc(var(--k) * var(--mc)) !important; width: var(--mcol) !important; }   /* le cadre de la grille a déjà la marge de 16 px */
+    .jgrid .c { display: none; }
+  }
+  /* bureau : le cadre de 1600 occupe toute la largeur (marges de ~2 %) ; voir --fw / --fl */
+  @media (min-width: 701px) { .page { max-width: none; width: var(--fw); margin-left: var(--fl); margin-right: 0; padding-left: 0; padding-right: 0; } }
+</style>
+<style>
+  /* ---------- menu : le même que sur l'accueil, au pixel près (tracés de la maquette 1600 px, même colonne) ---------- */
+  .jnav, .jlogo { position: fixed; z-index: 6000; top: 0; left: 0; right: 0; pointer-events: none;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .jnav { mix-blend-mode: difference; }
+  .jnav-in { position: relative; max-width: 1600px; margin: 0 auto; }
+  .jnav svg { display: block; width: 100%; height: auto; aspect-ratio: 1600 / 84; }
+  .jnav a, .jlogo a { position: absolute; display: block; pointer-events: auto; border-radius: 4px; }
+  .jnav a:focus-visible { outline: 2px solid #F2F0EB; outline-offset: 4px; }
+
+  /* ---------- mobile : menu lisible (logo au centre, liens en texte de chaque côté) ---------- */
+  .mnav { display: none; }
+  @media (max-width: 700px) {
+    .mnav { display: flex; justify-content: space-between; align-items: center; position: fixed; z-index: 6001; left: 16px; right: 16px; top: 0; height: 56px; pointer-events: none;
+      font: 400 15px/1 "PP Mori", "Host Grotesk", "Helvetica Neue", Arial, sans-serif; letter-spacing: -.01em; mix-blend-mode: difference; }
+    .mnav span { display: flex; gap: 18px; }
+    .mnav a { color: #F2F0EB; text-decoration: none; pointer-events: auto; padding: 10px 0; }
+    .mnav a[aria-current] { text-decoration: line-through; text-decoration-thickness: 1.5px; }
+  }
+  @media (max-width: 700px) {
+    .jnav { overflow: hidden; height: 200px; }   /* 7 nov. : 200 px comme l'accueil, sinon le dégradé de 200 px était coupé net à 56 px */
+    .jnav-in { position: absolute; left: 50%; top: 4px; width: 960px; max-width: none; margin: 0; translate: -50% 0; }
+    .jnav svg > :not(#navLogo):not(defs) { display: none; }
+    .jnav a:not([aria-label="JPR, accueil"]) { display: none; }
+  }
+</style>
+<nav class="jnav" aria-label="Navigation"><div class="jnav-in">
+<svg viewBox="0 0 1600 84" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><text id="navContact" x="1535" y="44" text-anchor="end" fill="#F2F0EB" style="font: 400 19.5px var(--grot); letter-spacing: -.01em">contact</text>
+<text x="1237" y="44" text-anchor="end" fill="#F2F0EB" style="font: 400 19.5px var(--grot); letter-spacing: -.01em">info</text>
+<text x="65" y="44" fill="#F2F0EB" style="font: 400 19.5px var(--grot); letter-spacing: -.01em">portfolio</text>
+<text x="363" y="44" fill="#F2F0EB" style="font: 400 19.5px var(--grot); letter-spacing: -.01em">pêle-mêle</text>
+<g id="navLogo"><g clip-path="url(#clip0_89_3)">
+<path d="M756.612 59.2238C751.925 58.3817 748.883 56.3812 747.928 53.5127C747.517 52.2806 747.459 51.4127 747.706 50.1716C748.33 47.0345 750.663 44.6581 754.177 43.5797C754.974 43.3356 755.445 43.2801 756.721 43.2814C759.109 43.2852 759.961 43.6262 763.507 46.0013C764.081 46.3849 765.02 46.8886 765.594 47.1184C766.572 47.5098 766.739 47.5369 768.215 47.5369H769.79L770.908 46.988C773.279 45.8256 774.731 43.3679 774.706 40.5627C774.68 37.7446 773.173 35.4225 770.618 34.2666C770.152 34.0561 769.356 33.6945 768.85 33.4633C767.639 32.9118 767.005 32.341 766.552 31.3943C765.862 29.9491 766.132 28.3889 767.269 27.2653C768.67 25.8808 770.107 25.5166 774.181 25.5166C776.552 25.5166 777.124 25.5553 778 25.7775C779.785 26.2295 781.021 27.2007 781.744 28.7221C782.186 29.6546 783.085 30.0162 783.911 29.5939C784.109 29.4919 784.608 29.0295 785.019 28.5672C786.355 27.0613 788.389 25.9945 790.586 25.6496C791.29 25.5398 793.869 25.5114 799.848 25.5476C807.81 25.5967 808.173 25.6096 809.13 25.8731C812.971 26.9295 815.025 28.8113 815.954 32.124C816.219 33.0655 816.727 33.524 817.506 33.5227C818.155 33.5227 818.395 33.3677 819.682 32.1253C821.455 30.4114 823.585 28.9482 826.188 27.6566C833.122 24.2148 839.95 25.0529 843.036 29.7244C843.928 31.074 844.276 32.319 844.276 34.1697C844.277 35.3902 844.223 35.8164 843.969 36.559C843.4 38.2315 842.859 39.0258 841.135 40.7216C839.448 42.3812 839.254 42.7079 839.444 43.5681C839.551 44.0485 840.18 44.6426 841.016 45.0533C841.375 45.229 842.813 45.7662 844.213 46.2454C849.771 48.1504 851.737 49.3334 852.762 51.3908C853.598 53.0736 853.642 54.7151 852.892 56.3476C851.803 58.7201 848.803 59.8825 845.768 59.1076C843.449 58.516 842.379 57.7889 838.994 54.5136C836.071 51.6839 835.33 51.1131 833.965 50.6365C832.509 50.1277 831.366 50.2439 830.446 50.9943C829.781 51.5367 829.393 52.1993 828.952 53.5489C828.74 54.1921 828.445 54.914 828.294 55.1568C827.578 56.305 826.12 56.4483 825.209 55.4603C824.859 55.0793 824.545 54.4542 823.923 52.8967C822.186 48.5585 820.134 45.9625 817.638 44.9474C816.754 44.5871 815.605 44.5328 814.916 44.8183C814.667 44.9203 814.187 45.2742 813.849 45.6048C812.671 46.7542 811.05 47.6325 809.177 48.1362C808.212 48.3958 807.716 48.4242 802.588 48.5042C797.486 48.5843 796.977 48.6127 796.232 48.8568C793.979 49.5917 792.878 50.9814 792.528 53.5231C792.211 55.831 791.706 56.9649 790.512 58.0446C789.352 59.0946 787.796 59.5286 786.229 59.2406C783.576 58.7511 782.232 56.6124 782.232 52.8838C782.232 51.4528 781.761 50.7011 780.862 50.7011C780.393 50.7011 779.977 50.9659 779.443 51.5987C776.441 55.1646 771.538 57.8884 766.051 59.0378C764.6 59.3413 764.066 59.3852 761.223 59.4291C758.465 59.4718 757.832 59.4434 756.612 59.2238ZM802.155 42.1707C805.017 41.7922 807.219 40.4827 808.15 38.6061C808.479 37.9435 808.525 37.7085 808.524 36.6882C808.524 35.717 808.473 35.4303 808.214 34.9446C807.428 33.4607 806.476 32.7129 804.553 32.0684L803.305 31.6513H799.26C795.384 31.6513 795.175 31.6642 794.237 31.9535C792.052 32.629 790.673 33.6725 789.944 35.2029C789.662 35.7945 789.604 36.098 789.604 37.0111C789.604 37.9913 789.653 38.2096 790.052 39.0555C790.867 40.7771 792.591 41.8529 795.04 42.1668C796.263 42.3244 800.978 42.3269 802.155 42.1707ZM830.033 41.069C832.843 40.3509 835.159 38.0133 834.902 36.1561C834.598 33.9592 832.27 32.833 829.317 33.4529C825.791 34.1917 823.264 37.0963 824.241 39.2828C824.91 40.7823 826.235 41.4552 828.272 41.3325C828.799 41.3002 829.591 41.1814 830.033 41.069Z" fill-rule="evenodd" clip-rule="evenodd" fill="#F2F0EB"/>
+<path fill="#F2F0EB" transform="translate(747.55 25.5) translate(100.4 0.3) scale(1.6) translate(-99.54 -0.17)" fill-rule="evenodd" d="M99.54,3.29c0-1.82,1.33-3.12,3.14-3.12s3.12,1.32,3.12,3.12-1.3,3.12-3.12,3.12-3.14-1.32-3.14-3.12ZM105.1,3.29c.01-1.47-.98-2.49-2.42-2.49s-2.47,1.01-2.44,2.49c-.03,1.48.97,2.49,2.44,2.49s2.44-1.04,2.42-2.49ZM101.566 4.565H102.011V3.607H102.714C102.9 3.607 102.958 3.665 103.001 3.782L103.293 4.565H103.774L103.453 3.734C103.38 3.545 103.304 3.447 103.071 3.41V3.392C103.442 3.315 103.639 3.075 103.639 2.736C103.639 2.314 103.326 2.015 102.87 2.015H101.566ZM102.765 3.243H102.011V2.39H102.79C103.049 2.39 103.198 2.547 103.198 2.802C103.198 3.075 103.031 3.243 102.765 3.243Z"/>
+</g></g>
+<rect x="1203" y="39.6" width="34" height="2.4" fill="#F2F0EB"/><defs><clipPath id="clip0_89_3">
+<rect width="113" height="35" fill="white" transform="translate(747 25)"/>
+</clipPath></defs></svg>
+<a href="../portfolio/index.html" target="_top" aria-label="portfolio" style="left:3.6%;width:5.6%;top:21.5%;height:36%"></a>
+<a href="../pele-mele/index.html" target="_top" aria-label="pêle-mêle" style="left:22.2%;width:6.2%;top:21.5%;height:36%"></a>
+<a href="../index.html" target="_top" aria-label="JPR, accueil" style="left:46.6%;width:6.9%;top:26%;height:46%"></a>
+<a href="#" aria-current="page" aria-label="info" style="left:75.1%;width:2.4%;top:21.5%;height:36%"></a>
+<a href="#" aria-label="contact" data-contact style="left:91.4%;width:5.1%;top:21.5%;height:36%"></a>
+</div></nav>
+<div class="mnav"><span><a href="../portfolio/index.html" target="_top">portfolio</a><a href="../pele-mele/index.html" target="_top">pêle-mêle</a></span><span><a href="#" aria-current="page">info</a><a href="#" data-contact>contact</a></span></div>
+<main class="page">
+  <section class="grid intro" aria-labelledby="who">
+    <div class="s a rv">
+      <h1 id="who" class="vh">Jean-Philippe Rousseau, directeur artistique à Montréal</h1>
+      <p>Je suis Jean-Philippe Rousseau, directeur artistique. Je conçois des identités visuelles et des expériences numériques. Je dirige et réalise le design des principaux projets de l’agence. Mon expertise technique me permet de pousser les idées et de les concrétiser. J’aime les projets où tout reste à inventer autant que ceux où il faut remettre de l’ordre&nbsp;: trouver l’idée juste, puis la tenir jusqu’au dernier pixel. Une marque, pour moi, n’est jamais vraiment terminée tant qu’elle ne vit pas à l’écran, en mouvement, entre les mains des gens qui l’utilisent.</p>
+    </div>
+    <figure class="ph rv"><div class="phw"><img src="img/jpr.webp" alt="Portrait de Jean-Philippe Rousseau, en noir et blanc" width="1000" height="1208"><canvas class="px" aria-hidden="true"></canvas><span class="grain" aria-hidden="true"></span></div></figure>
+    <div class="s b rv">
+      <p>Originaire de La Pocatière, j’ai étudié l’intégration multimédia au Cégep de Matane, puis j’ai fait mes armes chez Base 132, où je concevais et développais moi-même les projets, de la première esquisse jusqu’à la mise en ligne. Cette double culture, design et code, ne m’a jamais quitté. Chez Kryzalid, où je suis depuis 2011, elle me permet de défendre une idée jusqu’au dernier détail, avec les équipes qui la réalisent.</p>
+    </div>
+  </section>
+
+  <section class="grid say" aria-label="Approche">
+    <div class="bigw rv"><p class="big">Je vois chaque projet un peu comme une énigme&nbsp;: il existe une combinaison plus juste que toutes les autres, et vingt ans de métier m’aident à la trouver. J’itère, encore et encore, jusqu’à ce que la vision soit claire.</p>
+    <p class="big">Je cherche la forme la plus simple qui en dise le plus, puis je la pousse jusqu’à ce qu’elle tienne partout&nbsp;: sur un écran de téléphone comme sur une façade. Moins d’effets, plus d’intention.</p>
+    <p class="big">Ce site en est un exemple&nbsp;: un logo souple, presque tracé à la main, posé sur des pixels d’une autre époque. Comme un vieil échantillon dans une chanson pop, c’est le contraste qui fait vibrer l’ensemble.</p></div>   <!-- 6 nov. : le contraste logo organique / 1 bit -->
+    <div class="s side rv">
+      <p>Hors de l’écran, je cherche encore la bonne combinaison&nbsp;: au bâton avec les Frites Sauce (équipe légendaire), au piano, entre Stréliski, Yann&nbsp;Tiersen et mes propres compositions, et au gym, entre séries et répétitions.</p>
+      <p>Ouvert aux collaborations et aux mandats à distance.</p>
+    </div>
+  </section>
+
+
+
+
+  <section class="sec" aria-labelledby="ex">
+    <div class="grid">
+      <h2 id="ex" class="rv">Expertises</h2>
+      <p class="tags rv"><span>Direction artistique</span><span>Conception créative</span><span>Identité visuelle</span><span data-grid>Systèmes de design</span><span>Encadrement créatif</span><span>Design UX/UI</span><span>Motion design et vidéo</span><span>Design et code</span><span>Direction artistique de l’IA</span></p>
+    </div>
+  </section>
+
+  <section class="sec rip" aria-labelledby="rip">
+    <div class="grid">
+      <h2 id="rip" class="rv">Cimetière</h2>
+      <div class="rows s">
+        <div class="row rv"><div class="what"><s>Flash / ActionScript</s></div><div class="when muted">1996 – 2020</div><p class="desc muted"><code>stop();</code></p></div>
+        <div class="row rv"><div class="what"><s>Macromedia Director</s></div><div class="when muted">1988 – 2017</div><p class="desc muted">Avant Duolingo, il y avait Lingo.</p></div>
+        <div class="row rv"><div class="what"><s>Dreamweaver, mode Création</s></div><div class="when muted">1997 – ?</div><p class="desc muted">WYSIWYG. Enfin, presque.</p></div>
+        <div class="row rv"><div class="what"><s>spacer.gif</s></div><div class="when muted">1 × 1 px</div><p class="desc muted">Repose en transparence.</p></div>
+        <div class="row rv"><div class="what"><s>Correctifs pour Internet Explorer 6</s></div><div class="when muted">2001 – 2014</div><p class="desc muted">J’en fais encore des cauchemars.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="cv">
+    <div class="grid cvsec">
+      <h2 id="cv" class="rv">CV</h2>
+      <a class="cvcard" href="doc/CV-Jean-Philippe-Rousseau.pdf" aria-label="Voir le CV de Jean-Philippe Rousseau en grand" aria-haspopup="dialog">
+        <img src="img/cv.webp" alt="" width="900" height="1165" loading="lazy">
+      </a>
+      <div class="s cvtxt rv">
+        <p>Tout tient sur une page. J’ai fait des choix, comme toujours.</p>
+        <p><a class="dl" href="doc/CV-Jean-Philippe-Rousseau.pdf" download>Télécharger le CV ↓</a></p>
+      </div>
+    </div>
+  </section>
+  <section class="grid fin" aria-label="Contact">
+    <p class="big rv">Une énigme à résoudre&nbsp;? Une marque à faire parler, un site à démêler, une idée encore floue&nbsp;? <a href="#" data-contact>Écrivez-moi</a>&nbsp;: on trouvera la bonne combinaison.</p>
+  </section>
+  <div class="end"></div>
+</main>
+<div class="cvv" id="cvv" role="dialog" aria-modal="true" aria-label="CV de Jean-Philippe Rousseau" hidden>
+  <div class="cvv-sc" id="cvvSc" tabindex="-1"><img class="cvv-img" id="cvvImg" src="img/cv-hd.webp" alt="CV de Jean-Philippe Rousseau" width="1800" height="2329" decoding="async"></div>
+  <button type="button" class="cvv-x" id="cvvX">fermer</button>
+  <a class="cvv-dl" href="doc/CV-Jean-Philippe-Rousseau.pdf" download>Télécharger le PDF ↓</a>
+</div>
+<style>
+  /* ---------- pied de page : les items du menu, dans les mêmes colonnes que le menu du haut (maquette 1600 px) ---------- */
+  .jfoot { position: relative; z-index: 6000; padding: 0 max(16px, env(safe-area-inset-right, 0px)) calc(28px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+    font: 400 max(12px, calc(19.5 / 1600 * var(--fw)))/1 "PP Mori", "Host Grotesk", "Helvetica Neue", Arial, sans-serif; letter-spacing: -.01em; color: #F2F0EB; }   /* 6 nov. : blanc cassé partout */
+  .jfoot-in { position: relative; max-width: 1600px; margin: 0 auto; height: 2.2em; }
+  .jfoot a, .jfoot span { position: absolute; bottom: 0; color: inherit; text-decoration: none; white-space: nowrap; }
+  .jfoot a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
+  .jfoot a[aria-current] { text-decoration: line-through; text-decoration-thickness: 1px; }
+  .jfoot a:focus-visible { outline: 1px solid currentColor; outline-offset: 4px; }
+  .jfoot .m { opacity: .5; }
+  .jfoot time { font-variant-numeric: tabular-nums; }
+  .jfoot .mt { opacity: .5; margin-left: .3em; }
+  @media (max-width: 700px) {
+    .jfoot-in { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); column-gap: 12px; align-items: end; }   /* 7 nov. : sur la grille de 5 */
+    .jfoot-in > :nth-child(1) { grid-column: 1 / 3; } .jfoot-in > :nth-child(2) { grid-column: 3 / 5; white-space: nowrap; } .jfoot-in > #jen { grid-column: 5; justify-self: end; }
+    .jfoot a, .jfoot span { position: static; translate: none; }
+    .jfoot .m, .jfoot .mt { display: none; }
+    .jfoot { font-size: 15px; }   /* même taille que « menu » et « contact » en haut */
+    .jfoot, .clip > .jfoot { padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px)) !important; }   /* 7 nov. : la ligne de base à 16 px du bas, la marge mobile (avant : 30 px) */
+  }
+  body.foot-in .views { opacity: 0; pointer-events: none; }
+  .views { transition: opacity .3s; }
+</style>
+<!-- (6 nov. : « (en) » à gauche et ville / heure déplacées ou retirées, essayés puis remis comme avant) -->
+<footer class="jfoot" id="jfoot" aria-label="Pied de page"><div class="jfoot-in">
+  <span data-l="65" style="left:calc(65 / 1600 * 100%)">© 2026</span>   <!-- 6 nov. : © à gauche (col. 1) ; Montréal et l'heure ensemble sur la col. 2 ; « (en) » au bout -->
+  <span data-l="363" style="left:calc(363 / 1600 * 100%)">Montréal, QC <time id="jclock" class="mt"></time></span>   <!-- l'heure juste à droite de Montréal -->
+  <a href="#en" id="jen" hreflang="en" lang="en" aria-label="English version" data-r="65" style="right:calc(65 / 1600 * 100%)">(en)</a>
+</div></footer>
+<script>
+(() => {
+  const f = document.getElementById('jfoot');
+  // au-dessus du pied de page, la souris du Mac (accueil) rend la main au vrai curseur
+  f.addEventListener('pointerenter', () => { window.__footHover = true; });
+  f.addEventListener('pointerleave', () => { window.__footHover = false; });
+  document.getElementById('jen').addEventListener('click', (e) => e.preventDefault());   // version anglaise : à venir
+  // l'heure à Montréal, en direct
+  const clock = document.getElementById('jclock');
+  const fmt = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Toronto', hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true });
+  const tick = () => { clock.textContent = fmt.format(new Date()).replace(/\u202f/g, ' '); };   // ex. 9:58:43 AM
+  if (clock) { tick(); setInterval(tick, 1000); }   // (le portfolio n'a pas l'heure)
+  // calage exact sur les colonnes du menu du haut : le pied de page n'a pas toujours la même largeur que le menu
+  // (marges de page différentes), alors on place chaque item d'après la boîte réelle du menu
+  const inn = f.querySelector('.jfoot-in'), nav = document.querySelector('.hnav-in');
+  const align = () => {
+    const items = inn.querySelectorAll('[data-l],[data-r]');
+    if (!nav || innerWidth <= 700) { items.forEach((el) => { el.style.translate = ''; }); return; }
+    const n = nav.getBoundingClientRect(), b = inn.getBoundingClientRect();
+    if (!n.width) return;
+    items.forEach((el) => {
+      if (el.dataset.l) el.style.left = (n.left + n.width * el.dataset.l / 1600 - b.left) + 'px';
+      else el.style.right = (b.right - (n.left + n.width * (1600 - el.dataset.r) / 1600)) + 'px';
+    });
+  };
+  align(); addEventListener('resize', align); addEventListener('load', align);
+  if (document.fonts) document.fonts.ready.then(align);
+  if ('IntersectionObserver' in window)
+    new IntersectionObserver(([e]) => document.body.classList.toggle('foot-in', e.isIntersecting), { rootMargin: '0px 0px -10px 0px' }).observe(f);
+})();
+</script>
+
+<script>
+/* grain : texture de bruit générée une fois */
+(() => {
+  const n = 180, c = document.createElement('canvas'); c.width = c.height = n;
+  const x = c.getContext('2d'), d = x.createImageData(n, n);
+  for (let i = 0; i < d.data.length; i += 4) { const v = Math.random() * 255 | 0; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 255; }
+  x.putImageData(d, 0, 0);
+  document.documentElement.style.setProperty('--grain', `url(${c.toDataURL()})`);
+})();
+/* portrait : la photo se « charge » par paliers, comme un GIF entrelacé en 1999 */
+(() => {
+  const fig = document.querySelector('.intro .ph'), img = fig && fig.querySelector('img'), cv = fig && fig.querySelector('.px');
+  if (!cv || matchMedia('(prefers-reduced-motion: reduce)').matches) { cv && cv.classList.add('done'); return; }
+  const ctx = cv.getContext('2d'), off = document.createElement('canvas'), oc = off.getContext('2d');
+  const STEPS = [56, 28, 14, 7, 3], DT = 110;
+  const draw = (b) => {
+    const r = cv.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
+    cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr);
+    off.width = Math.max(1, Math.ceil(r.width / b)); off.height = Math.max(1, Math.ceil(r.height / b));
+    oc.imageSmoothingEnabled = true; oc.drawImage(img, 0, 0, off.width, off.height);
+    ctx.imageSmoothingEnabled = false; ctx.drawImage(off, 0, 0, off.width * b * dpr, off.height * b * dpr);
+  };
+  const run = () => { let i = 0; const tick = () => { if (i < STEPS.length) { draw(STEPS[i++]); setTimeout(tick, DT); } else cv.classList.add('done'); }; tick(); };
+  const ready = img.complete ? Promise.resolve() : new Promise((ok) => img.addEventListener('load', ok, { once: true }));
+  const go = () => ready.then(() => setTimeout(run, 120));
+  if (!('IntersectionObserver' in window)) return go();
+  const io = new IntersectionObserver((es) => { if (es[0].isIntersecting) { io.disconnect(); go(); } }, { threshold: .25 });
+  io.observe(fig);
+})();
+(() => {
+  const els = document.querySelectorAll('.rv');
+  if (!('IntersectionObserver' in window)) { els.forEach((e) => e.classList.add('in')); return; }
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+  els.forEach((e) => io.observe(e));
+})();
+</script>
+<script>
+/* 7 nov. : la feuille du CV flotte. Elle suit le défilement : quand la section arrive, la feuille monte de plus bas, plus penchée et plus loin,
+   et se pose à sa place quand elle atteint le tiers haut de l'écran. Ensuite, elle reste en suspens : un balancement lent, de quelques pixels. */
+(() => {
+  const card = document.querySelector('.cvcard'); if (!card) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const MODE = 'bas';   // 7 nov. : retenue, la version subtile (de plus bas) ; 'droite' : l'essai qui arrive de la droite, en grand
+  const ease = (t) => 1 - Math.pow(1 - t, 3);
+  let raf = 0, vis = false, sm = null, sm2 = null; const t0 = performance.now();
+  const tick = (now) => {
+    raf = vis ? requestAnimationFrame(tick) : 0;
+    const r = card.getBoundingClientRect(), h = innerHeight;
+    const raw = Math.max(0, Math.min(1, (h - (card.parentElement.getBoundingClientRect().top)) / (h * .62)));   // d'après la section (qui, elle, ne bouge pas)   // 0 : le haut de la feuille au bas de l'écran ; 1 : au tiers haut
+    sm = sm === null ? raw : sm + (raw - sm) * .12;
+    const raw2 = Math.max(0, Math.min(1, (h * 1.6 - card.parentElement.getBoundingClientRect().top) / (h * 1.35)));
+    sm2 = sm2 === null ? raw2 : sm2 + (raw2 - sm2) * .1;   // un peu d'inertie : elle traîne derrière le défilement, comme portée par l'air
+    const e = ease(sm), k = 1 - e, t = (now - t0) / 1000;
+    const bob = Math.sin(t * 2 * Math.PI / 5.2) * 5 * e, sway = Math.sin(t * 2 * Math.PI / 7.3) * .7 * e, tilt = Math.sin(t * 2 * Math.PI / 6.1 + 1) * 1.6 * e;
+    if (MODE === 'bas') {   // version subtile : de plus bas, plus loin
+      const dy = k * h * .32 + bob;
+      card.style.setProperty('--dy', dy.toFixed(1));
+      card.style.transform = `perspective(1100px) translate3d(${(k * 24).toFixed(1)}px, ${dy.toFixed(1)}px, ${(-k * 260).toFixed(1)}px) rotateX(${(k * 24 + tilt * .4).toFixed(2)}deg) rotateY(${(-k * 18 + tilt).toFixed(2)}deg) rotateZ(${(k * 9 + sway).toFixed(2)}deg)`;
+    } else {   // 7 nov. (bis) : elle entre par la droite, en grand, flotte un moment au milieu de l'écran, puis rapetisse et se pose à sa place
+      const sec = card.parentElement.getBoundingClientRect(), w0 = card.offsetWidth, h0 = card.offsetHeight;
+      const u = sm2;                                                   // 0 : la section est encore loin sous l'écran ; 1 : posée
+      const op = (card.offsetParent || document.body).getBoundingClientRect();
+      const lx = op.left + card.offsetLeft + w0 / 2, ly = op.top + card.offsetTop + h0 / 2;   // le centre de sa place (sans transformation : offsetLeft/Top ignorent le transform)
+      const big = innerWidth > 700 ? 1.75 : 1.35;
+      const fx = innerWidth * (innerWidth > 700 ? .7 : .55), fy = h * .5;   // le point où elle flotte
+      const a = ease(Math.min(1, u / .32)), m = Math.min(1, Math.max(0, (u - .52) / .48)), d = m * m * (3 - 2 * m);
+      const sx = innerWidth + w0 * big * .7;                          // départ : hors de l'écran, à droite
+      const cx = sx + (fx - sx) * a, cy = fy + (1 - a) * h * .08;
+      const px = cx + (lx - cx) * d, py = cy + (ly - cy) * d, sc = big + (1 - big) * d, f = 1 - d;
+      card.style.zIndex = d < .995 ? 5 : '';
+      card.style.transform = `perspective(1400px) translate3d(${(px - lx).toFixed(1)}px, ${(py - ly + bob).toFixed(1)}px, 0) scale(${sc.toFixed(3)}) rotateX(${(f * 8 + tilt * .4).toFixed(2)}deg) rotateY(${(-f * 24 + (1 - a) * -20 + tilt).toFixed(2)}deg) rotateZ(${(f * -6 + (1 - a) * 8 + sway).toFixed(2)}deg)`;
+    }
+  };
+  new IntersectionObserver(([en]) => { vis = en.isIntersecting; if (vis && !raf) raf = requestAnimationFrame(tick); }, { rootMargin: '0px 0px 80% 0px' }).observe(card.parentElement);   // commence bien avant que la section n'arrive (la feuille entre par la droite)
+})();
+</script>
+<script>
+/* CV en grand : la carte inclinée se redresse et vole jusqu’au centre ; × , Échap ou un clic à côté referment (la page reprend où elle était) */
+(() => {
+  const card = document.querySelector('.cvcard'), v = document.getElementById('cvv'), sc = document.getElementById('cvvSc'), big = document.getElementById('cvvImg'), x = document.getElementById('cvvX');
+  if (!card || !v) return;
+  const small = card.querySelector('img'), reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, E = 'cubic-bezier(.7, 0, .2, 1)';
+  let open = false, busy = false, last = null;
+  const flip = (from, to) => [{ transform: `translate(${from.left - to.left}px, ${from.top - to.top}px) scale(${from.width / to.width}, ${from.height / to.height})` }, { transform: 'none' }];
+  /* la feuille : pendant le vol, le CV est dessiné en WebGL sur une grille de 32 × 32 points ; chaque point part avec un léger retard
+     selon sa distance au coin bas-gauche, et la feuille se soulève vers l’écran en se courbant : on sent qu’elle est souple, comme du papier */
+  const P = (() => {
+    if (reduce) return null;
+    const c = document.createElement('canvas'); c.className = 'cvv-gl'; c.setAttribute('aria-hidden', 'true');
+    const gl = c.getContext('webgl', { alpha: true, premultipliedAlpha: true, antialias: true });
+    if (!gl) return null;
+    v.insertBefore(c, x);
+    const sh = (type, src) => { const o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); return o; };
+    const pr = gl.createProgram();
+    gl.attachShader(pr, sh(gl.VERTEX_SHADER, `
+      attribute vec2 a; uniform vec4 r0, r1; uniform vec3 g; uniform float t, D; uniform vec2 S; varying vec2 vUv; varying float vSh;
+      const float PI = 3.14159265;
+      void main() {
+        vUv = a;
+        float d = length(a - vec2(0., 1.)) / 1.41421;           // 0 au coin bas-gauche (qui mène), 1 au coin haut-droit (qui traîne)
+        float L = .26, p = clamp((t - d * L) / (1. - L), 0., 1.);
+        float e = p < .5 ? 4. * p * p * p : 1. - pow(-2. * p + 2., 3.) / 2.;
+        vec2 c = mix(r0.xy, r1.xy, e), s = mix(r0.zw, r1.zw, e);
+        float rz = g.x * (1. - e), ry = g.y * (1. - e), b = sin(PI * p);
+        vec3 q = vec3((a.x - .5) * s.x, (a.y - .5) * s.y, b * g.z * (.45 + .55 * d) + b * g.z * .3 * sin(a.x * PI));
+        q = vec3(q.x * cos(ry) + q.z * sin(ry), q.y, -q.x * sin(ry) + q.z * cos(ry));
+        q.xy = vec2(q.x * cos(rz) - q.y * sin(rz), q.x * sin(rz) + q.y * cos(rz));
+        vSh = b * (d - .45);
+        gl_Position = vec4((c.x + q.x) / (S.x * .5) * D, -(c.y + q.y) / (S.y * .5) * D, 0., D - q.z);
+      }`));
+    gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, `
+      precision mediump float; uniform sampler2D tx; varying vec2 vUv; varying float vSh;
+      void main() { vec4 col = texture2D(tx, vUv); col.rgb *= 1. - .45 * max(vSh, 0.); col.rgb += .10 * max(-vSh, 0.) * col.a; gl_FragColor = col; }`));
+    gl.linkProgram(pr);
+    if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) { c.remove(); return null; }
+    gl.useProgram(pr);
+    const N = 32, pts = [], idx = [];
+    for (let j = 0; j <= N; j++) for (let i = 0; i <= N; i++) pts.push(i / N, j / N);
+    for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) { const k = j * (N + 1) + i; idx.push(k, k + 1, k + N + 1, k + 1, k + N + 2, k + N + 1); }
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(pts), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(idx), gl.STATIC_DRAW);
+    const tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
+    [gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_T].forEach((w) => gl.texParameteri(gl.TEXTURE_2D, w, gl.CLAMP_TO_EDGE));
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    let loaded = false;
+    // la texture est envoyée d’avance (au survol de la carte, ou quand la page est au repos) : au clic, la feuille part tout de suite
+    const prep = () => { if (loaded) return true; if (!big.complete || !big.naturalWidth) return false;
+      try { gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, big); loaded = true; } catch (err) { return false; } return true; };
+    const U = (n) => gl.getUniformLocation(pr, n), u = { r0: U('r0'), r1: U('r1'), g: U('g'), t: U('t'), D: U('D'), S: U('S') };
+    // r0 : la carte (petite), r1 : le CV en grand ; ta → tb : 0 → 1 à l’ouverture, 1 → 0 à la fermeture
+    // 6 nov. : plus de flash noir. La toile n’est redimensionnée que si la fenêtre a changé (redimensionner l’efface),
+    // et elle ne devient visible qu’une fois sa première image dessinée ; c’est à ce moment seulement qu’on cache la carte ou le CV (onFirst).
+    const run = (r0, r1, rz, ry, ta, tb, dur, onFirst) => new Promise((done) => {
+      if (!prep()) return done(false);
+      const W = innerWidth, H = innerHeight, dpr = Math.min(devicePixelRatio || 1, 2);
+      const cw = Math.round(W * dpr), ch = Math.round(H * dpr); if (c.width !== cw || c.height !== ch) { c.width = cw; c.height = ch; } gl.viewport(0, 0, c.width, c.height);
+      const R = (r) => [r.left + r.width / 2 - W / 2, r.top + r.height / 2 - H / 2, r.width, r.height];
+      gl.uniform4fv(u.r0, R(r0)); gl.uniform4fv(u.r1, R(r1)); gl.uniform2f(u.S, W, H); gl.uniform1f(u.D, 1100);
+      gl.uniform3f(u.g, rz * Math.PI / 180, ry * Math.PI / 180, Math.min(r1.height, H) * .18);   // .18 : jusqu’où la feuille se soulève
+      let t0 = 0, first = true;
+      const frame = (now) => {
+        if (first) t0 = now;
+        const k = Math.min(1, (now - t0) / dur);
+        gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.uniform1f(u.t, ta + (tb - ta) * k); gl.drawElements(gl.TRIANGLES, idx.length, gl.UNSIGNED_SHORT, 0);
+        if (first) { first = false; c.style.visibility = 'visible'; if (onFirst) onFirst(); }
+        if (k < 1) requestAnimationFrame(frame); else done(true);
+      };
+      requestAnimationFrame(frame);
+    });
+    const clear = () => { gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); c.style.visibility = 'hidden'; };
+    return { run, clear, prep };
+  })();
+  const warm = () => { const go = () => { if (P) P.prep(); }; if (big.decode) big.decode().then(go, () => {}); else if (big.complete) go(); else big.addEventListener('load', go, { once: true }); };
+  card.addEventListener('pointerenter', warm, { once: true });
+  if ('requestIdleCallback' in window) requestIdleCallback(warm, { timeout: 4000 }); else setTimeout(warm, 2500);
+  // la carte sans son inclinaison (le WebGL refait l’inclinaison lui-même)
+  const flat = () => { const t = small.style.transform, tr = small.style.transition; small.style.transition = 'none'; small.style.transform = 'none';
+    const r = small.getBoundingClientRect(); small.style.transform = t; void small.offsetWidth; small.style.transition = tr; return r; };
+  const show = async () => {
+    if (open || busy) return; busy = true; open = true; last = document.activeElement;
+    const from = small.getBoundingClientRect(), from0 = flat(), tilted = !card.matches(':hover');
+    if (P) big.style.visibility = 'hidden';   // le grand CV reste caché tant que la feuille WebGL n’a pas pris le relais (sinon il apparaissait un instant à l’arrivée)
+    v.hidden = false; document.documentElement.classList.add('cvopen'); sc.scrollTop = 0;
+    if (!big.complete) await new Promise((r) => { big.addEventListener('load', r, { once: true }); big.addEventListener('error', r, { once: true }); });
+    const to = big.getBoundingClientRect();
+    if (!P) { small.style.visibility = 'hidden'; requestAnimationFrame(() => v.classList.add('on')); }
+    if (P) { if (big.decode) await big.decode().catch(() => {});   // l’image en grand est décodée avant le vol : sinon, à l’arrivée, elle met une image à s’afficher (le flash noir)
+      const ok = await P.run(from0, to, tilted ? -4 : 0, tilted ? 14 : 0, 0, 1, 950, () => { small.style.visibility = 'hidden'; v.classList.add('on'); });   // le fond s’assombrit au moment où la feuille décolle
+      small.style.visibility = 'hidden'; v.classList.add('on');
+      big.style.visibility = ''; await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))); P.clear();   // la feuille WebGL reste deux images de plus, le temps que la vraie image soit peinte dessous
+      if (!ok) await big.animate(flip(from, to), { duration: 650, easing: E }).finished.catch(() => {}); }
+    else if (!reduce) await big.animate(flip(from, to), { duration: 650, easing: E }).finished.catch(() => {});
+    sc.focus({ preventScroll: true }); busy = false;
+  };
+  const hide = async () => {
+    if (!open || busy) return; busy = true;
+    const to = big.getBoundingClientRect();
+    small.style.transition = 'none'; small.style.transform = 'none';   // la carte reprend sa place droite, l’image s’y pose, puis se ré-incline doucement
+    const from = small.getBoundingClientRect();
+    v.classList.remove('on');
+    let ok = false;
+    if (P) { ok = await P.run(from, to, 0, 0, 1, 0, 800, () => { big.style.visibility = 'hidden'; }); if (ok) { small.style.visibility = ''; await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))); } }
+    if (!ok && !reduce) { big.style.visibility = ''; await big.animate([{ transform: 'none' }, { transform: `translate(${from.left - to.left}px, ${from.top - to.top}px) scale(${from.width / to.width}, ${from.height / to.height})` }], { duration: 550, easing: E, fill: 'forwards' }).finished.catch(() => {}); }
+    small.style.visibility = ''; v.hidden = true; big.getAnimations().forEach((a) => a.cancel()); big.style.visibility = ''; if (P) P.clear();
+    document.documentElement.classList.remove('cvopen');
+    requestAnimationFrame(() => { small.style.transition = ''; small.style.transform = ''; });
+    open = false; busy = false; if (last && last.focus) last.focus({ preventScroll: true });
+  };
+  card.addEventListener('click', (e) => { e.preventDefault(); show(); });
+  x.addEventListener('click', hide);
+  sc.addEventListener('click', (e) => { if (e.target === sc) hide(); });
+  addEventListener('keydown', (e) => { if (open && e.key === 'Escape') hide(); });
+  // souris : le bouton « fermer » suit le curseur avec un léger retard ; il disparaît au-dessus de la page du CV
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    v.classList.add('follow');
+    let px = innerWidth / 2, py = innerHeight / 2, fx = px, fy = py, raf = 0;
+    const k = reduce ? 1 : 0.2;
+    const place = () => { x.style.transform = `translate(${(fx + 14).toFixed(1)}px, ${(fy + 16).toFixed(1)}px)`; };
+    const loop = () => { fx += (px - fx) * k; fy += (py - fy) * k; place(); raf = open ? requestAnimationFrame(loop) : 0; };
+    const over = (e) => x.classList.toggle('off', e.target === big || !!(e.target.closest && e.target.closest('.cvv-dl')));   // ni sur la page, ni sur « Télécharger »
+    addEventListener('pointermove', (e) => { px = e.clientX; py = e.clientY; if (open) { over(e); if (!raf) raf = requestAnimationFrame(loop); } }, { passive: true });
+    card.addEventListener('click', (e) => { px = fx = e.clientX; py = fy = e.clientY; x.classList.add('off'); place(); if (!raf) raf = requestAnimationFrame(loop); });   // au départ, le curseur est sur la page du CV
+    document.addEventListener('pointerleave', () => x.classList.add('off'));
+  }
+})();
+</script>
+<script>
+/* CV : sur le vrai site, le lien télécharge le PDF directement ; dans l'aperçu claude.ai, on passe par la fenêtre d'enregistrement prévue pour ça */
+(() => {
+  const links = document.querySelectorAll('a[download]');
+  if (!links.length || !window.claude || !window.claude.use) return;
+  let dl = null;
+  window.claude.use('downloads').then((d) => { dl = d; }).catch(() => {});
+  links.forEach((a) => a.addEventListener('click', async (e) => {
+    if (!dl) return;   // pas de capacité : comportement normal du lien
+    e.preventDefault();
+    try { const blob = await (await fetch(a.getAttribute('href'))).blob(); await dl.save({ filename: 'CV-Jean-Philippe-Rousseau.pdf', data: blob }); }
+    catch (err) { /* refusé ou indisponible : rien à faire */ }
+  }));
+})();
+</script>
+
+<!-- (6 nov. : l'enroulement en tambour de l'énoncé est retiré ; il reste sur l'accueil et la vue liste du portfolio) -->
+<script>
+/* cimetière (test, bureau) : au survol du nom, la date se brouille en lettres et devient l'épitaphe, la suite se tape ; en sortant, l'inverse */
+(() => {
+  if (!matchMedia('(hover: hover) and (pointer: fine) and (min-width: 701px)').matches) return;
+  document.documentElement.classList.add('rip-fx');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ABC = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const rnd = () => ABC[Math.random() * ABC.length | 0];
+  const fx = [];
+  document.querySelectorAll('.rip .row').forEach((row) => {
+    const what = row.querySelector('.what'), when = row.querySelector('.when'), desc = row.querySelector('.desc');
+    if (!what || !when || !desc) return;
+    const DATE = when.textContent, EPI = desc.textContent.trim();
+    when.setAttribute('aria-hidden', 'true');
+    let shown = DATE, tm = 0;
+    const morph = (to) => {
+      clearInterval(tm);
+      const from = shown;
+      if (reduce) { when.textContent = shown = to; return; }
+      const settle = (i) => 3 + Math.round(i * .8);                // chaque lettre se fige à son tour, de gauche à droite
+      const appear = (i) => i < from.length ? 0 : settle(i) - 2;    // au-delà de l'ancien texte, les lettres apparaissent une à une (tapées)
+      const gone = (i) => Math.round((from.length - i) * .5);       // en raccourcissant, l'excédent s'efface depuis la fin
+      const end = Math.max(settle(to.length - 1), gone(to.length)) + 1;
+      let f = 0;
+      tm = setInterval(() => {
+        let out = '';
+        for (let i = 0; i < Math.max(from.length, to.length); i++) {
+          if (i < to.length) {
+            const c = to[i];
+            if (f >= settle(i)) out += c;
+            else if (f >= appear(i)) out += c === ' ' ? ' ' : rnd();
+          } else if (f < gone(i)) out += from[i] === ' ' ? ' ' : rnd();
+        }
+        when.textContent = out;
+        if (++f > end) { clearInterval(tm); when.textContent = shown = to; }
+        else shown = out;
+      }, 32);
+    };
+    // pendant que l'épitaphe est affichée, le nom n'est plus barré
+    const it = { hov: false, show: () => { row.classList.add('on'); morph(EPI); }, hide: () => { row.classList.remove('on'); morph(DATE); } };
+    what.addEventListener('pointerenter', () => { it.hov = true; it.show(); });
+    what.addEventListener('pointerleave', () => { it.hov = false; it.hide(); });
+    fx.push(it);
+  });
+  // indice : la première fois que le cimetière entre à l'écran, la première tombe joue l'effet toute seule (date → épitaphe → date)
+  const rows = document.querySelector('.rip .rows');
+  if (fx.length && rows && 'IntersectionObserver' in window && !reduce) {
+    const io = new IntersectionObserver((es) => {
+      if (!es[0].isIntersecting) return;
+      io.disconnect();
+      const a = fx[0];
+      setTimeout(() => { if (a.hov) return; a.show(); setTimeout(() => { if (!a.hov) a.hide(); }, 1900); }, 700);
+    }, { threshold: .6 });
+    io.observe(rows);
+  }
+})();
+</script>
+<script>
+// « Systèmes de design » : au survol, la vraie grille du site apparaît (comme la touche G) ; au toucher, 2 secondes
+(() => {
+  const el = document.querySelector('[data-grid]'); if (!el) return;
+  const root = document.documentElement; let t = 0;
+  const on = () => { clearTimeout(t); root.classList.remove('jgrid-peek'); void root.offsetWidth; root.classList.add('jgrid-peek'); };
+  const off = () => { clearTimeout(t); root.classList.remove('jgrid-peek'); };
+  el.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') on(); });
+  el.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') off(); });
+  el.addEventListener('pointerup', (e) => { if (e.pointerType !== 'mouse') { on(); t = setTimeout(off, 2000); } });
+  // 7 nov. : sur mobile (pas de survol), la grille apparaît d'elle-même quand le mot passe au milieu de l'écran, environ 2 s,
+  // et s'efface plus tôt si on continue de défiler ; une seule fois à chaque passage du mot
+  if (matchMedia('(hover: none)').matches && 'IntersectionObserver' in window) {
+    // 7 nov. (ter) : déclenchée seulement quand le centre du mot passe dans la zone centrale de l'écran (42 à 58 % de la hauteur) ;
+    // calculé au défilement plutôt qu'avec un IntersectionObserver : dans une iframe (la visionneuse de Claude), la marge
+    // « rootMargin » est ignorée et la grille s'allumait dès que le mot entrait par le bas. Effacée après ~2 s ; réarmée quand le mot sort de l'écran.
+    let seen = false, raf = 0;
+    const check = () => { raf = 0;
+      const r = el.getBoundingClientRect(), c = (r.top + r.bottom) / 2, h = innerHeight;
+      if (!seen && c > h * .42 && c < h * .58) { seen = true; on(); t = setTimeout(off, 2200); }
+      else if (seen && (r.bottom < 0 || r.top > h)) { off(); seen = false; } };
+    addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(check); }, { passive: true });
+  }
+})();
+</script>
+<!-- le cadre de la maquette de 1600 : sur bureau, il occupe toute la largeur et ses marges de 65 tombent à --mr de l'écran
+     (2 %, soit --fw 104.49vw / --fl -2.245vw ; 1 % essayé le 5 nov., retiré) ;
+     sur mobile, rien ne change (16 px de chaque côté) -->
+<style>
+  /* 7 nov. : grille mobile commune : 5 colonnes entre les marges de 16 px, gouttières de 12 px (--mc = une colonne + une gouttière) */
+  @media (max-width: 700px) { :root { --mcol: calc((100vw - 32px - 48px) / 5); --mc: calc(var(--mcol) + 12px); } }
+
+  :root { --fw: min(100vw - 32px, 1600px); --fl: max(16px, (100vw - 1600px) / 2); }
+  /* 8 nov. : sur iPhone, toucher un lien ou un bouton le couvrait d'un voile gris foncé (la surbrillance par défaut de Safari) :
+     c'était le « léger flash noir » en ouvrant un projet de la liste. On l'enlève partout ; le clavier garde ses contours :focus-visible */
+  html { -webkit-tap-highlight-color: transparent; }
+  @media (min-width: 701px) {
+    :root { --mr: .02; --fw: calc((100vw - 200vw * var(--mr)) * 1600 / 1470); --fl: calc(100vw * var(--mr) - 65 / 1600 * var(--fw)); }
+    html, body { overflow-x: clip; }   /* le cadre déborde de ~2 % de chaque côté : pas de défilement horizontal */
+    .jnav, .jlogo, .jfoot, .jgrid, .hnav { padding-left: 0 !important; padding-right: 0 !important; }
+    .jnav-in, .jfoot-in, .clip > .jfoot .jfoot-in, .jgrid .in, .hnav-in { max-width: none !important; width: var(--fw); margin-left: var(--fl) !important; margin-right: 0 !important; }
+    .jcopy { padding-left: calc(var(--fl) + 65 / 1600 * var(--fw)) !important; padding-right: calc(var(--fl) + 65 / 1600 * var(--fw)) !important; }
+    .jcopy .tm { left: calc(var(--fl) + 65 / 1600 * var(--fw)) !important; }
+    .jcopy .x { right: calc(var(--fl) + 65 / 1600 * var(--fw)) !important; }
+  }
+</style>
+<!-- mobile : « menu » à gauche, « contact » à droite ; « menu » ouvre un plein écran noir avec les liens en grand -->
+<style>
+  .mnav .mnav-btn { font: inherit; color: #F2F0EB; background: none; border: 0; padding: 10px 0; margin: 0; cursor: pointer; pointer-events: auto; letter-spacing: inherit; }
+  .jmenu { position: fixed; inset: 0; z-index: 8500; background: #000; color: #F2F0EB; display: none;
+    font-family: "PP Mori", "Host Grotesk", "Helvetica Neue", Arial, sans-serif;
+    opacity: 0; transition: opacity .35s cubic-bezier(.4, 0, .2, 1); }
+  .jmenu.show { display: block; }
+  .jmenu.on { opacity: 1; }
+  .jmenu .bar { position: absolute; left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); top: 0; height: 56px;
+    display: flex; justify-content: space-between; align-items: center; font: 400 15px/1 inherit; letter-spacing: -.01em; }
+  .jmenu .bar button, .jmenu .bar a { font: 400 15px/1 "PP Mori", "Host Grotesk", "Helvetica Neue", Arial, sans-serif; letter-spacing: -.01em;
+    color: #F2F0EB; background: none; border: 0; padding: 10px 0; cursor: pointer; text-decoration: none; }
+  .jmenu ul { list-style: none; margin: 0; padding: 104px max(16px, env(safe-area-inset-left, 0px)) 0; }
+  .jmenu li { overflow: hidden; padding-bottom: .06em; }
+  .jmenu li a { display: inline-block; font-size: clamp(40px, 13vw, 64px); line-height: 1.08; letter-spacing: -.04em; color: #F2F0EB; text-decoration: none;
+    translate: 0 105%; transition: translate .6s cubic-bezier(.2, .8, .1, 1); transition-delay: calc(var(--i) * 55ms + 60ms); }
+  .jmenu.on li a { translate: 0 0; }
+  .jmenu li a[aria-current] { text-decoration: line-through; text-decoration-thickness: .05em; }
+  .jmenu li a.jm-logo { display: block; width: 2.4em; margin: .06em 0 .1em; }   /* le logo JPR en tête du menu : mène à l'accueil */
+  .jmenu li a.jm-logo svg { display: block; width: 100%; height: auto; }
+  /* page en cours : le logo est barré comme les autres liens (même épaisseur de trait) */
+  .jmenu li a.jm-logo { position: relative; line-height: 0; isolation: isolate; }
+  .jmenu li a.jm-logo[aria-current]::after { content: ""; position: absolute; left: -4%; right: -4%; top: calc(50% - .025em); height: .05em; background: #F2F0EB; mix-blend-mode: difference; }   /* le trait s'inverse : noir sur le logo, blanc à côté */
+  .jmenu li a:focus-visible, .jmenu .bar :focus-visible { outline: 1px solid #F2F0EB; outline-offset: 4px; }
+  @media (min-width: 701px) { .jmenu { display: none !important; } }
+  @media (prefers-reduced-motion: reduce) { .jmenu li a { transition: none; translate: 0 0; } }
+</style>
+<script>
+(() => {
+  const navs = document.querySelectorAll('.mnav');
+  if (!navs.length) return;
+  const links = [...navs[0].querySelectorAll('a')];
+  const contact = links.find((a) => a.hasAttribute('data-contact'));
+  const items = links.filter((a) => a !== contact);
+  // le plein écran du menu
+  const m = document.createElement('div'); m.className = 'jmenu'; m.id = 'jmenu';
+  m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-label', 'Menu');
+  // « accueil » en tête : sur téléphone, on ne pense pas toujours à toucher le logo (surtout en arrivant directement sur une fiche)
+  const logo = document.querySelector('a[aria-label^="JPR"]');
+  const onHome = !logo || logo.getAttribute('href') === '#';
+  const home = document.createElement('a'); home.className = 'jm-logo'; home.setAttribute('aria-label', 'Accueil'); home.innerHTML = `<svg viewBox="747 25 113 35" aria-hidden="true" focusable="false">
+<path d="M756.612 59.2238C751.925 58.3817 748.883 56.3812 747.928 53.5127C747.517 52.2806 747.459 51.4127 747.706 50.1716C748.33 47.0345 750.663 44.6581 754.177 43.5797C754.974 43.3356 755.445 43.2801 756.721 43.2814C759.109 43.2852 759.961 43.6262 763.507 46.0013C764.081 46.3849 765.02 46.8886 765.594 47.1184C766.572 47.5098 766.739 47.5369 768.215 47.5369H769.79L770.908 46.988C773.279 45.8256 774.731 43.3679 774.706 40.5627C774.68 37.7446 773.173 35.4225 770.618 34.2666C770.152 34.0561 769.356 33.6945 768.85 33.4633C767.639 32.9118 767.005 32.341 766.552 31.3943C765.862 29.9491 766.132 28.3889 767.269 27.2653C768.67 25.8808 770.107 25.5166 774.181 25.5166C776.552 25.5166 777.124 25.5553 778 25.7775C779.785 26.2295 781.021 27.2007 781.744 28.7221C782.186 29.6546 783.085 30.0162 783.911 29.5939C784.109 29.4919 784.608 29.0295 785.019 28.5672C786.355 27.0613 788.389 25.9945 790.586 25.6496C791.29 25.5398 793.869 25.5114 799.848 25.5476C807.81 25.5967 808.173 25.6096 809.13 25.8731C812.971 26.9295 815.025 28.8113 815.954 32.124C816.219 33.0655 816.727 33.524 817.506 33.5227C818.155 33.5227 818.395 33.3677 819.682 32.1253C821.455 30.4114 823.585 28.9482 826.188 27.6566C833.122 24.2148 839.95 25.0529 843.036 29.7244C843.928 31.074 844.276 32.319 844.276 34.1697C844.277 35.3902 844.223 35.8164 843.969 36.559C843.4 38.2315 842.859 39.0258 841.135 40.7216C839.448 42.3812 839.254 42.7079 839.444 43.5681C839.551 44.0485 840.18 44.6426 841.016 45.0533C841.375 45.229 842.813 45.7662 844.213 46.2454C849.771 48.1504 851.737 49.3334 852.762 51.3908C853.598 53.0736 853.642 54.7151 852.892 56.3476C851.803 58.7201 848.803 59.8825 845.768 59.1076C843.449 58.516 842.379 57.7889 838.994 54.5136C836.071 51.6839 835.33 51.1131 833.965 50.6365C832.509 50.1277 831.366 50.2439 830.446 50.9943C829.781 51.5367 829.393 52.1993 828.952 53.5489C828.74 54.1921 828.445 54.914 828.294 55.1568C827.578 56.305 826.12 56.4483 825.209 55.4603C824.859 55.0793 824.545 54.4542 823.923 52.8967C822.186 48.5585 820.134 45.9625 817.638 44.9474C816.754 44.5871 815.605 44.5328 814.916 44.8183C814.667 44.9203 814.187 45.2742 813.849 45.6048C812.671 46.7542 811.05 47.6325 809.177 48.1362C808.212 48.3958 807.716 48.4242 802.588 48.5042C797.486 48.5843 796.977 48.6127 796.232 48.8568C793.979 49.5917 792.878 50.9814 792.528 53.5231C792.211 55.831 791.706 56.9649 790.512 58.0446C789.352 59.0946 787.796 59.5286 786.229 59.2406C783.576 58.7511 782.232 56.6124 782.232 52.8838C782.232 51.4528 781.761 50.7011 780.862 50.7011C780.393 50.7011 779.977 50.9659 779.443 51.5987C776.441 55.1646 771.538 57.8884 766.051 59.0378C764.6 59.3413 764.066 59.3852 761.223 59.4291C758.465 59.4718 757.832 59.4434 756.612 59.2238ZM802.155 42.1707C805.017 41.7922 807.219 40.4827 808.15 38.6061C808.479 37.9435 808.525 37.7085 808.524 36.6882C808.524 35.717 808.473 35.4303 808.214 34.9446C807.428 33.4607 806.476 32.7129 804.553 32.0684L803.305 31.6513H799.26C795.384 31.6513 795.175 31.6642 794.237 31.9535C792.052 32.629 790.673 33.6725 789.944 35.2029C789.662 35.7945 789.604 36.098 789.604 37.0111C789.604 37.9913 789.653 38.2096 790.052 39.0555C790.867 40.7771 792.591 41.8529 795.04 42.1668C796.263 42.3244 800.978 42.3269 802.155 42.1707ZM830.033 41.069C832.843 40.3509 835.159 38.0133 834.902 36.1561C834.598 33.9592 832.27 32.833 829.317 33.4529C825.791 34.1917 823.264 37.0963 824.241 39.2828C824.91 40.7823 826.235 41.4552 828.272 41.3325C828.799 41.3002 829.591 41.1814 830.033 41.069Z" fill-rule="evenodd" clip-rule="evenodd" fill="currentColor"/>
+<path fill="currentColor" transform="translate(747.55 25.5) translate(100.4 0.3) scale(1.6) translate(-99.54 -0.17)" fill-rule="evenodd" d="M99.54,3.29c0-1.82,1.33-3.12,3.14-3.12s3.12,1.32,3.12,3.12-1.3,3.12-3.12,3.12-3.14-1.32-3.14-3.12ZM105.1,3.29c.01-1.47-.98-2.49-2.42-2.49s-2.47,1.01-2.44,2.49c-.03,1.48.97,2.49,2.44,2.49s2.44-1.04,2.42-2.49ZM101.566 4.565H102.011V3.607H102.714C102.9 3.607 102.958 3.665 103.001 3.782L103.293 4.565H103.774L103.453 3.734C103.38 3.545 103.304 3.447 103.071 3.41V3.392C103.442 3.315 103.639 3.075 103.639 2.736C103.639 2.314 103.326 2.015 102.87 2.015H101.566ZM102.765 3.243H102.011V2.39H102.79C103.049 2.39 103.198 2.547 103.198 2.802C103.198 3.075 103.031 3.243 102.765 3.243Z"/>
+</svg>`;
+  if (onHome) { home.href = '#'; home.setAttribute('aria-current', 'page'); }
+  else { home.href = logo.getAttribute('href'); home.target = '_top'; }
+  items.unshift(home);
+  const li = [...items, contact].filter(Boolean).map((a, i) => {
+    const c = a.cloneNode(true); c.style.setProperty('--i', i); return '<li>' + c.outerHTML + '</li>'; }).join('');
+  m.innerHTML = '<div class="bar"><button type="button" class="jm-close" aria-label="Fermer le menu">fermer</button></div><ul>' + li + '</ul>';
+  document.body.appendChild(m);
+  let tm = 0;
+  const open = () => { clearTimeout(tm); m.classList.add('show'); void m.offsetWidth; m.classList.add('on'); document.documentElement.style.overflow = 'hidden';
+    navs.forEach((n) => { const b = n.querySelector('.mnav-btn'); if (b) b.setAttribute('aria-expanded', 'true'); }); m.querySelector('.jm-close').focus(); };
+  const close = () => { m.classList.remove('on'); document.documentElement.style.overflow = '';
+    navs.forEach((n) => { const b = n.querySelector('.mnav-btn'); if (b) { b.setAttribute('aria-expanded', 'false'); } });
+    tm = setTimeout(() => m.classList.remove('show'), 360); };
+  m.querySelector('.jm-close').addEventListener('click', close);
+  m.addEventListener('click', (e) => { const a = e.target.closest('a'); if (a) { if (a.getAttribute('href') === '#' && !a.hasAttribute('data-info') && !a.hasAttribute('data-contact')) e.preventDefault(); close(); } });
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && m.classList.contains('on')) close(); });
+  // la barre mobile : « menu » à gauche, « contact » à droite
+  navs.forEach((n) => {
+    const c = contact ? contact.cloneNode(true) : null;
+    n.innerHTML = '<button type="button" class="mnav-btn" aria-expanded="false" aria-controls="jmenu">menu</button>';
+    if (c) n.appendChild(c);
+    // 7 nov. : c'est gridmenu.html (« la grille ») qui ouvre le menu ; ce plein écran noir ne sert plus que de source pour les liens
+  });
+})();
+</script>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="navMorph" x="-20%" y="-40%" width="140%" height="180%" color-interpolation-filters="sRGB"><feTurbulence id="navNoise" type="fractalNoise" baseFrequency="0.04 0.055" numOctaves="1" seed="7" result="n"/><feDisplacementMap id="navDisp" in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
+<script>
+/* petit logo JPR du menu : au survol, une ondulation liquide lente et douce (comme le grand logo de l'accueil) */
+(() => {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const g = document.getElementById('navLogo') || document.querySelector('.jlogo .fx');
+  const hit = document.querySelector('a[aria-label="JPR, accueil"]');
+  const nn = document.getElementById('navNoise'), nd = document.getElementById('navDisp');
+  if (!g || !hit) return;
+  let h = 0, hT = 0, raf = 0, last = 0; const t0 = performance.now();
+  const step = (now) => {
+    const dt = Math.min(50, now - (last || now)); last = now;
+    const tt = (now - t0) / 1000;
+    h += (hT - h) * (1 - Math.pow(1 - 0.045, dt / 16.67));   // montée et retombée très douces
+    const e = h * h * (3 - 2 * h);
+    nn.setAttribute('baseFrequency', (0.04 + 0.006 * Math.sin(tt * 0.55)).toFixed(4) + ' ' + (0.055 + 0.006 * Math.cos(tt * 0.45)).toFixed(4));
+    nd.setAttribute('scale', (e * (2.4 + 0.6 * Math.sin(tt * 0.8))).toFixed(2));
+    if (hT === 0 && h < 0.005) { g.style.filter = ''; raf = 0; last = 0; return; }   // au repos : logo net, sans filtre
+    raf = requestAnimationFrame(step);
+  };
+  const on = (v) => { hT = v; if (v) g.style.filter = 'url(#navMorph)'; if (!raf) raf = requestAnimationFrame(step); };
+  hit.addEventListener('pointerenter', () => on(1)); hit.addEventListener('pointerleave', () => on(0));
+  hit.addEventListener('focus', () => on(1)); hit.addEventListener('blur', () => on(0));
+})();
+</script>
+
+<style>
+  /* contact : plein écran noir, l'adresse en très grand ; cache temporairement le reste de la page */
+  .jcopy { position: fixed; inset: 0; z-index: 5995; background: #000; color: #F2F0EB; display: flex; flex-direction: column; justify-content: center;
+    padding: 0 max(16px, calc(65 / 1600 * min(100vw, 1600px) + max(0px, (100vw - 1600px) / 2)));
+    font-family: "PP Mori", "Host Grotesk", "Helvetica Neue", Arial, sans-serif; cursor: pointer;
+    opacity: 0; visibility: hidden; transition: opacity .35s ease, visibility 0s .35s; }
+  .jcopy.on { opacity: 1; visibility: visible; transition: opacity .35s ease; }
+  /* 7 nov. : le menu reste visible par-dessus le courriel (le plein écran passe sous lui) ; le reste de l'interface s'efface */
+  html:has(.jcopy.on) .hnav { z-index: 6000; }
+  html:has(.jcopy.on) .jfoot { z-index: auto; }
+  html:has(.jcopy.on) .views, html:has(.jcopy.on) .fcap { opacity: 0 !important; pointer-events: none !important; }
+  /* « Copié » : bien visible, lettres qui montent une à une, puis un trait qui se trace dessous */
+  .jcopy .jlb { position: relative; display: inline-block; align-self: flex-start; font-size: clamp(20px, calc(30 / 1600 * var(--fw, 100vw)), 32px); line-height: 1.35;   /* 7 nov. : la typo moyenne d'Info (comme « Expertises ») */ font-weight: 400; color: #F2F0EB; letter-spacing: -.02em; padding-bottom: .18em; }
+  .jcopy .jlb b { display: inline-block; font-weight: inherit; opacity: 0; translate: 0 .5em; transition: opacity .35s, translate .5s cubic-bezier(.2,.8,.2,1); transition-delay: calc(var(--i) * 45ms + 80ms); }
+  .jcopy.on .jlb b { opacity: 1; translate: 0 0; }
+  .jcopy .jlb::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: .06em; min-height: 2px; background: #F2F0EB; transform: scaleX(0); transform-origin: 0 50%; transition: transform .5s cubic-bezier(.6,0,.2,1) .45s; }
+  .jcopy.on .jlb::after { transform: scaleX(1); }
+  .jcopy .tm { position: absolute; left: max(16px, calc(65 / 1600 * min(100vw, 1600px) + max(0px, (100vw - 1600px) / 2))); bottom: 28px; font-size: max(12px, calc(19.5 / 1600 * var(--fw, 100vw))); line-height: 1; font-weight: 400; color: rgba(242, 240, 235, .6); font-variant-numeric: tabular-nums; }
+  .jcopy .em { display: block; margin-top: .35em; font-size: max(16px, calc(52.8 / 1600 * var(--fw, 100vw))); font-weight: 400; line-height: 1.2; letter-spacing: -.03em;   /* 7 nov. : la grosse typo d'Info (avant : jusqu'à 150 px) */
+    color: #F2F0EB; text-decoration: none; overflow-wrap: anywhere; }
+  .jcopy .em:hover { text-decoration: underline; text-decoration-thickness: .04em; text-underline-offset: .12em; }
+  .jcopy .em { translate: 0 18px; transition: translate .6s cubic-bezier(.2,.8,.2,1); }
+  .jcopy.on .em { translate: 0 0; }
+  .jcopy .x { position: absolute; top: 24px; right: max(16px, calc(65 / 1600 * min(100vw, 1600px) + max(0px, (100vw - 1600px) / 2))); font-size: max(12px, calc(19.5 / 1600 * var(--fw, 100vw))); line-height: 1; font-weight: 400; color: rgba(242, 240, 235, .6); background: none; border: 0; cursor: pointer; padding: 8px 0; }
+  .jcopy .x:hover { color: #F2F0EB; }
+  /* copie : « Copié » en petit au-dessus, dont les lettres montent d'un masque une à une ; l'accent reste sur le courriel, en très grand */
+  .jcopy.cp .jlb { overflow: hidden; padding: .08em .04em .12em 0; }
+  .jcopy.cp .jlb b { opacity: 1; translate: 0 110%; transition: translate .7s cubic-bezier(.2, .8, .1, 1); transition-delay: calc(var(--i) * 50ms + 60ms); }
+  .jcopy.cp.on .jlb b { translate: 0 0; }
+  .jcopy.cp .jlb::after { display: none; }
+  .jcopy .em .caret { display: inline-block; width: max(2px, .055em);   /* proportionnelle à la typo (7 nov.) */ height: .82em; margin-left: .04em; vertical-align: -.06em; background: currentColor; }
+  .jcopy.typed .em .caret { animation: jcaret 1s steps(1) infinite; }
+  @keyframes jcaret { 50% { opacity: 0; } }
+  .jcopy .em.cp { min-height: 1em; }
+  @media (max-width: 700px) { .jcopy .em { font-size: 23px; line-height: 1.38; letter-spacing: -.025em; } .jcopy .jlb { font-size: 23px; } .jcopy .tm, .jcopy .x { font-size: 15px; } }   /* mobile : comme le gros texte d'Info ; 8 nov. : styles unifiés (Moyenne 23, Interface 15) */
+  @media (prefers-reduced-motion: reduce) { .jcopy.cp .jlb b { transition: none; translate: 0 0; } }
+  .jcopy.on.out { opacity: 0; pointer-events: none; transition: opacity .5s cubic-bezier(.4, 0, .2, 1); }
+  .jcopy.on.out .jlb, .jcopy.on.out .em, .jcopy.on.out .tm { translate: 0 -16px; transition: translate .5s cubic-bezier(.4, 0, .2, 1); }
+  .jcopy.out .bar { animation-play-state: paused; }
+  @media (prefers-reduced-motion: reduce) { .jcopy.on.out .jlb, .jcopy.on.out .em, .jcopy.on.out .tm { translate: none; } }
+  .jcopy .bar { position: absolute; left: 0; bottom: 0; height: 4px; width: 100%; background: #F2F0EB; transform-origin: 0 50%; }
+  .jcopy.on .bar { animation: jtbar var(--dur, 4s) linear forwards; }
+  .jcopy.hold .bar { animation-play-state: paused; }
+  /* 7 nov. : grille suisse, brut. « Copié » en col. 1 (comme « Expertises » sur Info), le courriel à partir de la col. 2, sur la même ligne de base,
+     posés sur la marge de 2 % du bas. Plus de compte à rebours écrit ni de barre : le temps qui reste, c'est le trait qui barre « contact » dans le menu, et qui raccourcit. */
+  /* 7 nov. (2) : remonté en haut, rattaché à « contact » : l'étiquette et le courriel s'alignent à droite, sur la marge de « contact », juste sous le menu */
+  /* 7 nov. (3) : « copié » est dans le menu ; l'adresse, seule, est centrée dans l'écran */
+  .jcopy { display: grid !important; grid-template-columns: minmax(0, 1fr); justify-items: center; align-content: center; row-gap: calc(6 / 1600 * var(--fw));
+    padding: 0 calc(var(--fl) + 65 / 1600 * var(--fw)) !important; text-align: center; }
+  .jcopy .jlb { justify-self: center; align-self: auto; }
+  .jcopy .em { margin-top: 0; }
+  .jcopy { perspective: 1100px; }   /* 7 nov. : l'adresse se balance lentement sur son axe vertical (et suit un peu le curseur sur ordinateur) */
+  .jcopy .em { transform-style: preserve-3d; will-change: transform; }
+  .jcopy .tm, .jcopy .bar { display: none !important; }
+  .jcopy .em .caret { margin-right: calc(-1 * (max(2px, .055em) + .04em)); }   /* le curseur ne compte pas dans le centrage : c'est l'adresse seule qui est centrée */
+  html:has(.jcopy.on) .mnav a[data-contact] { text-decoration: line-through; text-decoration-thickness: 1.5px; }
+  @media (max-width: 700px) { .jcopy { row-gap: 4px; padding: 0 16px !important; } }
+  @keyframes jtbar { to { transform: scaleX(0); } }
+</style>
+<script>
+/* menu : « contact » copie l'adresse courriel et l'affiche en très grand, plein écran (clic, Échap ou quelques secondes : retour) ; « info » arrive bientôt */
+(() => {
+  const EMAIL = 'info@jprousseau.com', DUR = 4500;   // 7 nov. : 4,5 s (avant : 3 s)
+  const TOUCH = matchMedia('(hover: none)').matches;   // mobile : pas de fermeture automatique, l'écran reste jusqu'au prochain toucher
+  const t = document.createElement('div'); t.className = 'jcopy'; t.setAttribute('role', 'dialog'); t.setAttribute('aria-live', 'polite'); t.setAttribute('aria-modal', 'true');
+  document.body.appendChild(t);
+  let hide = 0, left = DUR, t0 = 0;   // DUR : 3 s (en pause tant que le courriel est survolé)
+  // fermeture : tout reste figé tel quel (lettres, barre) pendant que l'ensemble s'efface en remontant légèrement, puis on remet à zéro
+  let outT = 0;
+  const close = () => {
+    clearTimeout(hide); clearInterval(tick);
+    if (!t.classList.contains('on') || t.classList.contains('out')) return;
+    t.classList.add('out'); morph('contact');
+    outT = setTimeout(() => t.classList.remove('on', 'hold', 'out'), 520);
+  };
+  let tick = 0;
+  const arm = (ms) => { clearTimeout(hide); t0 = performance.now(); left = ms; if (!TOUCH) hide = setTimeout(close, ms);
+    clearInterval(tick); const upd = () => { const tm = t.querySelector('.tm'); if (!tm) return;
+      const r = Math.max(0, left - (performance.now() - t0)); tm.textContent = `Fermeture dans ${Math.ceil(r / 1000)} s`; };
+    upd(); tick = setInterval(upd, 100); };
+  const em = () => t.querySelector('.em');
+  t.addEventListener('pointerover', (e) => { if (e.target.closest('.em') && !t.classList.contains('hold')) { clearTimeout(hide); clearInterval(tick); left -= performance.now() - t0; t.classList.add('hold'); const tm = t.querySelector('.tm'); if (tm) tm.textContent = 'En pause'; } });
+  t.addEventListener('pointerout', (e) => { if (e.target.closest('.em') && t.classList.contains('hold')) { t.classList.remove('hold'); arm(Math.max(900, left)); } });
+  t.addEventListener('click', (e) => { if (!e.target.closest('a.em')) close(); });
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && t.classList.contains('on')) close(); });
+  // 7 nov. : au clic, « contact » se change en « copié » dans le menu, en léger glitch (même mécanique que les noms de la spirale), puis redevient « contact » à la fermeture
+  const GLY = 'abcdefghijklmnopqrstuvwxyz#%&*/', rnd = () => GLY[Math.random() * GLY.length | 0];
+  const ctWords = () => [document.querySelector('.jnav #navContact, .hnav #navContact'), ...document.querySelectorAll('.mnav a[data-contact]')].filter(Boolean);
+  const morph = (to) => ctWords().forEach((el) => {
+    const from = el.__w || el.textContent.trim(), tok = (el.__tk || 0) + 1; el.__w = to; el.__tk = tok;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { el.textContent = to; return; }
+    let k = 0; while (k < Math.min(from.length, to.length) && from[k] === to[k]) k++;   // « co » reste en place
+    const a = [...to]; for (let i = k; i < a.length; i++) a[i] = rnd(); el.textContent = a.join('');
+    for (let i = k; i < to.length; i++) { const d = (i - k) * 22;
+      setTimeout(() => { if (el.__tk !== tok) return; a[i] = rnd(); el.textContent = a.join(''); }, d);
+      setTimeout(() => { if (el.__tk !== tok) return; a[i] = to[i]; el.textContent = a.join(''); }, d + 70); }
+  });
+  // pendant que le courriel est affiché, c'est ce mot qui est barré dans le menu (la page en cours ne l'est plus)
+  const NS = 'http://www.w3.org/2000/svg';
+  const mark = (on) => {
+    const svg = document.querySelector('.jnav svg, .hnav svg'); if (!svg) return;
+    const cur = [...svg.querySelectorAll('rect[height="2.4"]')].filter((x) => x.id !== 'ctStrike');
+    let k = svg.querySelector('#ctStrike');
+    if (!on) { if (k) k.remove(); cur.forEach((x) => { x.style.opacity = ''; }); return; }
+    const tx = svg.querySelector('#navContact') || [...svg.querySelectorAll('text')].find((x) => x.textContent.trim() === 'contact'); if (!tx) return;
+    const save = tx.textContent; if (tx.__w) tx.textContent = tx.__w; const bb = tx.getBBox(); tx.textContent = save;   // mesuré sur le mot final, pas sur le glitch
+    if (!k) { k = document.createElementNS(NS, 'rect'); k.id = 'ctStrike'; k.setAttribute('y', 39.6); k.setAttribute('height', 2.4); svg.appendChild(k); }
+    k.setAttribute('x', bb.x); k.setAttribute('width', bb.width); k.setAttribute('fill', getComputedStyle(tx).fill || '#F2F0EB');
+    cur.forEach((x) => { x.style.opacity = '0'; });
+    // le minuteur : le trait raccourcit vers la gauche à mesure que le temps passe ; au survol du courriel, il s'arrête
+    const W0 = bb.width;
+    const run = () => { if (!k.isConnected || !t.classList.contains('on') || t.classList.contains('out')) return;
+      const rem = t.classList.contains('hold') ? left : Math.max(0, left - (performance.now() - t0));
+      k.setAttribute('width', (W0 * Math.min(1, rem / DUR)).toFixed(2)); requestAnimationFrame(run); };
+    requestAnimationFrame(run);
+  };
+  new MutationObserver(() => mark(t.classList.contains('on') && !t.classList.contains('out'))).observe(t, { attributes: true, attributeFilter: ['class'] });
+  // 7 nov. : le balancier. L'adresse oscille lentement de ±10° autour de son axe vertical, un aller-retour en 6 s (on le voit aller d'un côté et revenir pendant les 4,5 s d'ouverture) ; sur ordinateur, le curseur l'attire doucement de son côté,
+  // avec la même inertie que la spirale du portfolio. Mobile : le balancier seul. « Réduire les animations » : immobile.
+  {
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches, mouse = matchMedia('(hover: hover)').matches;
+    let mx = 0, my = 0, sx = 0, sy = 0, t0 = 0, on = false;
+    addEventListener('pointermove', (e) => { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; }, { passive: true });
+    const swing = (now) => {
+      const em = t.querySelector('.em');
+      if (!t.classList.contains('on') || !em) { on = false; return; }
+      if (!t0) t0 = now; const s = (now - t0) / 1000;
+      if (mouse) { sx += (mx - sx) * .05; sy += (my - sy) * .05; }
+      em.style.transform = `rotateY(${(Math.sin(s * Math.PI * 2 / 6) * 10 + sx * 16).toFixed(2)}deg) rotateX(${(-sy * 10).toFixed(2)}deg)`;
+      requestAnimationFrame(swing);
+    };
+    if (!still) new MutationObserver(() => { if (t.classList.contains('on') && !on) { on = true; t0 = 0; sx = mx; sy = my; requestAnimationFrame(swing); } }).observe(t, { attributes: true, attributeFilter: ['class'] });
+  }
+  const show = (label, main, cp) => {
+    clearTimeout(outT); t.classList.remove('on', 'hold', 'out'); void t.offsetWidth;   // rejoue l'animation
+    t.classList.toggle('cp', !!cp);
+    const L = [...label].map((c, i) => `<b style="--i:${i}">${c}</b>`).join('');
+    const lb = `<span class="jlb" aria-label="${label}">${L}</span>`;
+    t.innerHTML = (cp ? '' : lb) + main;   // 7 nov. : plus de « Fermeture dans… » ni de barre en bas ; « Copié » passe dans le menu
+    t.setAttribute('aria-label', label); morph(cp ? 'copié' : 'contact');
+    t.style.setProperty('--dur', DUR + 'ms');
+    t.classList.add('on'); arm(DUR);
+  };
+  const copy = async () => {
+    try { await navigator.clipboard.writeText(EMAIL); return true; } catch (e) {}
+    try { const ta = document.createElement('textarea'); ta.value = EMAIL; ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select();
+      const ok = document.execCommand('copy'); ta.remove(); return ok; } catch (e) { return false; }
+  };
+  const mail = `<a class="em" href="mailto:${EMAIL}">${EMAIL}</a>`;
+  // copie : le courriel s'écrit comme si quelqu'un le tapait, avec un curseur qui clignote ensuite
+  const mailCp = `<a class="em cp" href="mailto:${EMAIL}" aria-label="${EMAIL}"><span class="ty" aria-hidden="true"></span><i class="caret" aria-hidden="true"></i></a>`;
+  let typeT = 0;
+  const typeIn = () => {
+    clearTimeout(typeT);
+    const ty = t.querySelector('.em .ty'); if (!ty) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { ty.textContent = EMAIL; t.classList.add('typed'); return; }
+    t.classList.remove('typed'); let n = 0;
+    const step = () => {
+      ty.textContent = EMAIL.slice(0, ++n);
+      if (n < EMAIL.length) typeT = setTimeout(step, 18 + Math.random() * 22 + (EMAIL[n - 1] === '@' || EMAIL[n - 1] === '.' ? 45 : 0));   // ~0,6 s en tout : vif, pas théâtral   // rythme humain : petites hésitations après @ et .
+      else t.classList.add('typed');
+    };
+    typeT = setTimeout(step, 150);
+  };
+  document.querySelectorAll('a[data-contact]').forEach((a) => {
+    a.href = 'mailto:' + EMAIL; a.removeAttribute('target');
+    a.addEventListener('click', async (e) => {
+      e.preventDefault(); e.stopImmediatePropagation();
+      if (t.classList.contains('on') && !t.classList.contains('out')) { close(); return; }   // « contact » une 2e fois : on referme
+      const ok = await copy();
+      show(ok ? 'Copié' : 'Écris-moi', mail, ok);   // 7 nov. : l'adresse apparaît d'un coup (plus de frappe ni de curseur) ; le menu dit déjà « copié »
+    }, true);
+  });
+  document.querySelectorAll('a[data-info]').forEach((a) => {
+    a.addEventListener('click', (e) => { e.preventDefault(); e.stopImmediatePropagation(); show('Info', '<span class="em">Bientôt ici</span>'); }, true);
+  });
+})();
+</script>
+
+<!-- grille de mise en page (5 colonnes de 278, gouttières de 20, marges de 65, sur 1600) : cachée ; touche G pour l'afficher ou la cacher -->
+<style>
+  .jgrid { position: fixed; inset: 0; z-index: 99999; pointer-events: none; opacity: 0; visibility: hidden; transition: opacity .35s ease, visibility 0s .35s;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  html.jgrid-on .jgrid, html.jgrid-peek .jgrid { opacity: 1; visibility: visible; transition: opacity .15s ease; }
+  /* aperçu au survol (« Systèmes de design ») : les colonnes se tracent de haut en bas, l'une après l'autre */
+  .jgrid i { transform-origin: 50% 0; }
+  html.jgrid-peek:not(.jgrid-on) .jgrid i { animation: jgIn .32s cubic-bezier(.2, .8, .2, 1) both; animation-delay: calc(var(--k) * 40ms); }
+  @keyframes jgIn { from { transform: scaleY(0); } }
+  @media (prefers-reduced-motion: reduce) { html.jgrid-peek .jgrid i { animation: none; } }
+  .jgrid .in { position: relative; max-width: 1600px; height: 100%; margin: 0 auto; }
+  /* les bords des colonnes : des pointillés blancs, en transparence, sans remplissage ni étiquette */
+  /* 7 nov. : même pointillé fin que le menu mobile : 1 px de trait, 1 px de vide */
+  .jgrid i { position: absolute; top: 0; bottom: 0; box-sizing: border-box; --ln: rgba(242, 240, 235, .3); }
+  .jgrid i::before, .jgrid i::after, .jgrid .c { content: ""; position: absolute; top: 0; bottom: 0; width: 1px; background: repeating-linear-gradient(to bottom, var(--ln) 0 1px, transparent 1px 2px); }
+  .jgrid i::before { left: 0; } .jgrid i::after { right: 0; }
+  .jgrid .c { left: 50%; --ln: rgba(242, 240, 235, .15); }   /* l'axe central, plus discret */
+</style>
+<script>
+(() => {
+  const g = document.createElement('div'); g.className = 'jgrid'; g.setAttribute('aria-hidden', 'true');
+  g.innerHTML = '<div class="in">' + [65, 363, 661, 959, 1257].map((x, k) =>
+    `<i style="--k:${k};left:${(x / 16).toFixed(4)}%;width:${(278 / 16).toFixed(4)}%"></i>`).join('') + '<span class="c"></span></div>';
+  document.body.appendChild(g);
+  const root = document.documentElement;
+  try { if (localStorage.getItem('jgrid') === '1') root.classList.add('jgrid-on'); } catch (e) {}
+  addEventListener('keydown', (e) => {
+    if (e.key !== 'g' && e.key !== 'G') return;
+    if (e.metaKey || e.ctrlKey || e.altKey || e.target.closest('input, textarea, [contenteditable]')) return;
+    const on = root.classList.toggle('jgrid-on');
+    try { localStorage.setItem('jgrid', on ? '1' : '0'); } catch (e2) {}
+  });
+})();
+</script>
+<!-- 7 nov. : menu mobile « la grille » (validé) : l'écran se tramifie en blanc cassé, la grille de 5 colonnes se trace en pointillé fin,
+     puis les mots tombent en escalier sur les colonnes. « préface » remplace le logo pour revenir à l'accueil.
+     Les liens viennent du menu #jmenu de navmorph.html (gardé comme source, jamais affiché). Tout est préfixé jmt : Info a déjà .mt et .grid. -->
+<style>
+  .jmt { position: fixed; inset: 0; z-index: 8500; display: none; color: #000; font-family: "PP Mori", "Host Grotesk", "Helvetica Neue", Arial, sans-serif; -webkit-tap-highlight-color: transparent;
+    --ln: rgba(0, 0, 0, .16); --mcol: calc((100vw - 32px - 48px) / 5); --mc: calc(var(--mcol) + 12px); }
+  .jmt.show { display: block; }
+  .jmt.full { background: #F2F0EB; }
+  .jmt canvas { position: absolute !important; inset: 0; width: 100% !important; height: 100% !important; z-index: 0 !important; image-rendering: pixelated; }
+  .jmt.full canvas { display: none; }
+  .jmt .bar { position: absolute; z-index: 3; left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); top: 0; height: 56px; display: flex; justify-content: space-between; align-items: center; }
+  .jmt .bar button, .jmt .bar a { font: 400 15px/1 "PP Mori", "Host Grotesk", "Helvetica Neue", Arial, sans-serif !important; letter-spacing: -.01em; background: none; border: 0; padding: 10px 0; margin: 0; cursor: pointer; text-decoration: none; color: inherit; }
+  .jmt .bar .lg { position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: 66px; line-height: 0; }
+  .jmt .bar .lg svg { width: 100%; height: auto; display: block; }
+  .jmt .bar > * { opacity: 0; transition: opacity .3s ease; }
+  .jmt.words .bar > * { opacity: 1; }
+  .jmt .cols { position: absolute; z-index: 1; left: 16px; right: 16px; top: 0; bottom: 0; pointer-events: none; }
+  .jmt .cols i { position: absolute; top: 0; bottom: 0; left: calc(var(--k) * var(--mc)); width: var(--mcol); transform: scaleY(0); transform-origin: 50% 0;
+    transition: transform .55s cubic-bezier(.2, .8, .2, 1); transition-delay: calc(var(--k) * 45ms); }
+  /* traits de colonne discrets, en pointillé fin : 1 px de trait, 1 px de vide */
+  .jmt .cols i::before, .jmt .cols i::after { content: ""; position: absolute; top: 0; bottom: 0; width: 1px; background: repeating-linear-gradient(to bottom, var(--ln) 0 1px, transparent 1px 2px); }
+  .jmt .cols i::before { left: 0; } .jmt .cols i::after { right: 0; }
+  .jmt.colon .cols i { transform: scaleY(1); }
+  .jmt ul { position: relative !important; z-index: 2 !important; display: block !important; width: 100% !important; max-width: none !important; float: none !important; box-sizing: border-box; list-style: none; margin: 0; padding: 112px 16px 0; }
+  .jmt li { display: flex; align-items: baseline; overflow: hidden; padding-bottom: .08em; }
+  .jmt li a { position: relative; display: inline-block; color: inherit; text-decoration: none; font-size: var(--fs, 46px); line-height: 1.04; letter-spacing: -.04em; white-space: nowrap;
+    margin-left: calc(var(--k) * var(--mc)); translate: 0 105%; transition: translate .6s cubic-bezier(.2, .8, .2, 1); transition-delay: calc(var(--i) * 70ms); }
+  .jmt.words li a { translate: 0 0; }
+  .jmt li a .st { position: absolute; left: -.02em; right: -.02em; top: 54%; height: .055em; background: currentColor; transform: scaleX(0); transform-origin: 0 50%; transition: transform .5s cubic-bezier(.6, 0, .2, 1) .45s; }
+  .jmt.words li a[aria-current] .st { transform: scaleX(1); }
+  .jmt li a:focus-visible, .jmt .bar :focus-visible { outline: 1px solid currentColor; outline-offset: 4px; }
+  /* 8 nov. : le JPR en gros au pied du menu, d'une marge à l'autre (comme au bas de l'accueil) ; il monte après les mots.
+     Le petit logo du haut est retiré : deux JPR sur le même écran se faisaient concurrence. La barre : fermer … contact */
+  /* il apparaît en montant un peu et en se fondant ; sa forme, d.abord plus liquide, se calme jusqu'à l'ondulation lente de l'accueil */
+  .jmt .big { position: absolute; z-index: 2; left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(16px, env(safe-area-inset-bottom, 0px)); line-height: 0; pointer-events: none; }
+  .jmt .big svg { display: block; width: 100%; height: auto; overflow: visible; opacity: 0; translate: 0 22px; transition: opacity .22s ease, translate .3s ease; }
+  .jmt.words .big svg { opacity: 1; translate: 0 0; transition: opacity .7s ease .3s, translate 1.1s cubic-bezier(.16, 1, .3, 1) .3s; }
+  @media (prefers-reduced-motion: reduce) { .jmt .big svg { transition: none !important; } }
+  @media (min-width: 701px) { .jmt { display: none !important; } }
+  @media (prefers-reduced-motion: reduce) { .jmt li a, .jmt .cols i, .jmt .st { transition: none !important; } }
+</style>
+<script>
+(() => {
+  const src = [...document.querySelectorAll('#jmenu li a')];
+  if (!src.length) return;
+  const homeA = src.find((a) => a.classList.contains('jm-logo'));
+  const LOGO = homeA ? homeA.innerHTML : '';
+  const pages = src.filter((a) => a !== homeA && !a.hasAttribute('data-contact'));
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ease = (t) => t * t * (3 - 2 * t);
+  const K = [0, 1, 2, 1];   // l'escalier sur les colonnes : préface, portfolio, pêle-mêle, info
+  let m = null, busy = false, opened = false, draw = null;
+
+  const items = () => [
+    { href: homeA ? homeA.getAttribute('href') : '#', cur: !!(homeA && homeA.hasAttribute('aria-current')), html: 'préface', label: 'Préface, accueil' },
+    ...pages.map((a) => ({ href: a.getAttribute('href'), cur: a.hasAttribute('aria-current'), html: a.textContent.trim(), label: '' }))];
+  const li = (it, i) => `<li style="--i:${i};--k:${K[i] || 0}"><a href="${it.href}" target="_top"${it.cur ? ' aria-current="page"' : ''}${it.label ? ` aria-label="${it.label}"` : ''}>${it.html}<span class="st" aria-hidden="true"></span></a></li>`;
+
+  const build = () => {
+    m.className = 'jmt';
+    m.innerHTML = `<canvas aria-hidden="true"></canvas><div class="cols" aria-hidden="true">${[0, 1, 2, 3, 4].map((k) => `<i style="--k:${k}"></i>`).join('')}</div>`
+      + `<div class="bar"><button type="button" class="x">fermer</button><a href="#" class="ct">contact</a></div>`
+      + `<ul>${items().map(li).join('')}</ul><div class="big" aria-hidden="true">${LOGO}</div>`;
+    m.classList.add('show');
+    // le gros JPR : le ® reprend sa taille d'origine (le petit logo le grossit 1,6× pour rester lisible), et le cadre colle aux formes, d'une marge à l'autre
+    const big = m.querySelector('.big svg');
+    if (big) { const ps = big.querySelectorAll('path');
+      // l'ondulation liquide de l'accueil (mêmes réglages, ramenés à l'échelle de ce logo)
+      const ns = 'http://www.w3.org/2000/svg', gg = document.createElementNS(ns, 'g');
+      big.insertAdjacentHTML('afterbegin', '<defs><filter id="jmtMorph" x="-4%" y="-12%" width="108%" height="124%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.049 0.07" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter></defs>');
+      ps.forEach((q) => gg.appendChild(q)); big.appendChild(gg); if (!reduce) gg.setAttribute('filter', 'url(#jmtMorph)');
+      if (ps[1]) ps[1].setAttribute('transform', 'translate(847.95 25.8) translate(-99.54 -0.17)');
+      try { let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+        ps.forEach((q) => { const b = q.getBBox(), t = q.transform.baseVal.consolidate(), mx = t ? t.matrix : { a: 1, d: 1, e: 0, f: 0 };
+          x0 = Math.min(x0, b.x * mx.a + mx.e); y0 = Math.min(y0, b.y * mx.d + mx.f); x1 = Math.max(x1, (b.x + b.width) * mx.a + mx.e); y1 = Math.max(y1, (b.y + b.height) * mx.d + mx.f); });
+        if (isFinite(x0)) big.setAttribute('viewBox', `${x0} ${y0} ${x1 - x0} ${y1 - y0}`); } catch (e) {} }
+    // une seule taille de mot : la plus grande qui laisse chaque mot tenir à partir de sa colonne
+    const mc = (innerWidth - 80) / 5 + 12;
+    let fs = Math.min(64, innerWidth * 0.15);
+    m.querySelectorAll('li a').forEach((a, i) => { a.style.fontSize = '100px'; const w = a.getBoundingClientRect().width / 100; a.style.fontSize = '';
+      fs = Math.min(fs, (innerWidth - 32 - (K[i] || 0) * mc - 2) / w); });
+    m.style.setProperty('--fs', Math.floor(fs) + 'px');
+    // la trame (Bayer 8×8), blanc cassé, descend du haut vers le bas
+    const cv = m.querySelector('canvas'), CELL = 3, cw = Math.ceil(innerWidth / CELL), ch = Math.ceil(innerHeight / CELL);
+    cv.width = cw; cv.height = ch; const g = cv.getContext('2d');
+    const B = [0, 32, 8, 40, 2, 34, 10, 42, 48, 16, 56, 24, 50, 18, 58, 26, 12, 44, 4, 36, 14, 46, 6, 38, 60, 28, 52, 20, 62, 30, 54, 22, 3, 35, 11, 43, 1, 33, 9, 41, 51, 19, 59, 27, 49, 17, 57, 25, 15, 47, 7, 39, 13, 45, 5, 37, 63, 31, 55, 23, 61, 29, 53, 21];
+    const img = g.createImageData(cw, ch), d = img.data;
+    for (let o = 0; o < d.length; o += 4) { d[o] = 242; d[o + 1] = 240; d[o + 2] = 235; }
+    return (t) => {
+      for (let y = 0; y < ch; y++) {
+        const th = (t * 1.5 - (y / ch) * 0.5) * 64;
+        for (let x = 0; x < cw; x++) d[(y * cw + x) * 4 + 3] = B[(y & 7) * 8 + (x & 7)] < th ? 255 : 0;
+      }
+      g.putImageData(img, 0, 0);
+    };
+  };
+
+  // l'ondulation : seulement à l'apparition ; elle se calme jusqu'à zéro, puis le logo reste immobile
+  let mraf = 0, mt0 = 0;
+  const morph = (now) => {
+    if (!m || !m.classList.contains('words')) { mraf = 0; return; }
+    const nz = m.querySelector('#jmtMorph feTurbulence'), dp = m.querySelector('#jmtMorph feDisplacementMap');
+    if (!nz || !dp) { mraf = 0; return; }
+    const tt = (now - mt0) / 1000, p = Math.min(1, Math.max(0, (tt - 0.3) / 1.2)), settle = 1 - p * p * (3 - 2 * p);
+    nz.setAttribute('baseFrequency', (0.049 + 0.015 * Math.sin(tt * 0.23)).toFixed(4) + ' ' + (0.07 + 0.015 * Math.cos(tt * 0.17)).toFixed(4));
+    dp.setAttribute('scale', (3.3 * settle).toFixed(3));
+    // 8 nov. : une fois posé, il ne bouge plus : on retire le filtre (le logo exact, net) et on arrête la boucle
+    if (p >= 1) { const g = m.querySelector('.big g[filter]'); if (g) g.removeAttribute('filter'); mraf = 0; return; }
+    mraf = requestAnimationFrame(morph);
+  };
+  const startMorph = () => { if (reduce || mraf) return; mt0 = performance.now(); mraf = requestAnimationFrame(morph); };
+
+  const run = (fn, from, to, ms) => new Promise((res) => {
+    if (reduce) { fn(to); return res(); }
+    const t0 = performance.now();
+    const f = (now) => { const p = Math.min(1, (now - t0) / ms); fn(from + (to - from) * (to > from ? p : ease(p))); if (p < 1) requestAnimationFrame(f); else res(); };
+    requestAnimationFrame(f);
+  });
+  const wait = (ms) => new Promise((r) => setTimeout(r, reduce ? 0 : ms));
+  const btns = () => document.querySelectorAll('.mnav-btn');
+  const open = async () => {
+    if (busy || opened) return; busy = true;
+    if (!m) { m = document.createElement('div'); m.id = 'jmt'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-label', 'Menu'); document.body.appendChild(m); }
+    draw = build();
+    document.documentElement.style.overflow = 'hidden';
+    btns().forEach((b) => { b.setAttribute('aria-expanded', 'true'); b.setAttribute('aria-controls', 'jmt'); });
+    draw(0); await run(draw, 0, 1, 420);
+    m.classList.add('full', 'colon'); await wait(260);
+    m.classList.add('words'); startMorph(); opened = true; busy = false;
+    m.querySelector('.x').focus({ preventScroll: true });
+  };
+  const close = async (fast) => {
+    if (busy || !opened) return; busy = true;
+    m.classList.remove('words'); await wait(fast ? 0 : 280);
+    m.classList.remove('colon'); await wait(fast ? 0 : 200);
+    m.classList.remove('full'); if (!fast) await run(draw, 1, 0, 380);
+    m.classList.remove('show'); document.documentElement.style.overflow = ''; opened = false; busy = false;
+    btns().forEach((b) => b.setAttribute('aria-expanded', 'false'));
+    const b = btns()[0]; if (b) b.focus({ preventScroll: true });
+  };
+  // en capture : passe avant l'ancien menu (#jmenu) et avant la transition de page
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest ? e.target : e.target.parentElement;
+    if (t.closest('.mnav-btn')) { e.preventDefault(); e.stopPropagation(); open(); return; }
+    if (!m || !t.closest('.jmt')) return;
+    if (t.closest('.jmt .x')) { e.preventDefault(); e.stopPropagation(); close(); return; }
+    if (t.closest('.jmt .ct')) {   // « contact » : on referme le menu, puis on lance le vrai contact (le courriel copié)
+      e.preventDefault(); e.stopPropagation();
+      close(true).then(() => { const c = document.querySelector('.mnav a[data-contact]'); if (c) c.click(); });
+      return; }
+    const a = t.closest('.jmt li a');
+    if (a && (a.hasAttribute('aria-current') || a.getAttribute('href') === '#')) { e.preventDefault(); e.stopPropagation(); close(); }   // la page où l'on est : on referme, simplement
+    // les autres liens continuent vers la transition tramée de la page (pagetrans.html)
+  }, true);
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && opened) close(); });
+  addEventListener('resize', () => { if (opened && innerWidth > 700) close(true); });
+})();
+</script>
+<!-- transitions de page (6 nov.) : le menu ne bouge jamais ; seul le trait de la page en cours glisse vers la page choisie,
+     pendant que le contenu disparaît dans une trame 1 bit (le « dissolve » de HyperCard). La nouvelle page apparaît par la même trame. -->
+<style>
+  .pt-veil { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 5999; pointer-events: none; image-rendering: pixelated; image-rendering: crisp-edges; visibility: hidden; }
+  html.pt-run .pt-veil { visibility: visible; }
+  html.pt-run .hnav { z-index: 6000; }            /* accueil : le menu reste au-dessus de la trame */
+  html.pt-run .jfoot { z-index: auto; }           /* le pied de page, lui, part avec le contenu */
+  html.pt-menu .pt-veil { z-index: 8600; }        /* depuis le menu plein écran du mobile : la trame passe par-dessus */
+  /* pendant la transition, le dégradé noir derrière le menu s'efface (il restait visible sur la trame claire de Pêle-mêle),
+     et le menu passe en différence : blanc cassé sur le noir, noir sur le blanc cassé, point par point dans la trame */
+  html.pt-run .jnav::before, html.pt-run .hnav::before { opacity: 0 !important; transition: opacity .2s ease; }
+  html.pt-run .jnav, html.pt-run .hnav, html.pt-run .jlogo { mix-blend-mode: difference !important; }
+</style>
+<script>
+(() => {
+  const PAGES = {"../index.html": {"page": "home", "bg": "#000000"}, "../portfolio/index.html": {"page": "portfolio", "bg": "#000000"}, "../portfolio/index.html": {"page": "portfolio", "bg": "#000000"}, "../pele-mele/index.html": {"page": "pele-mele", "bg": "#F2F0EB"}, "../info/index.html": {"page": "info", "bg": "#000000"}};                     // adresse → { page, fond }
+  const HERE = 'info';
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const root = document.documentElement;
+  const OUT = 470, IN = 560, CELL = () => (innerWidth <= 700 ? 3 : 4);
+
+  // ---------- la trame : une toile basse définition, agrandie sans lissage ----------
+  const cv = document.createElement('canvas'); cv.className = 'pt-veil'; cv.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(cv);
+  const g = cv.getContext('2d');
+  const B8 = [0,32,8,40,2,34,10,42,48,16,56,24,50,18,58,26,12,44,4,36,14,46,6,38,60,28,52,20,62,30,54,22,3,35,11,43,1,33,9,41,51,19,59,27,49,17,57,25,15,47,7,39,13,45,5,37,63,31,55,23,61,29,53,21];
+  let W = 0, H = 0, img = null, px = null, th = null;
+  const rgba = (hex) => { const n = parseInt(hex.slice(1), 16); return (255 << 24) | ((n & 255) << 16) | (((n >> 8) & 255) << 8) | ((n >> 16) & 255); };
+  // seuil de chaque case : la trame de Bayer, plus un léger balayage (dans le sens du trait, ou du haut vers le bas)
+  const field = (mode) => {
+    const c = CELL(); W = Math.ceil(innerWidth / c); H = Math.ceil(innerHeight / c);
+    cv.width = W; cv.height = H; img = g.createImageData(W, H); px = new Uint32Array(img.data.buffer); th = new Float32Array(W * H);
+    const cx = W / 2, cy = H / 2, dm = Math.hypot(cx, cy);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const b = B8[(x & 7) + ((y & 7) << 3)] / 64;
+      const s = mode === 'right' ? x / W : mode === 'left' ? 1 - x / W : mode === 'center' ? 1 - Math.hypot(x - cx, y - cy) / dm : y / H;
+      th[x + y * W] = .58 * b + .42 * s;
+    }
+  };
+  const paint = (p, col, covering) => {
+    for (let i = 0; i < th.length; i++) px[i] = (covering ? th[i] <= p : th[i] > p) ? col : 0;
+    g.putImageData(img, 0, 0);
+  };
+  const ease = (t) => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const run = (dur, f) => new Promise((done) => { let t0 = 0; const step = (now) => { if (!t0) t0 = now; const k = Math.min(1, (now - t0) / dur); f(k); if (k < 1) requestAnimationFrame(step); else done(); }; requestAnimationFrame(step); });
+
+  // ---------- le trait : il glisse d'un mot du menu à l'autre, le bord avant part le premier, l'autre suit ----------
+  const navSvg = () => document.querySelector('.jnav svg, .hnav svg');
+  const word = (svg, k) => { const label = { portfolio: 'portfolio', 'pele-mele': 'pêle-mêle', info: 'info' }[k];
+    return label && [...svg.querySelectorAll('text')].find((t) => t.textContent.trim() === label); };
+  const slide = (to) => {
+    const svg = navSvg(); if (!svg || innerWidth <= 700) return { dir: null, go: Promise.resolve() };
+    let r = svg.querySelector('rect[height="2.4"]');
+    const t = to === 'home' ? null : word(svg, to);
+    let a0, b0;
+    if (r) { a0 = +r.getAttribute('x'); b0 = a0 + +r.getAttribute('width'); }
+    else {                                                  // accueil : pas encore de trait, il naît au centre du mot visé
+      if (!t) return { dir: null, go: Promise.resolve() };
+      const bb = t.getBBox(); a0 = b0 = bb.x + bb.width / 2;
+      r = document.createElementNS('http://www.w3.org/2000/svg', 'rect'); r.setAttribute('y', 39.6); r.setAttribute('height', 2.4);
+      r.setAttribute('fill', getComputedStyle(t).fill || '#F2F0EB'); r.setAttribute('x', a0); r.setAttribute('width', 0);
+      const defs = svg.querySelector('defs'); svg.insertBefore(r, defs || null);
+    }
+    svg.insertBefore(r, svg.firstChild);                    // le trait passe sous le logo JPR plutôt que par-dessus
+    let a1, b1;
+    if (t) { const bb = t.getBBox(); a1 = bb.x; b1 = bb.x + bb.width; }
+    else { a1 = b1 = (a0 + b0) / 2; }                       // vers l'accueil : le trait se referme sur lui-même
+    const dir = !t ? 'center' : a1 > a0 ? 'right' : a1 < a0 ? 'left' : null;
+    // 6 nov. : le trait n'est visible que sur le mot de départ et sur le mot d'arrivée ; entre les deux, il voyage caché.
+    // On le voit sortir de l'un et entrer dans l'autre : le trajet, on l'imagine.
+    const NS = 'http://www.w3.org/2000/svg', zones = [];
+    if (b0 > a0) { const src = [...svg.querySelectorAll('text')].find((tx) => { const bb = tx.getBBox(); return a0 < bb.x + bb.width && b0 > bb.x; }); if (src) zones.push(src.getBBox()); }
+    if (t) zones.push(t.getBBox());
+    if (zones.length) {
+      const old = svg.querySelector('#ptClip'); if (old) old.remove();
+      const cp = document.createElementNS(NS, 'clipPath'); cp.id = 'ptClip';
+      for (const bb of zones) { const z = document.createElementNS(NS, 'rect'); z.setAttribute('x', bb.x - .5); z.setAttribute('y', 30); z.setAttribute('width', bb.width + 1); z.setAttribute('height', 20); cp.appendChild(z); }
+      svg.appendChild(cp); r.setAttribute('clip-path', 'url(#ptClip)');
+    }
+    const lead = .16;                                       // décalage entre les deux bords (part du temps)
+    const go = run(OUT, (k) => {
+      const kf = ease(Math.min(1, k / (1 - lead))), ks = ease(Math.max(0, (k - lead) / (1 - lead)));
+      const fwd = dir !== 'left';
+      const a = a0 + (a1 - a0) * (fwd ? ks : kf), b = b0 + (b1 - b0) * (fwd ? kf : ks);
+      r.setAttribute('x', a.toFixed(2)); r.setAttribute('width', Math.max(0, b - a).toFixed(2));
+    });
+    return { dir, go };
+  };
+
+  // ---------- départ : on intercepte les liens vers les autres pages du site ----------
+  let leaving = false; const passing = new WeakSet();
+  const clean = (u) => { try { const x = new URL(u, location.href); return x.origin + x.pathname.replace(/\/$/, ''); } catch (e) { return ''; } };
+  const KEYS = Object.keys(PAGES).reduce((o, u) => { o[clean(u)] = PAGES[u]; return o; }, {});
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest && e.target.closest('a[href]'); if (!a || passing.has(a)) return;
+    if (e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const dest = KEYS[clean(a.getAttribute('href'))]; if (!dest || dest.page === HERE) return;
+    if (reduce) return;
+    e.preventDefault(); e.stopPropagation(); if (leaving) return; leaving = true;
+    if (a.closest('.jmenu, .jmt, .mos')) root.classList.add('pt-menu');   // depuis le menu mobile : la trame passe par-dessus
+    const { dir, go } = slide(dest.page);
+    field(dir || 'down'); root.classList.add('pt-run');
+    const col = rgba(dest.bg);
+    Promise.all([go, run(OUT, (k) => paint(ease(k) * 1.001, col, true))]).then(() => {
+      passing.add(a);
+      if (a.isConnected) a.click(); else { const b = document.createElement('a'); b.href = a.href; b.target = a.target || '_top'; document.body.appendChild(b); passing.add(b); b.click(); }
+    });
+  }, true);
+
+  // ---------- arrivée : la page est couverte dès le <head>, puis la trame se retire ----------
+  const enter = (col) => { field('down'); root.classList.add('pt-run'); paint(0, col, false);
+    root.classList.remove('pt-in');
+    return run(IN, (k) => paint(ease(k), col, false)).then(() => { root.classList.remove('pt-run', 'pt-menu'); }); };
+  const here = Object.values(PAGES).find((p) => p.page === HERE);
+  if (root.classList.contains('pt-in') && here) {
+    const go = () => requestAnimationFrame(() => enter(rgba(here.bg)));
+    (document.fonts && document.fonts.ready ? Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 400))]) : Promise.resolve()).then(go);
+  }
+  // retour arrière (page gardée en mémoire par le navigateur) : on enlève la trame restée posée
+  addEventListener('pageshow', (e) => { if (!e.persisted || !leaving) return; leaving = false; location.reload(); });
+})();
+</script>
