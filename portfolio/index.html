@@ -1548,7 +1548,8 @@
      c'était le « léger flash noir » en ouvrant un projet de la liste. On l'enlève partout ; le clavier garde ses contours :focus-visible */
   html { -webkit-tap-highlight-color: transparent; }
   @media (min-width: 701px) {
-    :root { --mr: .02; --fw: calc((100vw - 200vw * var(--mr)) * 1600 / 1470); --fl: calc(100vw * var(--mr) - 65 / 1600 * var(--fw)); }
+    :root { --mr: .016;   /* 9 nov. : marge du site 1,6 % (avant 2 %), validée */
+      --fw: calc((100vw - 200vw * var(--mr)) * 1600 / 1470); --fl: calc(100vw * var(--mr) - 65 / 1600 * var(--fw)); }
     html, body { overflow-x: clip; }   /* le cadre déborde de ~2 % de chaque côté : pas de défilement horizontal */
     .jnav, .jlogo, .jfoot, .jgrid, .hnav { padding-left: 0 !important; padding-right: 0 !important; }
     .jnav-in, .jfoot-in, .clip > .jfoot .jfoot-in, .jgrid .in, .hnav-in { max-width: none !important; width: var(--fw); margin-left: var(--fl) !important; margin-right: 0 !important; }
