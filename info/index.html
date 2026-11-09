@@ -82,6 +82,10 @@
   html.jgrid-peek .say .mt { position: relative; z-index: 100000; }
   html.jgrid-peek .jnav, html.jgrid-peek .mnav { z-index: 100001; }   /* le menu et le logo aussi : aucun pointillé ne les traverse */
   html.jgrid-peek .say .mt, html.jgrid-peek .say .mt * { color: var(--ink); }
+  /* 9 nov. : au survol (au toucher sur mobile), « puis les briser. » se décroche par la droite, tombe et reste en bas de l'écran */
+  .brk-fall { position: fixed; left: 0; top: 0; z-index: 100002; margin: 0; padding: 0; white-space: nowrap; line-height: 1; color: var(--ink);
+    pointer-events: none; transform-origin: 0 100%; will-change: transform; }
+  .say .brk.gone { visibility: hidden; }
   .say .nw { white-space: nowrap; }   /* « par-dessus » ne se coupe pas au trait d'union */
   .say .brk { display: block; text-indent: 0; margin-left: calc(298 * var(--u) + 139 * var(--u) - .04em); }   /* début de la col. 2 + une demi-colonne : volontairement hors grille */
   @media (max-width: 700px) { .say .brk { margin-left: calc(var(--mc) + var(--mcol) / 2); } }
@@ -672,6 +676,61 @@
 })();
 </script>
 <script>
+// 9 nov. : « puis les briser. » obéit à ce qu'il dit. Au premier survol (toucher sur mobile), la ligne se décroche par la droite :
+// elle pivote sur son bout gauche, lâche, tombe en tournant et se pose en bas de l'écran, les descendantes sur la marge du site.
+// Elle reste là où elle est tombée (elle défile ensuite avec la page) ; la place qu'elle occupait reste vide.
+(() => {
+  const brk = document.querySelector('.say .brk'); if (!brk) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let done = false;
+  const go = () => {
+    if (done) return; done = true;
+    const cs = getComputedStyle(brk), fs = parseFloat(cs.fontSize);
+    // la ligne de base et la largeur réelle du texte (la ligne est en bloc : son rectangle fait toute la largeur)
+    const mk = document.createElement('span'); mk.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline';
+    brk.appendChild(mk); const base = mk.getBoundingClientRect().bottom; mk.remove();
+    const rg = document.createRange(); rg.selectNodeContents(brk); const tr = rg.getBoundingClientRect();
+    const el = document.createElement('div'); el.className = 'brk-fall'; el.setAttribute('aria-hidden', 'true'); el.textContent = brk.textContent;
+    el.style.font = cs.font; el.style.letterSpacing = cs.letterSpacing; el.style.fontKerning = cs.fontKerning;
+    document.body.appendChild(el);
+    const w = el.offsetWidth, h = fs;   // hauteur de la boîte = 1 em (interligne 1)
+    // le pivot : coin bas gauche de la boîte ; en interligne 1, le bas de la boîte est .15 em sous la ligne de base
+    let px = tr.left, py = base + .15 * fs, a = 0, av = 0, vx = 0, vy = 0, phase = 0, t0 = performance.now(), rest = 0;
+    brk.classList.add('gone');
+    const place = () => { el.style.transform = `translate(${px}px, ${py - h}px) rotate(${a}rad)`; };
+    place();
+    const floor = () => innerHeight - (innerWidth > 700 ? innerWidth * .016 : 16) - .07 * fs;   // descendantes sur la marge
+    const step = (now) => {
+      const t = now - t0;
+      if (phase === 0) {   // il se décolle : deux petits à-coups à droite
+        a = t < 380 ? Math.max(0, Math.sin(t / 380 * Math.PI * 2)) * .035 * (1 - t / 520) : 0;
+        if (t >= 380) { phase = 1; a = .02; av = .004; }
+      } else if (phase === 1) {   // il pend par la gauche et bascule
+        av += .0011 * Math.cos(a); a += av;
+        if (a > .42) { phase = 2; vx = .35; vy = av * w * .35; }
+      } else {   // il tombe
+        vy += .55; px += vx; py += vy; a += av; av *= .996;
+        const s = Math.sin(a), c = Math.cos(a), low = Math.max(0, w * s, -h * c, w * s - h * c), f = floor();
+        if (py + low >= f) {
+          py = f - low;
+          vy = vy > 2.5 ? -vy * .26 : 0;
+          av = av * .8 - Math.sin(a) * .006; vx *= .88;   // le choc le remet à plat
+          if (Math.abs(vy) < .5 && Math.abs(av) < .0006 && Math.abs(a) < .004) rest++;
+        }
+        if (rest > 8 || t > 7000) {   // posé : il devient un élément de la page, à cet endroit
+          el.style.position = 'absolute';
+          el.style.transform = `translate(${px + scrollX}px, ${py - h + scrollY}px) rotate(${a}rad)`;
+          return;
+        }
+      }
+      place(); requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+  brk.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') go(); });
+  brk.addEventListener('pointerup', (e) => { if (e.pointerType !== 'mouse') go(); });
+})();
+
 // la vraie grille du site apparaît au survol d'un déclencheur [data-grid] (comme la touche G) ; au toucher, 2 secondes
 // 9 nov. : « Systèmes de design » n'en est plus un ; seul l'énoncé « puis les briser. » montre la grille
 // 9 nov. : plusieurs déclencheurs possibles ([data-grid]) ; l'énoncé (data-grid="auto") montre aussi la grille de lui-même sur bureau,
