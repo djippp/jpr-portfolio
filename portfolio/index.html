@@ -1988,7 +1988,8 @@
     });
   }, true);
 
-  // ---------- arrivée : la page est couverte dès le <head>, puis la trame se retire ----------
+  // ---------- arrivée : la page est couverte dès le <head>
+<meta name="robots" content="noindex, nofollow, noarchive, noimageindex">, puis la trame se retire ----------
   const enter = (col) => { field('down'); root.classList.add('pt-run'); paint(0, col, false);
     root.classList.remove('pt-in');
     return run(IN, (k) => paint(ease(k), col, false)).then(() => { root.classList.remove('pt-run', 'pt-menu'); }); };
