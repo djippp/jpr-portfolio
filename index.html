@@ -2551,7 +2551,7 @@ window.__TRASH = (() => {
     ps.forEach((p, i) => {
       const toks = src[i];
       p.textContent = '';
-      const spans = toks.map((t) => { const sp = document.createElement('span'); if (t.el) sp.appendChild(t.el.cloneNode(true)); else sp.textContent = t.w; if (t.sp) sp.append(' '); p.appendChild(sp); return sp; });
+      const spans = toks.map((t) => { const sp = document.createElement('span'); sp.style.whiteSpace = 'nowrap'; /* 9 nov. : un mot à trait d'union (« elle-même ») ne se coupe plus à la mesure : sinon la ligne, sans retour, dépassait la col. 4 */ if (t.el) sp.appendChild(t.el.cloneNode(true)); else sp.textContent = t.w; p.appendChild(sp); if (t.sp) p.append(' '); return sp; });   /* l'espace hors du mot : la coupure se fait entre les mots */
       const groups = []; let top = null;
       spans.forEach((sp, k) => { const tp = sp.getBoundingClientRect().top; if (top === null || tp > top + 8) { groups.push([]); top = tp; } groups[groups.length - 1].push(toks[k]); });
       p.textContent = '';
