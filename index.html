@@ -730,8 +730,16 @@
   let PATH_X = [0.81, 0.30, 0.50];   // centre du Mac (fraction de la page) : sur le texte à droite → à gauche → au centre, sur le logo
   const SPIN = 360;              // un tour complet pendant la traversée
   const SCREEN_ON = [0.015, 0.07];      // (ancien réglage : allumage au début du scroll)
-  let BOOT = window.__jprLoading ? Infinity : performance.now() + 450;  // l'écran s'allume tout seul (après le chargement s'il y en a un)
-  window.__boot = () => { BOOT = performance.now() + 150; };
+  // 9 nov. : à l'arrivée, l'écran est noir ; il s'allume sur Montréapolis quand le 2e paragraphe arrive à l'écran (le survol de l'écran et du menu l'allument toujours)
+  let BOOT = Infinity, bootReady = !window.__jprLoading;
+  window.__boot = () => { bootReady = true; bootCheck(); };
+  const bootP = () => document.querySelectorAll('.intro p')[1];
+  function bootCheck() {
+    if (BOOT !== Infinity || !bootReady) return;
+    const p2 = bootP(); if (p2 && p2.getBoundingClientRect().top < innerHeight * (innerWidth <= 700 ? .5 : .78)) { BOOT = performance.now(); removeEventListener('scroll', bootCheck); }
+  }
+  addEventListener('scroll', bootCheck, { passive: true });
+  requestAnimationFrame(bootCheck);
   const SCROLL_SMOOTH = 0.16;
   const SIZE = 1.22;            // le Classic II est plus étroit que l'illustration d'origine : on le grandit un peu (taille finale, posé sur le logo)
   let K0 = 1.1 / SIZE;          // taille de départ (en part de la taille finale) ; sur ordinateur, recalculée pour que le Mac fasse la largeur d'une colonne
