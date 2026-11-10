@@ -232,7 +232,7 @@
     position: fixed; left: 0; top: 0; z-index: 7; pointer-events: none;
     font: 400 max(12px, calc(19.5 / 1600 * var(--fw, 100vw)))/1 "PP Mori", "Host Grotesk", "Helvetica Neue", Arial, sans-serif; letter-spacing: -.01em; color: #000;   /* 8 nov. : style Interface */
     padding: .3em .45em .36em; border-radius: 4px; background: #F2F0EB; border: 0; box-shadow: none;
-    opacity: 0; transform: translate(var(--tx, 0), var(--ty, 0)) scale(.94); transition: opacity .2s, scale .2s;
+    opacity: 0; translate: var(--tx, 0) var(--ty, 0); transform: scale(.94); transition: opacity .2s, scale .2s;   /* 9 nov. : la position passe par translate, sinon l'agrandissement au survol décalait l'étiquette loin du curseur */
   }
   .enter-tag.on { opacity: 1; scale: calc(1 / .94); }
 
@@ -250,10 +250,18 @@
     --coral: #F2665A; --yellow: #F6C543; --blue: #6F86E8; --lilac: #C9B6E4; --green: #4E8F4F; --wood: #C8742F;
     position: fixed; inset: 0; z-index: 31;
     display: grid; place-items: center;
-    background: rgba(8, 6, 10, .5);              /* on devine le site derrière l'écran de jeu */
-    -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+    background: #000;                            /* 9 nov. : fond noir (le fondu au noir se fait pendant la plongée, sur .os-bg) */
     font-family: var(--px-font); color: var(--ink);
   }
+  /* 9 nov. : dans Montréapolis, fond noir et seul le logo JPR reste (il ramène au site) ; tout se fond pendant la plongée, en une seule étape */
+  .os-bg { position: fixed; inset: 0; z-index: 29; background: #000; opacity: 0; pointer-events: none; }
+  .hnav::before, .hnav svg > :not(#navLogo):not(defs), .mnav { transition: opacity .6s ease; }
+  html.os-on .hnav { z-index: 40; }
+  .jfoot-in { transition: opacity .6s ease; }
+  html.os-on .jfoot-in { opacity: 0; visibility: hidden; transition: opacity .6s ease, visibility 0s .6s; }
+  html.os-on .hnav::before, html.os-on .hnav svg > :not(#navLogo):not(defs), html.os-on .mnav { opacity: 0; }
+  html.os-on .nav-hit:not([data-menu="jpr"]) { pointer-events: none; visibility: hidden; }
+  html.os-on .mnav { pointer-events: none; visibility: hidden; transition: opacity .6s ease, visibility 0s .6s; }
   .stage {
     position: relative; overflow: hidden;
     width: min(94vw, calc(84dvh * 4 / 3)); aspect-ratio: 4 / 3;
@@ -261,6 +269,26 @@
     container-type: inline-size;
     image-rendering: pixelated;
   }
+  /* 9 nov. : la forme d'un écran cathodique — bords légèrement bombés, coins arrondis, vignettage (9 nov. : sans reflet ni filet de contour) */
+  .stage, .portal {
+    --tube: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300' preserveAspectRatio='none'%3E%3Cpath d='M16 3Q200 -3 384 3Q396.5 3.5 397 16Q403 150 397 284Q396.5 296.5 384 297Q200 303 16 297Q3.5 296.5 3 284Q-3 150 3 16Q3.5 3.5 16 3Z'/%3E%3C/svg%3E");
+    -webkit-mask: var(--tube) 0 0 / 100% 100% no-repeat; mask: var(--tube) 0 0 / 100% 100% no-repeat;
+  }
+  .stage::after, .portal::after {
+    content: ""; position: absolute; inset: 0; z-index: 50; pointer-events: none; image-rendering: auto;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300' preserveAspectRatio='none'%3E%3Cdefs%3E%3CradialGradient id='v' cx='50%25' cy='47%25' r='72%25'%3E%3Cstop offset='.68' stop-opacity='0'/%3E%3Cstop offset='1' stop-opacity='.26'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath d='M16 3Q200 -3 384 3Q396.5 3.5 397 16Q403 150 397 284Q396.5 296.5 384 297Q200 303 16 297Q3.5 296.5 3 284Q-3 150 3 16Q3.5 3.5 16 3Z' fill='url(%23v)'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+  }
+  .stage .exit-sign, .stage .city-sign, .stage .floors-sign { z-index: 51; }   /* les panneaux restent nets, par-dessus le vignettage */
+  /* 9 nov. : « fermer » suit le curseur autour de l'écran (même étiquette que « Enter » sur le Mac) ; au doigt, posé sous l'écran */
+  .os-close {
+    position: fixed; left: 0; top: 0; z-index: 41; pointer-events: none; margin: 0; cursor: inherit;
+    font: 400 max(12px, calc(19.5 / 1600 * var(--fw, 100vw)))/1 "PP Mori", "Host Grotesk", "Helvetica Neue", Arial, sans-serif; letter-spacing: -.01em; color: #000;
+    padding: .3em .45em .36em; border-radius: 4px; background: #F2F0EB; border: 0;
+    opacity: 0; translate: var(--tx, 0) var(--ty, 0); transform: scale(.94); transition: opacity .2s, scale .2s;   /* 9 nov. : la position passe par translate, sinon l'agrandissement au survol décalait l'étiquette loin du curseur */
+  }
+  .os-close.on { opacity: 1; scale: calc(1 / .94); }
+  .os-close:focus-visible, .os-close.touch { opacity: 1; pointer-events: auto; left: 50%; top: auto; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); translate: -50% 0; transform: none; scale: 1; font-size: 15px; outline: none; }
+  .os-close:focus-visible { box-shadow: 0 0 0 2px #000, 0 0 0 3px #F2F0EB; }
   .room { position: absolute; inset: 0; }
   .room.street, .room.ville { overflow: hidden; }
   .floors-sign { position: absolute; left: 2.2cqw; top: 2.2cqw; z-index: 5; }
@@ -597,10 +625,12 @@
   #os :is(button, a, [role="button"], [data-act], [data-go], .piece, label) { cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAiCAYAAAA+stv/AAAAsElEQVR4nO2XUQ6AMAhDW+P9rzx/1EzDHNmY1WT9MwYoTxxK1JVu13TEuLVEJmvRUzcJAFK6AiDPkBAScgLTwDSwdsSGnA//JWCcD01E/kugpIOMl8gnCAzddgaRS345AaK+9WDddxfY82Qk8tp6AsW3wHDcpBo5OYG8PXMWwgt+bQZyAwRAkt3PvdWAROG7oKTS17ScgGXg1VmQE/C02HU+1P6k5ASmAfcMjKolJ7ABJ8IsXKGDAOkAAAAASUVORK5CYII=") 9 1, pointer; }
   #os .easel .inner { cursor: crosshair; }
 </style>
+<div class="os-bg" id="osBg" aria-hidden="true"></div>
 <div class="portal" id="portal" hidden><img class="bw" src="mac3d/ville-titre.png" alt=""><img class="color" src="mac3d/lobby-px.png" alt=""><div class="load" aria-hidden="true"><i></i></div><img class="city" src="mac3d/ville.webp" alt="" decoding="async"></div>
 
 <div class="os" id="os" role="dialog" aria-modal="true" aria-label="L'atelier JPR" hidden>
   <div class="os-tag" id="osTag" aria-hidden="true" hidden></div>
+  <button class="os-close" id="osClose" type="button" aria-label="Fermer Montréapolis et revenir au site">fermer</button>
   <div class="stage" id="stage">
 
     <!-- l'arrivée : Montréapolis, la ville en pixels ; la porte « Enter » mène à la rue -->
@@ -613,7 +643,6 @@
       <button class="hot" style="left:42.5%;top:6.5%;width:5%;height:6%" data-say="La croix du mont Royal veille sur l'atelier." data-tip="Le mont Royal">La croix du mont Royal</button>
       <button class="hot round" style="left:65%;top:32.5%;width:10.5%;height:14%" data-say="La Biosphère : la plus belle bulle de la ville." data-tip="La Biosphère">La Biosphère</button>
       <button class="hot" style="left:63%;top:58%;width:22%;height:13%" data-say="Le pont Jacques-Cartier. Le soir, il change de couleur." data-tip="Le pont">Le pont Jacques-Cartier</button>
-      <button class="sign exit-sign" type="button" data-act="quit">Retour au site</button>
       <div class="bubble say" hidden></div>
     </section>
 
@@ -628,7 +657,6 @@
       <button class="hot" style="left:12.3%;top:69.4%;width:10%;height:14.4%" data-say="Que des croquis ratés là-dedans." data-tip="La poubelle">Poubelle</button>
       <button class="hot" style="left:76.2%;top:79.6%;width:6.6%;height:13%" data-say="Psssht !" data-tip="Hum ?">Borne-fontaine</button>
       <button class="sign alt floors-sign" type="button" data-act="picker">Étages ⇅</button>
-      <button class="sign exit-sign" type="button" data-act="quit">Retour au site</button>
       <button class="sign alt city-sign" type="button" data-act="city-out">‹ Montréapolis</button>
       <div class="bubble say" id="say0" hidden></div>
     </section>
@@ -1089,7 +1117,7 @@
   // ---------- entrer dans l'écran ----------
   const screenEl = obj.querySelector('.screen');
   const hit = document.getElementById('enterHit'), tag = document.getElementById('enterTag');
-  const portal = document.getElementById('portal'), portalColor = portal.querySelector('.color'), portalBw = portal.querySelector('.bw');
+  const osBg = document.getElementById('osBg'), portal = document.getElementById('portal'), portalColor = portal.querySelector('.color'), portalBw = portal.querySelector('.bw');
   const os = document.getElementById('os'), stage = document.getElementById('stage');
   let canEnter = false, inside = false, busy = false, lastFocus = null;
 
@@ -1129,7 +1157,8 @@
     const from = screenEl.getBoundingClientRect();
     portalBw.src = CITY.bw; portalColor.src = CITY.title;   // l'écran-titre en noir et blanc vire à la couleur…
     if (CITY.k > 1) Object.assign(portalColor.style, { transformOrigin: CITY.origin, transform: `scale(${CITY.k})` });
-    portal.hidden = false; root.style.overflow = 'hidden';
+    portal.hidden = false; root.style.overflow = 'hidden'; root.classList.add('os-on');
+    osBg.style.transition = `opacity ${T(900)}ms cubic-bezier(.4, 0, .2, 1)`; osBg.style.opacity = 1;   // le site se fond au noir pendant que l'écran grandit
     // plongée dans le tube ; à mi-chemin le noir et blanc vire à la couleur
     const grow = portal.animate([box(from, 14), box(stageRect(), 0)], { duration: T(900), easing: 'cubic-bezier(.7, 0, .2, 1)', fill: 'forwards' });
     portalColor.animate([{ opacity: 0, filter: 'brightness(2.4) saturate(0)' }, { opacity: 0, offset: .45 }, { opacity: 1, filter: 'brightness(1.6) saturate(1.6)', offset: .7 }, { opacity: 1, filter: 'none' }],
@@ -1144,7 +1173,7 @@
     // … puis la caméra recule : du détail des maisons à toute l'île
     if (CITY.k > 1) await portalColor.animate([{ transform: `scale(${CITY.k})` }, { transform: 'scale(1)' }], { duration: T(1100), easing: 'cubic-bezier(.5, 0, .15, 1)', fill: 'forwards' }).finished;
     os.hidden = false; showRoom('ville'); bubble.hidden = true;
-    await os.animate([{ opacity: 0 }, { opacity: 1 }], { duration: T(220), easing: 'steps(3, end)' }).finished;
+    await os.animate([{ opacity: 0 }, { opacity: 1 }], { duration: T(260), easing: 'ease-out' }).finished;   // même image que le tube : seuls les panneaux apparaissent, en douceur
     portal.hidden = true; portal.getAnimations().forEach((a) => a.cancel()); portalColor.getAnimations().forEach((a) => a.cancel());
     portalColor.removeAttribute('style'); portalLoad.removeAttribute('style');
     [portalCity, portalBar].forEach((el) => el.getAnimations().forEach((a) => a.cancel()));
@@ -1153,20 +1182,22 @@
   };
   const leave = async () => {
     if (!inside || busy) return;
-    busy = true; closePicker(); osTag.hidden = true;
+    busy = true; closePicker(); osTag.hidden = true; osClose.classList.remove('on');
     const to = screenEl.getBoundingClientRect();
     if (room !== 'hall' && room !== 'rue' && room !== 'ville') showRoom('hall');
     portalColor.src = room === 'ville' ? 'mac3d/ville.webp' : room === 'rue' ? 'mac3d/street.webp' : 'mac3d/lobby-px.png';
     portalBw.src = room === 'ville' ? CITY.bw : 'mac3d/street-bw.png';
     portal.hidden = false; portalColor.style.opacity = 1;
     Object.assign(portal.style, box(stageRect(), 0));
-    await os.animate([{ opacity: 1 }, { opacity: 0 }], { duration: T(160), easing: 'steps(3, end)' }).finished;
+    await os.animate([{ opacity: 1 }, { opacity: 0 }], { duration: T(200), easing: 'ease-in' }).finished;
     os.hidden = true;
     if (room === 'ville' && CITY.k > 1) {   // on revient au détail des maisons avant de ressortir
       portalColor.style.transformOrigin = CITY.origin;
       await portalColor.animate([{ transform: 'scale(1)' }, { transform: `scale(${CITY.k})` }], { duration: T(800), easing: 'cubic-bezier(.6, 0, .4, 1)', fill: 'forwards' }).finished;
     }
     portalColor.animate([{ opacity: 1 }, { opacity: 1, offset: .3 }, { opacity: 0, offset: .6 }, { opacity: 0 }], { duration: T(760), easing: 'steps(8, end)', fill: 'forwards' });
+    root.classList.remove('os-on');
+    osBg.style.transition = `opacity ${T(760)}ms cubic-bezier(.4, 0, .2, 1)`; osBg.style.opacity = 0;
     await portal.animate([box(stageRect(), 0), box(to, 14)], { duration: T(760), easing: 'cubic-bezier(.7, 0, .2, 1)', fill: 'forwards' }).finished;
     portal.hidden = true; portal.getAnimations().forEach((a) => a.cancel()); portalColor.getAnimations().forEach((a) => a.cancel());
     portal.removeAttribute('style'); portalColor.removeAttribute('style');
@@ -1174,6 +1205,20 @@
     if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
   };
   hit.addEventListener('click', enter);
+  // « fermer » : l'étiquette suit la souris dès qu'elle quitte l'écran de jeu (un clic à côté de l'écran ferme déjà) ; au doigt, le bouton est posé sous l'écran
+  const osClose = document.getElementById('osClose');
+  if (matchMedia('(hover: none)').matches) osClose.classList.add('touch');
+  os.addEventListener('pointermove', (e) => {
+    if (e.pointerType === 'touch') return;
+    osClose.classList.toggle('on', e.target === os && !busy);
+    const w = osClose.offsetWidth, h = osClose.offsetHeight;   // près des bords, l'étiquette passe de l'autre côté du curseur
+    const x = e.clientX + 16 + w > innerWidth - 8 ? e.clientX - 12 - w : e.clientX + 16, y = e.clientY + 18 + h > innerHeight - 8 ? e.clientY - 12 - h : e.clientY + 18;
+    osClose.style.setProperty('--tx', x + 'px'); osClose.style.setProperty('--ty', y + 'px');
+  });
+  os.addEventListener('pointerleave', () => osClose.classList.remove('on'));
+  osClose.addEventListener('click', () => { osClose.classList.remove('on'); leave(); });
+  // dans Montréapolis, le logo JPR ramène au site
+  document.getElementById('hnav').addEventListener('click', (e) => { if (inside && e.target.closest('.nav-hit[data-menu="jpr"]')) { e.preventDefault(); e.stopPropagation(); leave(); } }, true);
   window.__enter = enter;
   os.addEventListener('click', (e) => { if (e.target === os) leave(); });   // clic à côté de l'écran de jeu : on revient au site
 
