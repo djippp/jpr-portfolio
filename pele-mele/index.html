@@ -1,5 +1,7 @@
+<meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F2F0EB">   <!-- 9 nov. : couleur de la barre du navigateur (Chrome Android ; Safari prend le fond de la page) -->
 <title>JPR Pêle-mêle</title>
 <style>html.pt-in::after{content:"";position:fixed;inset:0;z-index:5999;background:#F2F0EB;pointer-events:none;animation:pt-kill 0s 3s forwards}@keyframes pt-kill{to{visibility:hidden}}</style><script>if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("pt-in")</script>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -40,10 +42,10 @@
   .viewport { position: fixed; inset: 0; overflow: hidden; cursor: grab; touch-action: none; background: var(--paper); }
   .viewport.dragging { cursor: grabbing; }
   .viewport:focus-visible { outline: none; }
-  .board { position: absolute; left: 0; top: 0; width: 3560px; height: 2600px; transform-origin: 0 0; will-change: transform; }
+  .board { position: absolute; left: 0; top: 0; width: 4368px; height: 3136px; transform-origin: 0 0; will-change: transform; }
   /* 9 nov. (essai « nuée ») : trois plans de profondeur, comme la spirale du portfolio. Le plan du fond et celui du milieu
      glissent moins vite que le tableau (parallaxe) et sont flous ; au survol, une pièce revient au net. */
-  .layer { position: absolute; left: 0; top: 0; width: 3560px; height: 2600px; transform-origin: 0 0; will-change: transform; pointer-events: none; }
+  .layer { position: absolute; left: 0; top: 0; width: 4368px; height: 3136px; transform-origin: 0 0; will-change: transform; pointer-events: none; }
   .board { pointer-events: none; }
   .board > *, .layer > * { pointer-events: auto; }
   .layer .it { transition: filter .5s ease, opacity .5s ease, scale .5s cubic-bezier(.2, .8, .2, 1); }
@@ -55,44 +57,27 @@
   .it { position: absolute; left: var(--x); top: var(--y); width: var(--w); margin: 0; }
   .it video { display: block; width: 100%; height: auto; pointer-events: none; }
   .it img { display: block; width: 100%; height: auto; max-width: none; user-select: none; -webkit-user-drag: none; }
-  .px img { image-rendering: pixelated; }
   /* sélection façon outil de design : un filet noir, rien de plus */
   /* 9 nov. (galerie) : plus d'étiquettes ni de filet ; au survol, l'image avance à peine */
   .board .it { transition: scale .5s cubic-bezier(.2, .8, .2, 1); }
   .board .it:hover { scale: 1.02; }
-  /* étiquette de fichier au-dessus de chaque élément, toujours à la même taille à l'écran */
-  .lbl {
-    position: absolute; left: 0; right: 0; bottom: 100%; padding-bottom: calc(6px / var(--z, 1));
-    display: flex; justify-content: space-between; gap: 1em; white-space: nowrap;
-    font: 400 calc(12px / var(--z, 1))/1 var(--grot); color: var(--ink); font-variant-numeric: tabular-nums;
-  }
-  .lbl i { font-style: normal; opacity: .45; }
-
-  /* le titre : le gif 1 bit, en énorme, sans écran autour */
-  .hero { cursor: inherit; }
-  /* 6 nov. : le gif en multiply : son blanc prend le blanc cassé du fond, le noir reste noir.
-     Le tableau reçoit la couleur du fond, sinon le mélange se ferait sur du transparent (le tableau est son propre calque). */
-  /* le gif est maintenant transparent (noir sur rien) : les pièces du fond se voient à travers les lettres */
-
-  /* emplacement photo à venir */
-  .slotph { aspect-ratio: 4 / 3; border: 3px solid var(--ink); display: grid; place-items: center; font: 400 30px/1.2 var(--grot); text-align: center; }
-
-  /* petit piano jouable, noir et blanc */
-  .keys { position: relative; display: flex; height: 220px; touch-action: none; border: 3px solid var(--ink); }
-  .keys button { font: inherit; cursor: pointer; padding: 0; margin: 0; }
-  .white { flex: 1; background: #F2F0EB; border: 0; border-left: 3px solid var(--ink); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 14px !important; font: 400 22px/1 var(--grot) !important; color: var(--ink); }
-  .white:first-child { border-left: 0; }
-  .black { position: absolute; top: 0; width: 7%; height: 60%; background: var(--ink); border: 0; z-index: 2; }
-  .white.on { background: var(--ink); color: #F2F0EB; } .black.on { background: #F2F0EB; outline: 1px solid var(--ink); outline-offset: -1px; }
-  .keys button:focus-visible { outline: 2px solid var(--ink); outline-offset: -5px; }
-  .black:focus-visible { outline-color: #F2F0EB; }
-
-  .txt { font: 400 34px/1.15 var(--grot); letter-spacing: -.01em; margin: 0; }
+  /* 9 nov. : entrée en scène — les photos sortent du flou une à une, comme une mise au point (l'ordre et les délais viennent du script) */
+  .board .it { transition: scale .5s cubic-bezier(.2, .8, .2, 1), filter .9s cubic-bezier(.2, .7, .2, 1), opacity .7s ease; }
+  .pre .it { opacity: 0 !important; filter: blur(16px) !important; scale: .96; }
+  @media (prefers-reduced-motion: reduce) { .pre .it { opacity: 1 !important; filter: none !important; scale: 1; } }
+  /* 9 nov. : clic sur une photo = mise au point : la caméra glisse jusqu'à elle, le reste du tableau passe au flou */
+  .viewport.focus .board .it:not(.on) { filter: blur(7px); opacity: .45; }
+  .viewport.focus .layer { opacity: .35; transition: opacity .7s ease; }
+  .layer { transition: opacity .7s ease; }
+  .board .it.on { scale: 1; }
+  .board .it:not(.vid) { cursor: pointer; }
+  .viewport.focus .board .it.on { cursor: pointer; }
+  .viewport.dragging .board .it { cursor: grabbing; }
 
   /* ---------- interface : du texte, inversé lui aussi ---------- */
   .hud {
     position: fixed; z-index: 20; display: flex; gap: 1.1em; align-items: baseline;
-    font: 400 max(12px, calc(19.5 / 1600 * var(--fw))) / 1 var(--grot); letter-spacing: -.01em; color: #F2F0EB; mix-blend-mode: difference;
+    font: 400 calc(19.5 / 1600 * var(--fw)) / 1 var(--grot);   /* 9 nov. : exactement la taille du menu du haut (plus de plancher à 12 px, qui la grossissait sur un écran étroit) */ letter-spacing: -.01em; color: #F2F0EB; mix-blend-mode: difference;
     font-variant-numeric: tabular-nums;
     /* 9 nov. : calés sur la marge du site comme le pied de page des autres pages : le texte touche la marge à gauche et à droite,
        et en bas ce sont les descendantes qui la touchent (ligne de base = marge + .22em ; .15em = du bas de la ligne à la ligne de base) */
@@ -101,6 +86,7 @@
   /* 9 nov. : trois repères sur la grille du site : le zoom en col. 1, x y en col. 2 (sous « pêle-mêle »), le nom du projet survolé à droite.
      Le zoom reste en col. 1 sur mobile aussi (x y y est masqué) : il ne change pas de place d'un écran à l'autre */
   .hud.l { left: max(16px, env(safe-area-inset-left, 0px)); }
+  @media (max-width: 700px) { .hud { font-size: 15px; } }   /* mobile : la taille du menu mobile */
   .hud.z { left: max(16px, env(safe-area-inset-left, 0px)); gap: .9em; }
   @media (max-width: 700px) { .hud.l { display: none; } }   /* mobile : pas la place pour trois repères ; le zoom prend la col. 1, le nom garde la droite */
   .hud.r { right: max(16px, env(safe-area-inset-right, 0px)); }
@@ -112,6 +98,27 @@
   /* le nom du projet, comme la légende de la spirale du portfolio : les lettres se tapent en léger glitch, de droite à gauche */
   .pcap { pointer-events: none; white-space: nowrap; max-width: calc(100vw - 50% - 16px); transition: opacity .35s ease; }
   .pcap:not(.on) { opacity: 0; }
+  /* 9 nov. : flou progressif sous le menu, propre au Pêle-mêle — le haut du tableau est « hors focus », comme les plans du fond.
+     Cinq couches empilées (0,5 à 6 px, la version douce), chacune masquée un peu plus haut */
+  .pblur { position: fixed; left: 0; right: 0; top: 0; height: calc(84 / 1600 * var(--fw) + 120px); z-index: 5999; pointer-events: none; }
+  .pblur i { position: absolute; inset: 0; }
+  .pblur i:nth-child(1) { -webkit-backdrop-filter: blur(.5px); backdrop-filter: blur(.5px); -webkit-mask-image: linear-gradient(#000 0%, #000 70%, transparent 100%); mask-image: linear-gradient(#000 0%, #000 70%, transparent 100%); }
+  .pblur i:nth-child(2) { -webkit-backdrop-filter: blur(1px); backdrop-filter: blur(1px); -webkit-mask-image: linear-gradient(#000 0%, #000 50%, transparent 85%); mask-image: linear-gradient(#000 0%, #000 50%, transparent 85%); }
+  .pblur i:nth-child(3) { -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); -webkit-mask-image: linear-gradient(#000 0%, #000 35%, transparent 66%); mask-image: linear-gradient(#000 0%, #000 35%, transparent 66%); }
+  .pblur i:nth-child(4) { -webkit-backdrop-filter: blur(3.5px); backdrop-filter: blur(3.5px); -webkit-mask-image: linear-gradient(#000 0%, #000 20%, transparent 48%); mask-image: linear-gradient(#000 0%, #000 20%, transparent 48%); }
+  .pblur i:nth-child(5) { -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); -webkit-mask-image: linear-gradient(#000 0%, #000 8%, transparent 32%); mask-image: linear-gradient(#000 0%, #000 8%, transparent 32%); }
+  @media (max-width: 700px) { .pblur { height: 120px; } }
+  /* 9 nov. : le même flou en bas, en miroir, sous les repères (qui restent nets : ils sont au niveau 20) */
+  .pblur.b { top: auto; bottom: 0; z-index: 15; transform: scaleY(-1); }
+  /* 9 nov. : à l'arrivée, rien derrière le menu ni les repères : deux caches couleur papier, retirés au premier mouvement du tableau */
+  .pmask { position: fixed; left: 0; right: 0; top: 0; height: 0; z-index: 10; background: var(--paper); pointer-events: none; opacity: 0; transition: opacity .7s ease; }
+  .pmask.b { top: auto; bottom: 0; height: auto; }
+  .pmask.on { opacity: 1; transition: none; }
+  .pcap .go { display: none; margin-left: 1.1em; color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .2em; }
+  .pcap .go:hover { text-decoration-thickness: 2px; }
+  .pcap.f { pointer-events: auto; }
+  .pcap.f .go { display: inline; }
+  @media (max-width: 700px) { .pcap.f { flex-direction: column; align-items: flex-end; gap: .4em; } .pcap .go { margin-left: 0; } }
   @media (max-width: 700px) { .pcap { white-space: normal; text-align: right; line-height: 1.25; max-width: calc(100vw - 16px - 2 * var(--mc, 74px)); } }   /* mobile : un nom long passe sur deux lignes au lieu de déborder sur le zoom */
   .pcap .g { opacity: 0; }
   .pcap .g.x { opacity: .45; }
@@ -121,9 +128,6 @@
   .hud button::after { content: ""; position: absolute; inset: -14px -.45em; }   /* la zone de clic reste généreuse, sans décaler le texte */
   .hud button:hover { text-decoration: underline; text-underline-offset: .2em; text-decoration-thickness: 1px; }
   .hud button:focus-visible { outline: 1px solid currentColor; outline-offset: 3px; }
-  @media (max-width: 640px) {
-    .hud.l .hint { display: none; }
-  }
 </style>
 
 <style>
@@ -173,36 +177,45 @@
 <div class="mnav"><span><a href="../portfolio/index.html" target="_top">portfolio</a><a href="#" aria-current="page">pêle-mêle</a></span><span><a href="../info/index.html" target="_top">info</a><a href="#" data-contact>contact</a></span></div>
 
 <main class="viewport" id="vp" tabindex="0" aria-label="Pêle-mêle : un grand tableau à explorer. Glisse ou utilise les flèches pour te déplacer.">
-  <div class="layer far" id="lfar" data-p=".55">
-    <figure data-n="Solyt" class="it ph" style="--x:3007px;--y:41px;--w:163px;--b:8.0px" aria-hidden="true"><img draggable="false" src="projects/solyt/04.webp" alt="" width="1600" height="1105"></figure>
-    <figure data-n="Solyt" class="it ph" style="--x:3200px;--y:561px;--w:153px;--b:6.9px" aria-hidden="true"><img draggable="false" src="projects/solyt/02.webp" alt="" width="1600" height="1369"></figure>
-    <figure data-n="Lait carboneutre" class="it ph" style="--x:3140px;--y:1282px;--w:209px;--b:8.3px" aria-hidden="true"><img draggable="false" src="projects/lait-carboneutre.webp" alt="" width="760" height="845"></figure>
-    <figure data-n="Solyt" class="it ph" style="--x:1311px;--y:1627px;--w:142px;--b:6.0px" aria-hidden="true"><img draggable="false" src="projects/solyt/09.webp" alt="" width="1600" height="1200"></figure>
-    <figure data-n="Solyt" class="it ph" style="--x:1701px;--y:1866px;--w:194px;--b:7.0px" aria-hidden="true"><img draggable="false" src="projects/solyt/03.webp" alt="" width="1600" height="1216"></figure>
+  <div class="layer far pre" id="lfar" data-p=".55">
+    <figure data-n="Solyt" class="it ph" style="--x:3681px;--y:60px;--w:163px;--b:8.0px" aria-hidden="true"><img draggable="false" src="projects/solyt/04.webp" alt="" width="1600" height="1105"></figure>
+    <figure data-n="Solyt" class="it ph" style="--x:3915px;--y:697px;--w:153px;--b:6.9px" aria-hidden="true"><img draggable="false" src="projects/solyt/02.webp" alt="" width="1600" height="1369"></figure>
+    <figure data-n="Lait carboneutre" class="it ph" style="--x:3848px;--y:1588px;--w:209px;--b:8.3px" aria-hidden="true"><img draggable="false" src="projects/lait-carboneutre.webp" alt="" width="760" height="845"></figure>
+    <figure data-n="Solyt" class="it ph" style="--x:1609px;--y:1995px;--w:142px;--b:6.0px" aria-hidden="true"><img draggable="false" src="projects/solyt/09.webp" alt="" width="1600" height="1200"></figure>
+    <figure data-n="Solyt" class="it ph" style="--x:2091px;--y:2291px;--w:194px;--b:7.0px" aria-hidden="true"><img draggable="false" src="projects/solyt/03.webp" alt="" width="1600" height="1216"></figure>
+    <figure data-n="Anti-Troll Kit" class="it ph" style="--x:1262px;--y:263px;--w:207px;--b:8.5px" aria-hidden="true"><img draggable="false" src="projects/anti-troll.webp" alt="" width="760" height="845"></figure>
+    <figure data-n="Novalait" class="it ph" style="--x:1701px;--y:1615px;--w:185px;--b:8.8px" aria-hidden="true"><img draggable="false" src="projects/novalait.webp" alt="" width="760" height="844"></figure>
+    <figure data-n="Via Prévention" class="it ph" style="--x:2978px;--y:932px;--w:160px;--b:7.1px" aria-hidden="true"><img draggable="false" src="projects/via-prevention.webp" alt="" width="760" height="845"></figure>
+    <figure data-n="Institut Douglas" class="it ph" style="--x:1979px;--y:2904px;--w:156px;--b:7.5px" aria-hidden="true"><img draggable="false" src="projects/douglas.webp" alt="" width="760" height="845"></figure>
+    <figure data-n="Solyt" class="it ph" style="--x:565px;--y:2151px;--w:165px;--b:6.5px" aria-hidden="true"><img draggable="false" src="projects/solyt/01.webp" alt="" width="1600" height="901"></figure>
+    <figure data-n="Solyt" class="it ph" style="--x:1753px;--y:627px;--w:200px;--b:7.2px" aria-hidden="true"><img draggable="false" src="projects/solyt/06.webp" alt="" width="1600" height="1501"></figure>
   </div>
-  <div class="layer mid" id="lmid" data-p=".8">
-    <figure data-n="Hôpital de Montréal pour enfants" class="it ph" style="--x:1811px;--y:1413px;--w:288px;--b:2.5px" aria-hidden="true"><img draggable="false" src="projects/hme.webp" alt="" width="760" height="845"></figure>
-    <figure data-n="SQDI" class="it ph" style="--x:3272px;--y:94px;--w:272px;--b:3.6px" aria-hidden="true"><img draggable="false" src="projects/sqdi.webp" alt="" width="760" height="845"></figure>
-    <figure data-n="Solyt" class="it ph" style="--x:3066px;--y:881px;--w:286px;--b:3.9px" aria-hidden="true"><img draggable="false" src="projects/solyt/10.webp" alt="" width="1600" height="1304"></figure>
-    <figure data-n="Solyt" class="it ph" style="--x:2318px;--y:1675px;--w:285px;--b:3.6px" aria-hidden="true"><img draggable="false" src="projects/solyt/16.webp" alt="" width="1600" height="1418"></figure>
+  <div class="layer mid pre" id="lmid" data-p=".8">
+    <figure data-n="Hôpital de Montréal pour enfants" class="it ph" style="--x:2236px;--y:1757px;--w:288px;--b:2.5px" aria-hidden="true"><img draggable="false" src="projects/hme.webp" alt="" width="760" height="845"></figure>
+    <figure data-n="SQDI" class="it ph" style="--x:4016px;--y:146px;--w:272px;--b:3.6px" aria-hidden="true"><img draggable="false" src="projects/sqdi.webp" alt="" width="760" height="845"></figure>
+    <figure data-n="Solyt" class="it ph" style="--x:3766px;--y:1098px;--w:286px;--b:3.9px" aria-hidden="true"><img draggable="false" src="projects/solyt/10.webp" alt="" width="1600" height="1304"></figure>
+    <figure data-n="Solyt" class="it ph" style="--x:2854px;--y:2069px;--w:285px;--b:3.6px" aria-hidden="true"><img draggable="false" src="projects/solyt/16.webp" alt="" width="1600" height="1418"></figure>
+    <figure data-n="Solyt" class="it ph" style="--x:63px;--y:1077px;--w:271px;--b:3.2px" aria-hidden="true"><img draggable="false" src="projects/solyt/12.webp" alt="" width="1600" height="1266"></figure>
+    <figure data-n="Solyt" class="it ph" style="--x:745px;--y:449px;--w:289px;--b:3.2px" aria-hidden="true"><img draggable="false" src="projects/solyt/14.webp" alt="" width="1600" height="1201"></figure>
   </div>
-  <div class="board" id="board">
+  <div class="board pre" id="board">
     <!-- 9 nov. : moi au piano (« Plus tôt », Alexandra Stréliski), en boucle muette de 8,6 s : le seul élément qui bouge, juste à gauche de la vue de départ (on la découvre en glissant) ; au clic, la prise complète avec le son (a/piano-son.mp4, chargée seulement à ce moment) -->
-    <figure data-n="Piano · Plus tôt, Alexandra Stréliski" class="it vid" style="--x:755px;--y:763px;--w:470px"><video src="a/piano.mp4" poster="a/piano.jpg" width="640" height="794" autoplay muted loop playsinline disablepictureinpicture preload="auto" aria-hidden="true"></video></figure>
-    <figure data-n="Collège Sainte-Marcelline" class="it" style="--x:2416px;--y:1022px;--w:429px"><img draggable="false" src="projects/sainte-marcelline.webp" alt="" width="760" height="844"></figure>
-    <figure data-n="Solyt" class="it" style="--x:2824px;--y:1875px;--w:533px"><img draggable="false" src="projects/solyt/05.webp" alt="" width="1600" height="1512"></figure>
-    <figure data-n="Jardins Mirabel" class="it" style="--x:1137px;--y:2019px;--w:441px"><img draggable="false" src="projects/jardins-mirabel.webp" alt="" width="760" height="844"></figure>
-    <figure data-n="Solyt" class="it" style="--x:1560px;--y:734px;--w:527px"><img draggable="false" src="projects/solyt/13.webp" alt="" width="1600" height="1333"></figure>
-    <figure data-n="Arsenal de la créativité" class="it" style="--x:2px;--y:1199px;--w:392px"><img draggable="false" src="projects/arsenal.webp" alt="" width="760" height="844"></figure>
-    <figure data-n="Fraser &amp; Gauthier" class="it" style="--x:1776px;--y:1417px;--w:422px"><img draggable="false" src="projects/fraser-gauthier.webp" alt="" width="760" height="844"></figure>
-    <figure data-n="Solyt" class="it" style="--x:2562px;--y:299px;--w:388px"><img draggable="false" src="projects/solyt/11.webp" alt="" width="1600" height="1717"></figure>
-    <figure data-n="Maison Trinitaire" class="it" style="--x:1850px;--y:2108px;--w:394px"><img draggable="false" src="projects/maison-trinitaire.webp" alt="" width="760" height="845"></figure>
-    <figure data-n="Solyt" class="it" style="--x:291px;--y:1895px;--w:448px"><img draggable="false" src="projects/solyt/07.webp" alt="" width="1500" height="1644"></figure>
-    <figure data-n="Marie de France" class="it" style="--x:116px;--y:166px;--w:394px"><img draggable="false" src="projects/marie-de-france.webp" alt="" width="760" height="845"></figure>
-    <figure data-n="Solyt" class="it" style="--x:1866px;--y:115px;--w:523px"><img draggable="false" src="projects/solyt/08.webp" alt="" width="1600" height="1200"></figure>
+    <figure data-n="Piano · Plus tôt, Alexandra Stréliski" class="it vid" style="--x:967px;--y:993px;--w:470px"><video src="a/piano.mp4" poster="a/piano.jpg" width="640" height="794" autoplay muted loop playsinline disablepictureinpicture preload="auto" aria-hidden="true"></video></figure>
+    <figure data-n="Collège Sainte-Marcelline" class="it" style="--x:2989px;--y:1297px;--w:429px"><img draggable="false" src="projects/sainte-marcelline.webp" alt="" width="760" height="844"></figure>
+    <figure data-n="Solyt" class="it" style="--x:3498px;--y:2341px;--w:533px"><img draggable="false" src="projects/solyt/05.webp" alt="" width="1600" height="1512"></figure>
+    <figure data-n="Jardins Mirabel" class="it" style="--x:1430px;--y:2515px;--w:441px"><img draggable="false" src="projects/jardins-mirabel.webp" alt="" width="760" height="844"></figure>
+    <figure data-n="Solyt" class="it" style="--x:1956px;--y:942px;--w:527px"><img draggable="false" src="projects/solyt/13.webp" alt="" width="1600" height="1333"></figure>
+    <figure data-n="Arsenal de la créativité" class="it" style="--x:40px;--y:1509px;--w:392px"><img draggable="false" src="projects/arsenal.webp" alt="" width="760" height="844"></figure>
+    <figure data-n="Fraser &amp; Gauthier" class="it" style="--x:2208px;--y:1778px;--w:422px"><img draggable="false" src="projects/fraser-gauthier.webp" alt="" width="760" height="844"></figure>
+    <figure data-n="Solyt" class="it" style="--x:3163px;--y:409px;--w:388px"><img draggable="false" src="projects/solyt/11.webp" alt="" width="1600" height="1717"></figure>
+    <figure data-n="Maison Trinitaire" class="it" style="--x:2295px;--y:2618px;--w:394px"><img draggable="false" src="projects/maison-trinitaire.webp" alt="" width="760" height="845"></figure>
+    <figure data-n="Solyt" class="it" style="--x:399px;--y:2364px;--w:448px"><img draggable="false" src="projects/solyt/07.webp" alt="" width="1500" height="1644"></figure>
+    <figure data-n="Marie de France" class="it" style="--x:179px;--y:249px;--w:394px"><img draggable="false" src="projects/marie-de-france.webp" alt="" width="760" height="845"></figure>
+    <figure data-n="Solyt" class="it" style="--x:2328px;--y:181px;--w:523px"><img draggable="false" src="projects/solyt/08.webp" alt="" width="1600" height="1200"></figure>
   </div>
 </main>
 
+<div class="pblur" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="pblur b" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="pmask" id="pmTop" aria-hidden="true"></div><div class="pmask b" id="pmBot" aria-hidden="true"></div>
 <div class="hud l" aria-live="off">
   <span id="coords">x 0 y 0</span>
 </div>
@@ -211,11 +224,11 @@
   <button type="button" id="zReset" aria-label="Revenir à 100 %">100 %</button>
   <button type="button" id="zIn" aria-label="Zoomer">+</button>
 </div>
-<div class="hud r pcap" id="pcap" aria-live="polite"><span class="nm"></span></div>
+<div class="hud r pcap" id="pcap" aria-live="polite"><span class="nm"></span><a class="go" id="pgo" href="#" target="_top">voir le projet ↗</a></div>
 
 <script>
 (() => {
-  const BW = 3560, BH = 2600, VID = { x: 755, y: 763, w: 470, h: 583 };   // la vidéo du piano : en haut à gauche du mur, juste hors de l'écran (à gauche) à l'arrivée   // la vue de départ est centrée sur la vidéo du piano
+  const BW = 4368, BH = 3136;
   const vp = document.getElementById('vp'), board = document.getElementById('board');
   const coords = document.getElementById('coords'), zReset = document.getElementById('zReset');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -238,6 +251,7 @@
   };
   const render = () => {
     clampCam();
+    if (startCam && (Math.abs(cam.x - startCam.x) + Math.abs(cam.y - startCam.y)) * cam.z + Math.abs(cam.z - startCam.z) * 400 > 2) unmask();
     board.style.transform = `scale(${cam.z}) translate(${-cam.x}px, ${-cam.y}px)`;
     // les plans du fond : ils glissent moins vite (facteur p) autour du centre du tableau, et dérivent un peu avec la souris
     const Cx = cam.x + innerWidth / cam.z / 2, Cy = cam.y + innerHeight / cam.z / 2;
@@ -272,15 +286,59 @@
     // 9 nov. : on ne voit pas la vidéo en arrivant ; elle attend 30 px à gauche de l'écran, à mi-hauteur :
     // le premier petit glissement vers la droite la découvre, comme une surprise
     const mob = innerWidth < 640;
-    cam.z = clampZ(mob ? innerWidth / 710 : Math.min(innerWidth / 2250, innerHeight / 1500));
-    cam.x = VID.x + VID.w + 30 / cam.z;
-    cam.y = VID.y + VID.h / 2 - innerHeight * .45 / cam.z; render();
+    cam.z = clampZ(mob ? innerWidth / 820 : Math.min(innerWidth / 2450, innerHeight / 1630));   // 9 nov. : un peu plus loin, le tableau ayant plus d'air
+    const vf = board.querySelector('.it.vid'), vx0 = parseFloat(vf.style.getPropertyValue('--x')), vy0 = parseFloat(vf.style.getPropertyValue('--y')), vw = parseFloat(vf.style.getPropertyValue('--w'));
+    cam.x = vx0 + vw + 30 / cam.z;
+    cam.y = vy0 + vw * 794 / 640 / 2 - innerHeight * .45 / cam.z;
+    clear(vx0 + vw); render();
   };
+  // 9 nov. : à l'arrivée, rien derrière le menu ni derrière les repères du bas. On essaie de petits décalages autour de la vue
+  // de départ (jamais vers la gauche : le piano doit rester caché) et on garde le plus proche qui laisse les deux bandes vides,
+  // vignettes floues comprises (avec leur parallaxe et une marge pour leur dérive à la souris). Sinon, celui qui en cache le moins.
+  const clear = (vidRight) => {
+    const nav = [...document.querySelectorAll(innerWidth <= 700 ? '.mnav a, .mnav button, .jlogo a' : '.jnav a')].map((a) => a.getBoundingClientRect()).filter((r) => r.height > 0 && r.top < 200);
+    const top = (nav.length ? Math.max(...nav.map((r) => r.bottom)) : 70) + 18;
+    // la ligne du bas : marge du site + une ligne de repères + 18 px d'air (calculé, la mesure n'est pas fiable pendant la transition de page)
+    const hfs = parseFloat(getComputedStyle(document.querySelector('.hud')).fontSize) || 14;
+    const bot = innerHeight - (innerWidth > 700 ? innerWidth * .016 : 16) - hfs * 1.3 - 18;
+    const items = [];
+    board.querySelectorAll('.it').forEach((it) => items.push([it, 1, 0]));
+    LAYERS.forEach(([el, p]) => el.querySelectorAll('.it').forEach((it) => items.push([it, p, 24])));
+    const geo = items.map(([it, p, pad]) => [parseFloat(it.style.getPropertyValue('--x')), parseFloat(it.style.getPropertyValue('--y')), it.offsetWidth, it.offsetHeight, p, pad]);
+    const z = cam.z, W = innerWidth, H = innerHeight;
+    const cost = (cx0, cy0) => {
+      const Cx = cx0 + W / z / 2, Cy = cy0 + H / z / 2; let c = 0;
+      for (const [x, y, w, h, p, pad] of geo) {
+        let sx, sy;
+        if (p === 1) { sx = (x - cx0) * z; sy = (y - cy0) * z; }
+        else { sx = W / 2 + (x - (BW / 2 + (Cx - BW / 2) * p)) * z; sy = H / 2 + (y - (BH / 2 + (Cy - BH / 2) * p)) * z; }
+        const l = sx - pad, r = sx + w * z + pad, t = sy - pad, b = sy + h * z + pad;
+        if (r < 0 || l > W) continue;
+        const ox = Math.min(r, W) - Math.max(l, 0);
+        c += ox * (Math.max(0, Math.min(b, top) - Math.max(t, 0)) + .15 * Math.max(0, Math.min(b, H) - Math.max(t, bot)));   // le menu d'abord ; le bas compte moins
+      }
+      return c;
+    };
+    // grille de décalages : jusqu'à 600 px vers la droite et 300 px en haut ou en bas ; on garde la vue la plus propre, puis la plus proche
+    const base = { ...cam }; let best = null;
+    for (let dx = 0; dx <= 20; dx++) for (let dy = -10; dy <= 10; dy++) {
+      cam.x = base.x + dx * 30 / z; cam.y = base.y + dy * 30 / z; clampCam();
+      if ((vidRight - cam.x) * z > -8) continue;   // le piano doit rester hors de l'écran
+      const c = cost(cam.x, cam.y), d = Math.hypot(dx, dy);
+      if (!best || c < best.c - 1 || (Math.abs(c - best.c) <= 1 && d < best.d)) best = { c, d, x: cam.x, y: cam.y };
+    }
+    if (best) { cam.x = best.x; cam.y = best.y; } else { cam.x = base.x; cam.y = base.y; }
+    // ce qui touche encore les bandes est voilé par deux caches couleur papier, jusqu'au premier mouvement du tableau
+    mTop.style.height = top + 'px'; mBot.style.top = bot + 'px';
+    if (best && best.c > 0) { mTop.classList.add('on'); mBot.classList.add('on'); startCam = { x: cam.x, y: cam.y, z: cam.z }; }
+  };
+  const mTop = document.getElementById('pmTop'), mBot = document.getElementById('pmBot');
+  let startCam = null;
+  const unmask = () => { if (!startCam) return; startCam = null; mTop.classList.remove('on'); mBot.classList.remove('on'); };
 
   // glisser pour se déplacer, avec élan ; pincer pour zoomer
   const pts = new Map(); let last = null, pinch = null;
   vp.addEventListener('pointerdown', (e) => {
-    if (e.target.closest('.keys')) return;
     vp.setPointerCapture(e.pointerId); pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
     cancelAnimationFrame(anim); vx = vy = 0;
     last = { t: performance.now() };
@@ -325,13 +383,9 @@
 
   // double-clic : cadre l'élément visé (ou zoome sur le point)
   vp.addEventListener('dblclick', (e) => {
-    if (e.target.closest('.keys')) return;
     const it = e.target.closest('.it');
-    if (it) {
-      const x = parseFloat(it.style.getPropertyValue('--x')), y = parseFloat(it.style.getPropertyValue('--y'));
-      const w = it.offsetWidth, h = it.offsetHeight, z = clampZ(Math.min(innerWidth * .75 / w, innerHeight * .75 / h));
-      centerOn(x + w / 2, y + h / 2, z);
-    } else {
+    if (it) return;   // 9 nov. : sur une photo, le simple clic fait déjà la mise au point
+    else {
       const bx = cam.x + e.clientX / cam.z, by = cam.y + e.clientY / cam.z; centerOn(bx, by, clampZ(cam.z * 1.6));
     }
   });
@@ -403,8 +457,8 @@
     vidFig.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggleSound(); } });
   }
   if (hoverOk) {
-    vp.addEventListener('pointerover', (e) => { if (vp.classList.contains('dragging')) return; const it = e.target.closest('.it[data-n]'); if (it) showCap(label(it)); });
-    vp.addEventListener('pointerout', (e) => { const it = e.target.closest('.it[data-n]'); if (it && !it.contains(e.relatedTarget)) showCap(''); });
+    vp.addEventListener('pointerover', (e) => { if (vp.classList.contains('dragging') || focused) return; const it = e.target.closest('.it[data-n]'); if (it) showCap(label(it)); });
+    vp.addEventListener('pointerout', (e) => { if (focused) return; const it = e.target.closest('.it[data-n]'); if (it && !it.contains(e.relatedTarget)) showCap(''); });
   } else {
     // toucher : un tap sans glisser montre le nom quelques secondes
     let t0 = null;
@@ -413,22 +467,78 @@
       if (!t0 || Math.hypot(e.clientX - t0.x, e.clientY - t0.y) > 8) return;
       const it = document.elementsFromPoint(e.clientX, e.clientY).map((el) => el.closest && el.closest('.it[data-n]')).find(Boolean);
       if (it && it.classList.contains('vid')) return;   // la vidéo : le toucher sert au son (plus bas)
-      showCap(it ? label(it) : ''); if (it) capT = setTimeout(() => showCap(''), 2600);
+      if (!it || !board.contains(it)) showCap(it ? label(it) : '');   // une vignette floue : son nom ; une photo : la mise au point (plus bas)
+      if (it && !board.contains(it)) capT = setTimeout(() => showCap(''), 2600);
     });
   }
+
+
+  // 9 nov. : mise au point. Un clic (ou un toucher) sur une photo nette : la caméra glisse jusqu'à elle, le reste passe au flou,
+  // la légende donne le projet, sa discipline et un lien vers sa fiche dans le portfolio. Un autre clic, Échap ou un clic dans le vide : retour.
+  const PF = '../portfolio/index.html';
+  const CAT = { 'Maison Trinitaire': 'Site web · UX/UI', 'Jardins Mirabel': 'Image de marque · Site web', 'Collège Sainte-Marcelline': 'Image de marque · UX/UI',
+    'Solyt': 'Identité visuelle · Site web', 'Anti-Troll Kit': 'Image de marque · Vidéo', 'Hôpital de Montréal pour enfants': 'Illustration · UX/UI' };
+  const slug = (t) => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/&/g, 'et').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const go = document.getElementById('pgo');
+  let focused = null, prevCam = null;
+  const focusOn = (it) => {
+    if (!focused) prevCam = { ...cam };
+    if (focused) focused.classList.remove('on');
+    focused = it; it.classList.add('on'); vp.classList.add('focus');
+    const x = parseFloat(it.style.getPropertyValue('--x')), y = parseFloat(it.style.getPropertyValue('--y')), w = it.offsetWidth, h = it.offsetHeight;
+    const z = clampZ(Math.min(innerWidth * (innerWidth < 640 ? .82 : .5) / w, (innerHeight - 220) / h));
+    centerOn(x + w / 2, y + h / 2, z);
+    const n = it.dataset.n; capCur = ''; showCap(n + ' · ' + (CAT[n] || 'Kryzalid'));
+    go.href = PF + '#' + slug(n); cap.classList.add('f');
+  };
+  const unfocus = (back) => {
+    if (!focused) return;
+    focused.classList.remove('on'); focused = null; vp.classList.remove('focus'); cap.classList.remove('f'); showCap('');
+    if (back && prevCam) flyTo(prevCam.x, prevCam.y, prevCam.z);
+  };
+  {
+    let f0 = null, moved = false;
+    vp.addEventListener('pointerdown', (e) => { f0 = { x: e.clientX, y: e.clientY }; moved = false; });
+    vp.addEventListener('pointermove', (e) => { if (f0 && !moved && Math.hypot(e.clientX - f0.x, e.clientY - f0.y) > 8) { moved = true; if (focused) unfocus(false); } });
+    vp.addEventListener('pointerup', (e) => {
+      if (!f0 || moved) return; f0 = null;
+      const it = document.elementsFromPoint(e.clientX, e.clientY).map((el) => el.closest && el.closest('.board .it')).find(Boolean);
+      if (it && it.classList.contains('vid')) return;
+      if (!it) { unfocus(true); return; }
+      if (it === focused) unfocus(true); else focusOn(it);
+    });
+    vp.addEventListener('wheel', () => { if (focused) unfocus(false); }, { passive: true });
+    addEventListener('keydown', (e) => { if (e.key === 'Escape') unfocus(true); });
+    // clavier : chaque photo se met au point avec Entrée
+    board.querySelectorAll('.it:not(.vid)').forEach((it) => {
+      it.tabIndex = 0; it.setAttribute('role', 'button'); it.setAttribute('aria-label', it.dataset.n + ' : mise au point');
+      it.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); it === focused ? unfocus(true) : focusOn(it); } });
+    });
+  }
+
+  // 9 nov. : entrée en scène. Les photos sortent du flou une à une, de la plus proche du centre de l'écran à la plus loin ;
+  // les vignettes floues suivent, plus lentement. Une seconde et demie en tout.
+  const enter = () => {
+    const groups = [board, document.getElementById('lmid'), document.getElementById('lfar')];
+    if (reduce) { groups.forEach((g) => g.classList.remove('pre')); return; }
+    const cx = innerWidth / 2, cy = innerHeight / 2;
+    let maxD = 0;
+    groups.forEach((g, gi) => {
+      const its = [...g.querySelectorAll('.it')].map((it) => { const r = it.getBoundingClientRect(); return [it, Math.hypot(r.left + r.width / 2 - cx, r.top + r.height / 2 - cy)]; })
+        .sort((a, b) => a[1] - b[1]);
+      its.forEach(([it], i) => { const d = 200 + gi * 260 + i * (gi ? 40 : 70); it.style.transitionDelay = d + 'ms'; maxD = Math.max(maxD, d); });
+    });
+    requestAnimationFrame(() => requestAnimationFrame(() => groups.forEach((g) => g.classList.remove('pre'))));
+    setTimeout(() => groups.forEach((g) => g.querySelectorAll('.it').forEach((it) => { it.style.transitionDelay = ''; })), maxD + 1100);
+  };
 
   // mouvement réduit demandé : la vidéo reste sur sa première image
   if (reduce) board.querySelectorAll('video').forEach((v) => { v.removeAttribute('autoplay'); v.pause(); });
 
-  // gifs 1 bit animés
-  if (!reduce) board.querySelectorAll('[data-anim]').forEach((it) => {
-    const [name, n, ms] = it.dataset.anim.split(':'); const img = it.querySelector('img');
-    const frames = Array.from({ length: +n }, (_, i) => { const im = new Image(); im.src = `a/${name}-${i}.png`; return im.src; });
-    let i = 0; setInterval(() => { i = (i + 1) % frames.length; img.src = frames[i]; }, +ms);
-  });
 
   addEventListener('resize', render);
   start();
+  enter();
   document.fonts && document.fonts.ready.then(render);
 })();
 </script>
@@ -767,6 +877,7 @@
   });
 })();
 </script>
+
 <!-- 7 nov. : menu mobile « la grille » (validé) : l'écran se tramifie en blanc cassé, la grille de 5 colonnes se trace en pointillé fin,
      puis les mots tombent en escalier sur les colonnes. « préface » remplace le logo pour revenir à l'accueil.
      Les liens viennent du menu #jmenu de navmorph.html (gardé comme source, jamais affiché). Tout est préfixé jmt : Info a déjà .mt et .grid. -->

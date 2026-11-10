@@ -1,6 +1,7 @@
 <meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">   <!-- 9 nov. : couleur de la barre du navigateur (Chrome Android ; Safari prend le fond de la page) -->
 <title>JPR Portfolio</title>
 <style>html.pt-in::after{content:"";position:fixed;inset:0;z-index:5999;background:#000;pointer-events:none;animation:pt-kill 0s 3s forwards}@keyframes pt-kill{to{visibility:hidden}}</style><script>if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("pt-in")</script>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -16,23 +17,6 @@
   .loaddot { position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 0; background: var(--ink); z-index: 2; pointer-events: none; }   /* 9 nov. : un carré net (un pixel) au lieu d'un rond ; même geste */
   html.loading .loaddot { animation: dotpulse 1.1s ease-in-out infinite; }
   @keyframes dotpulse { 50% { scale: .55; opacity: .55; } }
-  /* 9 nov. (essai) : le point en version numérique — « pixel » : un pixel carré qui clignote comme un curseur d'insertion ;
-     « crt » : une ligne d'écran cathodique qui s'écrase en point. Le style vient de BANG_DOT (rond par défaut). */
-  .loaddot.pix { width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 0; }
-  /* « trame » : un seul pixel qui clignote ; au départ, la matrice de Bayer 4 × 4 du site se remplit case par case, puis se dissout dans l'ordre inverse pendant que les cartes partent */
-  .loaddot.trm { width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; border-radius: 0; }
-  html.loading .loaddot.trm, .loaddot.trm.wait { animation: pxblink 1.06s steps(1) infinite; }
-  .bangtrm { position: absolute; left: 50%; top: 50%; width: 20px; height: 20px; margin: -10px 0 0 -10px; z-index: 2; pointer-events: none; image-rendering: pixelated; }
-  html.loading .loaddot.pix, .loaddot.pix.wait { animation: pxblink 1.06s steps(1) infinite; }
-  @keyframes pxblink { 50% { opacity: 0; } }
-  .loaddot.crt { width: 56vw; height: 2px; margin: -1px 0 0 -28vw; border-radius: 0; box-shadow: 0 0 10px rgba(242, 240, 235, .55), 0 0 2px rgba(242, 240, 235, .9); }
-  html.loading .loaddot.crt, .loaddot.crt.wait { animation: crtflick .9s steps(1) infinite; }
-  @keyframes crtflick { 0% { opacity: 1; } 8% { opacity: .55; } 12% { opacity: 1; } 46% { opacity: .8; } 50% { opacity: 1; } 71% { opacity: .6; } 74% { opacity: 1; } }
-  /* « organique » : un petit rond dont le contour ondule lentement, comme le logo liquide */
-  .loaddot.org { width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 0; background: none; overflow: visible; }
-  .loaddot.org svg { display: block; width: 100%; height: 100%; overflow: visible; }
-  .loaddot.org path { fill: var(--ink); }
-  .bangpx { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; image-rendering: pixelated; }
   /* Layout: the « Spiral Portfolio – Left Turn » design, ported as is: 14 project cards on a 3D helix that turns
      left as you scroll (320vh of scroll, a sticky stage), a slight tilt toward the cursor, and the JPR logo
      that splits into RGB when the cursor comes near. The mockup's nav is now live and links the other pages.
@@ -150,8 +134,8 @@
     padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
   /* même entête que l'accueil : menu blanc sur un dégradé noir qui s'efface vers le bas (les projets passent dessous) */
   .jnav::before { content: ""; position: absolute; left: 0; right: 0; top: 0; pointer-events: none;
-    height: calc(84 / 1600 * var(--fw) + 190px);
-    background: linear-gradient(rgba(0,0,0,0.900) 0%, rgba(0,0,0,0.899) 5%, rgba(0,0,0,0.892) 10%, rgba(0,0,0,0.876) 15%, rgba(0,0,0,0.848) 20%, rgba(0,0,0,0.807) 25%, rgba(0,0,0,0.753) 30%, rgba(0,0,0,0.688) 35%, rgba(0,0,0,0.614) 40%, rgba(0,0,0,0.534) 45%, rgba(0,0,0,0.450) 50%, rgba(0,0,0,0.366) 55%, rgba(0,0,0,0.286) 60%, rgba(0,0,0,0.212) 65%, rgba(0,0,0,0.147) 70%, rgba(0,0,0,0.093) 75%, rgba(0,0,0,0.052) 80%, rgba(0,0,0,0.024) 85%, rgba(0,0,0,0.008) 90%, rgba(0,0,0,0.001) 95%, rgba(0,0,0,0.000) 100%); }   /* fondu très doux : courbe « smootherstep » en 20 paliers, sans cassure */
+    height: calc(84 / 1600 * var(--fw) + 240px);   /* 9 nov. : dégradé plus long et plus léger (max 72 %), courbe plus douce */
+    background: linear-gradient(rgba(0,0,0,0.720) 0%, rgba(0,0,0,0.719) 5%, rgba(0,0,0,0.713) 10%, rgba(0,0,0,0.698) 15%, rgba(0,0,0,0.672) 20%, rgba(0,0,0,0.635) 25%, rgba(0,0,0,0.587) 30%, rgba(0,0,0,0.529) 35%, rgba(0,0,0,0.464) 40%, rgba(0,0,0,0.395) 45%, rgba(0,0,0,0.324) 50%, rgba(0,0,0,0.256) 55%, rgba(0,0,0,0.192) 60%, rgba(0,0,0,0.136) 65%, rgba(0,0,0,0.089) 70%, rgba(0,0,0,0.053) 75%, rgba(0,0,0,0.027) 80%, rgba(0,0,0,0.011) 85%, rgba(0,0,0,0.003) 90%, rgba(0,0,0,0.000) 95%, rgba(0,0,0,0.000) 100%); }   /* fondu très doux : courbe « smootherstep » en 20 paliers, sans cassure */
   /* vue liste : le même dégradé qu’en haut, inversé, dans le bas — les lignes s’enroulent sur le tambour et s’effacent dans le noir */
   .lfade { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5500; pointer-events: none; height: calc(84 / 1600 * var(--fw) + 190px);
     background: linear-gradient(to top, rgba(0,0,0,0.900) 0%, rgba(0,0,0,0.899) 5%, rgba(0,0,0,0.892) 10%, rgba(0,0,0,0.876) 15%, rgba(0,0,0,0.848) 20%, rgba(0,0,0,0.807) 25%, rgba(0,0,0,0.753) 30%, rgba(0,0,0,0.688) 35%, rgba(0,0,0,0.614) 40%, rgba(0,0,0,0.534) 45%, rgba(0,0,0,0.450) 50%, rgba(0,0,0,0.366) 55%, rgba(0,0,0,0.286) 60%, rgba(0,0,0,0.212) 65%, rgba(0,0,0,0.147) 70%, rgba(0,0,0,0.093) 75%, rgba(0,0,0,0.052) 80%, rgba(0,0,0,0.024) 85%, rgba(0,0,0,0.008) 90%, rgba(0,0,0,0.001) 95%, rgba(0,0,0,0.000)); opacity: 0; transition: opacity .6s ease; }
@@ -192,7 +176,7 @@
   .fcap .ct { opacity: 1 !important; transition: none !important; }
   .fcap:not(.on) { opacity: 0; }
   .fcap .nm .g, .fcap .ct .g { display: inline !important; font: inherit !important; }   /* les lettres tapées restent dans la ligne (la règle « .nm span » les mettait en bloc, une par ligne) */
-  .fcap .ct { display: none !important; }   /* essai : le nom seul — l'effet de lettres se lit mieux sans les expertises */
+  .fcap .ct { display: none !important; }   /* le nom seul : l’effet de lettres se lit mieux sans les expertises */
   .fcap .g { opacity: 0; }
   .fcap .g.x { opacity: .45; }
   .fcap .g.in { opacity: 1; transition: opacity .3s cubic-bezier(.23, 1, .32, 1); }
@@ -274,7 +258,7 @@
   .lb .tick { transition: opacity .35s ease; }
   .lb .tick:not([aria-current]) { opacity: .35; }
   .lb .rail:hover .tick, .lb .rail:focus-within .tick { opacity: 1; }
-  .lb .rail { display: none !important; }   /* essai : fiche sans la règle des projets (plus épuré) ; retirer cette ligne pour la remettre */
+  .lb .rail { display: none !important; }   /* fiche sans la règle des projets (plus épuré) */
   .lb .tick[aria-current] i { width: 38px; }
   .lb .peek { position: absolute; right: calc(100% + 18px); width: 132px; pointer-events: none; opacity: 0; transform: translateX(8px); transition: opacity .2s, transform .25s; }
   .lb .peek.on { opacity: 1; transform: none; }
@@ -314,7 +298,7 @@
   }
   @media (max-width: 700px) {
     .jnav svg { visibility: hidden; }
-    .jnav::before { height: 200px; background: linear-gradient(rgba(0,0,0,0.860) 0%, rgba(0,0,0,0.859) 5%, rgba(0,0,0,0.853) 10%, rgba(0,0,0,0.837) 15%, rgba(0,0,0,0.810) 20%, rgba(0,0,0,0.771) 25%, rgba(0,0,0,0.720) 30%, rgba(0,0,0,0.658) 35%, rgba(0,0,0,0.587) 40%, rgba(0,0,0,0.510) 45%, rgba(0,0,0,0.430) 50%, rgba(0,0,0,0.350) 55%, rgba(0,0,0,0.273) 60%, rgba(0,0,0,0.202) 65%, rgba(0,0,0,0.140) 70%, rgba(0,0,0,0.089) 75%, rgba(0,0,0,0.050) 80%, rgba(0,0,0,0.023) 85%, rgba(0,0,0,0.007) 90%, rgba(0,0,0,0.001) 95%, rgba(0,0,0,0.000) 100%); }   /* mobile : même fondu doux que sur ordinateur */
+    .jnav::before { height: 250px; background: linear-gradient(rgba(0,0,0,0.680) 0%, rgba(0,0,0,0.679) 5%, rgba(0,0,0,0.673) 10%, rgba(0,0,0,0.659) 15%, rgba(0,0,0,0.635) 20%, rgba(0,0,0,0.600) 25%, rgba(0,0,0,0.554) 30%, rgba(0,0,0,0.500) 35%, rgba(0,0,0,0.438) 40%, rgba(0,0,0,0.373) 45%, rgba(0,0,0,0.306) 50%, rgba(0,0,0,0.242) 55%, rgba(0,0,0,0.182) 60%, rgba(0,0,0,0.129) 65%, rgba(0,0,0,0.084) 70%, rgba(0,0,0,0.050) 75%, rgba(0,0,0,0.026) 80%, rgba(0,0,0,0.011) 85%, rgba(0,0,0,0.003) 90%, rgba(0,0,0,0.000) 95%, rgba(0,0,0,0.000) 100%); }   /* mobile : même fondu doux que sur ordinateur */
     .jnav a { display: none; }
     .jlogo .jnav-in { aspect-ratio: auto; height: 56px; }
     .jlogo .logo { left: 50%; top: 13px; width: 91px; translate: -50% 0; }
@@ -583,7 +567,7 @@
     if (i === capFront) return;
     capFront = i; clearTimeout(capTimer);
     if (i < 0) { capEl.classList.remove('on'); capTimer = setTimeout(() => { capNm.__txt = capCt.__txt = ''; }, 400); return; }   // caché : la prochaine apparition se tape au complet
-    typeCap(capNm, PROJECTS[i][0]); capEl.classList.add('on');   // essai : le nom seul, sans la catégorie
+    typeCap(capNm, PROJECTS[i][0]); capEl.classList.add('on');   // le nom seul, sans la catégorie
   };
   let mode = 0, modeT = 0, lo = 0, loT = 0;   // lo : défilement de la liste (suit la page)
   // vue liste : la page ne défile que de la hauteur réelle de la liste, pour que la liste suive le doigt 1 pour 1
@@ -687,134 +671,11 @@
   let BANG0 = Infinity; const BANG_D = 1500;   // l'apparition démarre une fois les images chargées
   const dot = document.getElementById('loaddot');
   const reduceMoB0 = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  // 9 nov. (essai) : le style du point — 'rond' (actuel), 'pixel' ou 'crt' ; ?dot=pixel dans l'adresse pour l'essai
-  let BANG_DOT = 'rond';
-  try { const q = new URLSearchParams(location.search).get('dot'); if (['pixel', 'crt', 'rond', 'trame', 'graines', 'onde', 'organique'].includes(q)) BANG_DOT = q; } catch (e) {}
-  const setDot = (st) => { BANG_DOT = st; dot.classList.toggle('pix', st === 'pixel'); dot.classList.toggle('crt', st === 'crt'); dot.classList.toggle('trm', st === 'trame'); dot.classList.toggle('pix', st === 'pixel' || st === 'graines' || st === 'onde'); dot.classList.toggle('org', st === 'organique');
-    if (st === 'organique') startBlob(); else dot.innerHTML = ''; };
-  // le contour du rond : un rayon qui ondule (trois ondes lentes, déphasées), comme la matière du logo
-  let blobRaf = 0;
-  function startBlob() {
-    if (blobRaf || reduceMoB0) { if (reduceMoB0 && !dot.querySelector('svg')) dot.innerHTML = '<svg viewBox="-7 -7 14 14"><circle r="5"/></svg>'; return; }
-    if (!dot.querySelector('svg')) dot.innerHTML = '<svg viewBox="-7 -7 14 14" aria-hidden="true"><path/></svg>';
-    const path = dot.querySelector('path'), t0 = performance.now(), N = 48;
-    const fr = (now) => {
-      if (BANG_DOT !== 'organique' || getComputedStyle(dot).opacity === '0' && !dot.classList.contains('wait') && !document.documentElement.classList.contains('loading')) { blobRaf = 0; return; }
-      const t = (now - t0) / 1000; let d = '';
-      for (let k = 0; k <= N; k++) { const a = k / N * Math.PI * 2;
-        const r = 5 * (1 + 0.075 * Math.sin(2 * a + t * 1.3) + 0.055 * Math.sin(3 * a - t * 1.7 + 1.1) + 0.04 * Math.sin(5 * a + t * 2.3 + 2.3));
-        d += (k ? 'L' : 'M') + (Math.cos(a) * r).toFixed(2) + ' ' + (Math.sin(a) * r).toFixed(2); }
-      path.setAttribute('d', d + 'Z'); blobRaf = requestAnimationFrame(fr);
-    };
-    blobRaf = requestAnimationFrame(fr);
-  }
-  setDot(BANG_DOT);
-  // la gerbe de pixels 1 bit : des carrés sur une grille de 4 px, qui s'éteignent par la trame de Bayer (pas de fondu)
-  const pxBurst = () => {
-    const host = dot.parentElement, cv = document.createElement('canvas'); cv.className = 'bangpx'; host.appendChild(cv);
-    const r = host.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
-    cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr);
-    const c = cv.getContext('2d'), cx = r.width / 2, cy = r.height / 2, G = 4, B = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
-    const N = 150, P = [];
-    for (let i = 0; i < N; i++) { const a = Math.random() * Math.PI * 2, sp = (0.25 + Math.pow(Math.random(), 1.8) * 1.6) * Math.min(r.width, r.height) * 0.0016;
-      P.push({ a, sp, sz: Math.random() < .2 ? 2 : 1, life: 0.55 + Math.random() * 0.45 }); }
-    const t0 = performance.now(), D = 520;
-    const fr = (now) => {
-      const t = (now - t0) / D; c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, r.width, r.height); c.fillStyle = '#F2F0EB';
-      if (t < 0.12) { const q = t / 0.12 * 6; [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([u, v]) => c.fillRect(Math.round(cx + u * q - 2), Math.round(cy + v * q - 2), 4, 4)); }   // le pixel se divise en quatre
-      else P.forEach((p, i) => {
-        const tt = (t - 0.12) / 0.88, d = p.sp * (1 - Math.pow(1 - Math.min(1, tt), 3)) * 900;
-        const x = Math.round((cx + Math.cos(p.a) * d) / G) * G, y = Math.round((cy + Math.sin(p.a) * d) / G) * G;
-        const lv = 1 - tt / p.life; if (lv <= 0) return;
-        if (B[((x / G) & 3) * 4 + ((y / G) & 3)] / 16 >= lv) return;   // extinction tramée
-        c.fillRect(x - G / 2, y - G / 2, G * p.sz, G * p.sz);
-      });
-      if (t < 1) requestAnimationFrame(fr); else cv.remove();
-    };
-    requestAnimationFrame(fr);
-  };
-  // le déclenchement : le point fait son geste, puis tout jaillit de lui
+  // le déclenchement : le point (un carré) gonfle un instant, puis tout jaillit de lui
   const fireBang = () => {
-    dot.classList.remove('wait');
     if (reduceMoB0) { dot.style.opacity = 0; BANG0 = performance.now(); return 0; }
-    if (BANG_DOT === 'pixel') {
-      dot.getAnimations().forEach((a) => a.cancel()); dot.style.opacity = 0; pxBurst();
-      setTimeout(() => { BANG0 = performance.now(); }, 50); return 50;
-    }
-    if (BANG_DOT === 'graines') {
-      // un pixel par projet : le pixel se divise en 14, chacun part avec sa carte, et la carte éclot de lui ; le pixel s'éteint net quand elle est là
-      dot.getAnimations().forEach((a) => a.cancel()); dot.style.opacity = 0;
-      const host = dot.parentElement, cv = document.createElement('canvas'); cv.className = 'bangpx'; cv.style.zIndex = 6; host.appendChild(cv);
-      const hr = host.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2); cv.width = Math.round(hr.width * dpr); cv.height = Math.round(hr.height * dpr);
-      const c = cv.getContext('2d'), S = 8, t0 = performance.now() + 30;   // même taille que le pixel qui clignote
-      const fr = (now) => {
-        c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, hr.width, hr.height); c.fillStyle = '#F2F0EB'; let any = false;
-        cards.forEach((card, i) => {
-          const d = (0.5 + 0.5 * Math.sin(i * 7.31)) * 0.16, t = ((now - t0) / BANG_D - d) / 0.84;
-          if (t > 0.27) return; any = true;
-          let x = hr.width / 2, y = hr.height / 2;
-          if (t > 0) { const r = card.getBoundingClientRect(); x = r.left + r.width / 2 - hr.left; y = r.top + r.height / 2 - hr.top; }
-          c.fillRect(Math.round(x / 2) * 2 - S / 2, Math.round(y / 2) * 2 - S / 2, S, S);
-        });
-        if (any || now < t0) requestAnimationFrame(fr); else cv.remove();
-      };
-      requestAnimationFrame(fr);
-      setTimeout(() => { BANG0 = performance.now(); }, 30); return 30;
-    }
-    if (BANG_DOT === 'onde') {
-      // une onde : un cercle tracé en pixels sur une grille de 4 px, qui s'élargit d'un coup et s'éteint par la trame
-      dot.getAnimations().forEach((a) => a.cancel()); dot.style.opacity = 0;
-      const host = dot.parentElement, cv = document.createElement('canvas'); cv.className = 'bangpx'; host.appendChild(cv);
-      const hr = host.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2); cv.width = Math.round(hr.width * dpr); cv.height = Math.round(hr.height * dpr);
-      const c = cv.getContext('2d'), G = 4, cx = hr.width / 2, cy = hr.height / 2, R = Math.hypot(hr.width, hr.height) * 0.36, D = 620, t0 = performance.now();
-      const B = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
-      const fr = (now) => {
-        const t = Math.min(1, (now - t0) / D), e = 1 - Math.pow(1 - t, 3), r = 6 + e * R, lv = 1 - t;
-        c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, hr.width, hr.height); c.fillStyle = '#F2F0EB';
-        const seen = new Set(), n = Math.max(24, Math.ceil(2 * Math.PI * r / G * 1.6));
-        for (let k = 0; k < n; k++) { const a = k / n * Math.PI * 2, gx = Math.round((cx + Math.cos(a) * r) / G), gy = Math.round((cy + Math.sin(a) * r) / G), key = gx * 9973 + gy;
-          if (seen.has(key)) continue; seen.add(key);
-          if (B[(((gx % 4) + 4) % 4) * 4 + (((gy % 4) + 4) % 4)] / 16 >= lv) continue;   // l'onde s'éteint par la trame
-          c.fillRect(gx * G - G / 2, gy * G - G / 2, G, G); }
-        if (t < 1) requestAnimationFrame(fr); else cv.remove();
-      };
-      requestAnimationFrame(fr);
-      setTimeout(() => { BANG0 = performance.now(); }, 40); return 40;
-    }
-    if (BANG_DOT === 'trame') {
-      // la matrice de Bayer se remplit (16 cases de 5 px, dans l'ordre de la trame), tient un instant, puis se dissout à l'envers : les cartes partent à ce moment
-      dot.getAnimations().forEach((a) => a.cancel()); dot.style.opacity = 0;
-      const host = dot.parentElement, cv = document.createElement('canvas'); cv.className = 'bangtrm'; host.appendChild(cv);
-      const dpr = Math.min(devicePixelRatio || 1, 2), C = 5; cv.width = cv.height = Math.round(20 * dpr);
-      const c = cv.getContext('2d'), ORD = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];   // rang de chaque case (ligne par ligne)
-      const FILL = 230, HOLD = 70, OUT = 170, t0 = performance.now();
-      const draw = (n) => { c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, 20, 20); c.fillStyle = '#F2F0EB';
-        for (let k = 0; k < 16; k++) if (ORD[k] < n) c.fillRect((k % 4) * C, Math.floor(k / 4) * C, C, C); };
-      const fr = (now) => { const t = now - t0;
-        if (t < FILL) draw(1 + Math.floor(t / FILL * 15));
-        else if (t < FILL + HOLD) draw(16);
-        else if (t < FILL + HOLD + OUT) { const m = Math.floor((t - FILL - HOLD) / OUT * 16); c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, 20, 20); c.fillStyle = '#F2F0EB';
-          for (let k = 0; k < 16; k++) if (ORD[k] >= m) c.fillRect((k % 4) * C, Math.floor(k / 4) * C, C, C); }
-        else { cv.remove(); return; }
-        requestAnimationFrame(fr); };
-      requestAnimationFrame(fr);
-      setTimeout(() => { BANG0 = performance.now(); }, FILL + HOLD); return FILL + HOLD;
-    }
-    if (BANG_DOT === 'crt') {
-      dot.getAnimations().forEach((a) => a.cancel());
-      dot.animate([{ scale: '1 1', opacity: 1 }, { scale: '.012 1', opacity: 1, offset: .62 }, { scale: '.012 3', opacity: 1, offset: .8 }, { scale: '0 0', opacity: 0 }],
-        { duration: 420, easing: 'cubic-bezier(.6, 0, .8, .3)', fill: 'forwards' });
-      setTimeout(() => { BANG0 = performance.now(); }, 340); return 340;
-    }
     dot.animate([{ scale: 1, opacity: 1 }, { scale: 1.8, opacity: 1, offset: .35 }, { scale: 0, opacity: 0 }], { duration: 380, easing: 'cubic-bezier(.5, 0, .7, .4)', fill: 'forwards' });
     setTimeout(() => { BANG0 = performance.now(); }, 300); return 300;
-  };
-  // essai : rejouer l'intro au complet avec un style de point (le point attend un instant, puis le big bang)
-  window.__replayBang = (st) => {
-    if (st) setDot(st); BANG0 = Infinity;
-    dot.getAnimations().forEach((a) => a.cancel()); dot.style.opacity = ''; dot.classList.add('wait');
-    if (BANG_DOT === 'rond') dot.animate([{ scale: 1, opacity: 1 }, { scale: .55, opacity: .55 }, { scale: 1, opacity: 1 }], { duration: 1100, iterations: 1 });
-    setTimeout(fireBang, 1100);
   };
   {
     const t0 = performance.now();
@@ -832,7 +693,6 @@
     if (reduceMoB) return [1, 1, 1];
     const d = (0.5 + 0.5 * Math.sin(i * 7.31)) * 0.16;   // départ décalé de 0 à 16 %
     const t = Math.max(0, Math.min(1, ((now - BANG0) / BANG_D - d) / 0.84));
-    if (BANG_DOT === 'graines') return [outBack(t), 1 - Math.pow(1 - t, 3), Math.max(0, Math.min(1, (t - 0.17) / 0.13))];   // essai : la carte éclot de son pixel
     return [outBack(t), 1 - Math.pow(1 - t, 3), Math.min(1, t * 5)];   // position (avec dépassement), taille, opacité
   };
   const reduceMoB = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -888,8 +748,8 @@
       let ry = (t * 180 / Math.PI + jit(i, 4) * 6 * ANGK) % 360; if (ry > 180) ry -= 360; if (ry < -180) ry += 360;
       // survol : la carte se redresse face à nous (rotations ramenées à zéro, en douceur)
       card.__h = (card.__h || 0) + ((card.__hT || 0) - (card.__h || 0)) * 0.12;
-      const hv = card.__h * card.__h * (3 - 2 * card.__h), kk = 1;   // test : la carte ne se redresse plus au survol (remettre « 1 - hv » pour le réactiver)
-      // flottement (test) : seulement en liste, à la souris ; mêmes respirations que le CV (5,2 s, 6,1 s, 7,3 s), à l'échelle d'une vignette
+      const hv = card.__h * card.__h * (3 - 2 * card.__h), kk = 1;   // la carte ne se redresse pas au survol (« 1 - hv » pour qu’elle se redresse)
+      // flottement : seulement en liste, à la souris ; mêmes respirations que le CV (5,2 s, 6,1 s, 7,3 s), à l'échelle d'une vignette
       let fl = 0, fBob = 0, fTilt = 0, fSway = 0;
       if (LIST_FLOAT) { const ft = !mob && (card.__lT || card.__hT) ? 1 : 0; card.__fl = (card.__fl || 0) + (ft - (card.__fl || 0)) * (ft ? 0.09 : 0.07);
         fl = card.__fl * card.__fl * (3 - 2 * card.__fl) * k; if (fl > 0.001) { const tf = performance.now() / 1000 + i * 1.7;
@@ -1436,16 +1296,6 @@
 </style>
 
 <style>
-  /* « fermer » suit le curseur dans les espaces vides de la fiche ; un clic là ferme la fiche */
-  .lb .x { will-change: transform; }
-  .lb.follow .x { pointer-events: none; background: #F2F0EB; color: #000; }
-  .lb.follow, .lb.follow * { cursor: none !important; }
-  /* à la souris, « fermer » n'a plus de place fixe en haut : il n'existe qu'avec le curseur, dans les espaces vides (au clavier, il réapparaît à sa place) */
-  @media (hover: hover) and (pointer: fine) and (min-width: 900px) {
-    .lb .x { opacity: 0; pointer-events: none; transition: opacity .18s ease, background-color .25s, color .25s; }
-    .lb.follow .x { opacity: 1; }
-    .lb .x:focus-visible { opacity: 1; pointer-events: auto; transform: none !important; }
-  }
   /* titre de la fiche : la grosse typo de la page Info (52,8 / 1600 du cadre, interligne 1,5) ; mobile : 23 px comme l’accueil */
   .lb h2 { font: 400 max(16px, calc(52.8 / 1600 * var(--fw)))/1.5 var(--grot); letter-spacing: -.03em; text-wrap: pretty; }
   /* projet précédent / suivant : petite typo, style suisse brut, sur les colonnes 4 et 5 de la grille ;
@@ -1498,42 +1348,57 @@
   const mq = matchMedia('(hover: hover) and (pointer: fine) and (min-width: 900px)');
   const lb = document.getElementById('lb'), x = document.getElementById('lbX');
   if (!lb || !x) return;
-  // 8 nov. : « fermer » a maintenant sa place fixe en haut à gauche ; il ne suit plus le curseur (remettre true pour retrouver l'ancien comportement).
-  // Un clic dans un espace vide de la fiche la ferme toujours.
-  const FOLLOW = false;
-  if (!FOLLOW) {
-    const CONTENT0 = 'figure, img, h2, .desc p, .meta div, a, button, .rail, .peek, .after, input, textarea';
-    lb.addEventListener('click', (e) => { if (e.pointerType === 'mouse' || e.detail) { const el = e.target; if (mq.matches && lb.classList.contains('ready') && lb.contains(el) && !el.closest(CONTENT0)) { e.preventDefault(); x.click(); } } });
-    return;
+  // un clic dans un espace vide de la fiche la ferme (« fermer » a sa place fixe en haut à gauche)
+  const CONTENT = 'figure, img, h2, .desc p, .meta div, a, button, .rail, .peek, .after, input, textarea';
+  lb.addEventListener('click', (e) => { if (e.pointerType === 'mouse' || e.detail) { const el = e.target; if (mq.matches && lb.classList.contains('ready') && lb.contains(el) && !el.closest(CONTENT)) { e.preventDefault(); x.click(); } } });
+})();
+</script>
+<style>
+  /* 9 nov. : fiche, bureau — au survol, une image grandit vers la gauche (son bord droit reste en place) jusqu'à la marge de la page ;
+     le texte de la fiche passe au même gris foncé plein que l'aperçu de la grille sur Info */
+  @media (hover: hover) and (pointer: fine) and (min-width: 900px) {
+    .lb .gal figure { position: relative; transform-origin: 100% 50%; transition: transform .6s cubic-bezier(.2, .8, .2, 1), box-shadow .6s; }
+    .lb .gal figure.zm { z-index: 6; }
+    .lb .col, .lb .col *, .lb .gal .ends, .lb .gal .ends * { transition: color .35s ease, border-color .35s ease, opacity .35s ease; }
+    .lb.gz .col, .lb.gz .col *, .lb.gz .gal .ends, .lb.gz .gal .ends * { color: #282725 !important; border-color: #282725 !important; text-decoration-color: #282725 !important; }
+    .lb.gz .col img, .lb.gz .gal .ends img { opacity: .15; }
   }
-  // ce qui compte comme contenu : là, le bouton reste à sa place et le curseur redevient normal
-  const CONTENT = 'figure, img, h2, .desc p, .meta div, a, button:not(.x), .rail, .peek, .after, input, textarea';
-  let px = -1, py = -1, tx = 0, ty = 0, cx = 0, cy = 0, raf = 0, on = false, was = false;
-  const home = () => { const r = x.getBoundingClientRect(); return { x: r.left + r.width / 2 - cx, y: r.top + r.height / 2 - cy }; };
-  const loop = () => {
-    cx += (tx - cx) * 0.28; cy += (ty - cy) * 0.28;
-    if (Math.abs(tx - cx) < 0.3 && Math.abs(ty - cy) < 0.3) { cx = tx; cy = ty; raf = 0; }
-    x.style.transform = cx || cy ? `translate3d(${cx.toFixed(1)}px, ${cy.toFixed(1)}px, 0)` : '';
-    if (raf) raf = requestAnimationFrame(loop);
+  @media (prefers-reduced-motion: reduce) { .lb .gal figure { transition: none !important; } }
+</style>
+<script>
+(() => {
+  const mq = matchMedia('(hover: hover) and (pointer: fine) and (min-width: 900px)');
+  const lb = document.getElementById('lb'), gal = document.getElementById('lbGal'), inner = lb && lb.querySelector('.inner');
+  if (!lb || !gal || !inner) return;
+  let cur = null, px = -1, py = -1, t = 0;
+  const reset = () => { clearTimeout(t); if (cur) { cur.style.transform = ''; const c = cur; setTimeout(() => { if (c !== cur) c.classList.remove('zm'); }, 600); cur = null; } lb.classList.remove('gz'); };
+  const zoom = (f) => {
+    if (f === cur) return; reset(); if (!f) return;
+    const r = f.getBoundingClientRect(); if (r.width < 40) return;
+    const left = parseFloat(getComputedStyle(inner).paddingLeft) || 24;   // la marge de la page, côté gauche
+    const top = 72, bot = innerHeight - 24;
+    const s = Math.min((r.right - left) / r.width, (bot - top) / r.height, 2.4);
+    if (s < 1.06) return;
+    // grandit vers la gauche ; verticalement, on le garde dans l'écran
+    const h = r.height * s, cy = r.top + r.height / 2;
+    const ty = Math.max(top, Math.min(bot - h, cy - h / 2)) - (cy - h / 2);
+    cur = f; f.classList.add('zm');
+    f.style.transform = `translateY(${ty.toFixed(1)}px) scale(${s.toFixed(4)})`;
+    lb.classList.add('gz');
   };
-  const kick = () => { if (!raf) raf = requestAnimationFrame(loop); };
-  const empty = (el) => !!el && lb.contains(el) && el !== x && !el.closest(CONTENT);
-  const update = (el) => {
-    const ok = mq.matches && lb.classList.contains('ready') && px >= 0 && empty(el);
-    if (ok !== on) { on = ok; lb.classList.toggle('follow', on); }
-    const h = home();   // (mesuré avant de toucher au déplacement)
-    if (on) { tx = px - h.x; ty = py - h.y; }   // hors des vides, il s'efface sur place (pas de retour en haut)
-    if (ok !== was) { was = ok; if (ok) { cx = tx; cy = ty; } }   // il apparaît directement sous le curseur
-    kick();
-  };
-  lb.addEventListener('pointermove', (e) => { if (e.pointerType !== 'mouse') return; px = e.clientX; py = e.clientY; update(e.target); }, { passive: true });
-  lb.addEventListener('pointerleave', () => { px = -1; update(null); });
-  // en défilant, le contenu passe sous le curseur immobile : on revérifie ce qu'il y a dessous
-  lb.addEventListener('scroll', () => { if (px >= 0) update(document.elementFromPoint(px, py)); }, { capture: true, passive: true });
-  lb.addEventListener('click', (e) => { if (on && empty(e.target)) { e.preventDefault(); x.click(); } });
-  // à la fermeture, le bouton revient instantanément à sa place
-  new MutationObserver(() => { if (!lb.classList.contains('ready') && (on || cx || cy)) { on = was = false; if (lb.classList.contains('follow')) lb.classList.remove('follow'); tx = ty = cx = cy = 0; x.style.transform = ''; } })   // (sans la garde, retirer la classe relance l'observateur en boucle).observe(lb, { attributes: true, attributeFilter: ['class'] });
-  mq.addEventListener('change', () => update(null));
+  // seulement quand la souris bouge vraiment (en défilant, les images passent sous le curseur immobile : rien ne grossit)
+  lb.addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse' || !mq.matches || !lb.classList.contains('ready')) return;
+    if (Math.abs(e.clientX - px) + Math.abs(e.clientY - py) < 2) return;
+    px = e.clientX; py = e.clientY;
+    const f = e.target.closest && e.target.closest('#lbGal figure');
+    if (f === cur) return;
+    clearTimeout(t);
+    if (f) t = setTimeout(() => zoom(f), cur ? 0 : 90); else reset();
+  }, { passive: true });
+  lb.addEventListener('pointerleave', reset);
+  lb.addEventListener('scroll', () => { if (cur) reset(); }, { capture: true, passive: true });
+  new MutationObserver(() => { if (!lb.classList.contains('ready')) reset(); }).observe(lb, { attributes: true, attributeFilter: ['class'] });
 })();
 </script>
 <!-- le cadre de la maquette de 1600 : sur bureau, il occupe toute la largeur et ses marges de 65 tombent à --mr de l'écran
@@ -1871,6 +1736,7 @@
   });
 })();
 </script>
+
 <!-- 7 nov. : menu mobile « la grille » (validé) : l'écran se tramifie en blanc cassé, la grille de 5 colonnes se trace en pointillé fin,
      puis les mots tombent en escalier sur les colonnes. « préface » remplace le logo pour revenir à l'accueil.
      Les liens viennent du menu #jmenu de navmorph.html (gardé comme source, jamais affiché). Tout est préfixé jmt : Info a déjà .mt et .grid. -->

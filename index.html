@@ -1,6 +1,8 @@
+<meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
 <title>JPR Home brute</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">   <!-- 9 nov. : couleur de la barre du navigateur (Chrome Android ; Safari prend le fond de la page) -->
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -59,8 +61,8 @@
   .hnav { position: fixed; z-index: 20; top: 0; left: 0; right: 0; pointer-events: none;
     padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
   .hnav::before { content: ""; position: absolute; left: 0; right: 0; top: 0; pointer-events: none;
-    height: calc(84 / 1600 * var(--fw) + 190px);
-    background: linear-gradient(rgba(0,0,0,0.900) 0%, rgba(0,0,0,0.899) 5%, rgba(0,0,0,0.892) 10%, rgba(0,0,0,0.876) 15%, rgba(0,0,0,0.848) 20%, rgba(0,0,0,0.807) 25%, rgba(0,0,0,0.753) 30%, rgba(0,0,0,0.688) 35%, rgba(0,0,0,0.614) 40%, rgba(0,0,0,0.534) 45%, rgba(0,0,0,0.450) 50%, rgba(0,0,0,0.366) 55%, rgba(0,0,0,0.286) 60%, rgba(0,0,0,0.212) 65%, rgba(0,0,0,0.147) 70%, rgba(0,0,0,0.093) 75%, rgba(0,0,0,0.052) 80%, rgba(0,0,0,0.024) 85%, rgba(0,0,0,0.008) 90%, rgba(0,0,0,0.001) 95%, rgba(0,0,0,0.000) 100%); }   /* fondu très doux : courbe « smootherstep » en 20 paliers, sans cassure */
+    height: calc(84 / 1600 * var(--fw) + 240px);   /* 9 nov. : dégradé plus long et plus léger (max 72 %), courbe plus douce */
+    background: linear-gradient(rgba(0,0,0,0.720) 0%, rgba(0,0,0,0.719) 5%, rgba(0,0,0,0.713) 10%, rgba(0,0,0,0.698) 15%, rgba(0,0,0,0.672) 20%, rgba(0,0,0,0.635) 25%, rgba(0,0,0,0.587) 30%, rgba(0,0,0,0.529) 35%, rgba(0,0,0,0.464) 40%, rgba(0,0,0,0.395) 45%, rgba(0,0,0,0.324) 50%, rgba(0,0,0,0.256) 55%, rgba(0,0,0,0.192) 60%, rgba(0,0,0,0.136) 65%, rgba(0,0,0,0.089) 70%, rgba(0,0,0,0.053) 75%, rgba(0,0,0,0.027) 80%, rgba(0,0,0,0.011) 85%, rgba(0,0,0,0.003) 90%, rgba(0,0,0,0.000) 95%, rgba(0,0,0,0.000) 100%); }   /* fondu très doux : courbe « smootherstep » en 20 paliers, sans cassure */
   .hnav-in { position: relative; max-width: 1600px; margin: 0 auto; aspect-ratio: 1600 / 84; }
   .hnav svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   .nav-hit { position: absolute; z-index: 4; display: block; border-radius: 4px; pointer-events: auto; }
@@ -71,7 +73,7 @@
   .mnav { display: none; }
   @media (max-width: 700px) {
     .hnav { overflow: hidden; height: 200px; }
-    .hnav::before { height: 200px; background: linear-gradient(rgba(0,0,0,0.860) 0%, rgba(0,0,0,0.859) 5%, rgba(0,0,0,0.853) 10%, rgba(0,0,0,0.837) 15%, rgba(0,0,0,0.810) 20%, rgba(0,0,0,0.771) 25%, rgba(0,0,0,0.720) 30%, rgba(0,0,0,0.658) 35%, rgba(0,0,0,0.587) 40%, rgba(0,0,0,0.510) 45%, rgba(0,0,0,0.430) 50%, rgba(0,0,0,0.350) 55%, rgba(0,0,0,0.273) 60%, rgba(0,0,0,0.202) 65%, rgba(0,0,0,0.140) 70%, rgba(0,0,0,0.089) 75%, rgba(0,0,0,0.050) 80%, rgba(0,0,0,0.023) 85%, rgba(0,0,0,0.007) 90%, rgba(0,0,0,0.001) 95%, rgba(0,0,0,0.000) 100%); }   /* mobile : même fondu doux que sur ordinateur */
+    .hnav::before { height: 250px; background: linear-gradient(rgba(0,0,0,0.680) 0%, rgba(0,0,0,0.679) 5%, rgba(0,0,0,0.673) 10%, rgba(0,0,0,0.659) 15%, rgba(0,0,0,0.635) 20%, rgba(0,0,0,0.600) 25%, rgba(0,0,0,0.554) 30%, rgba(0,0,0,0.500) 35%, rgba(0,0,0,0.438) 40%, rgba(0,0,0,0.373) 45%, rgba(0,0,0,0.306) 50%, rgba(0,0,0,0.242) 55%, rgba(0,0,0,0.182) 60%, rgba(0,0,0,0.129) 65%, rgba(0,0,0,0.084) 70%, rgba(0,0,0,0.050) 75%, rgba(0,0,0,0.026) 80%, rgba(0,0,0,0.011) 85%, rgba(0,0,0,0.003) 90%, rgba(0,0,0,0.000) 95%, rgba(0,0,0,0.000) 100%); }   /* mobile : même fondu doux que sur ordinateur */
     .hnav-in { position: absolute; left: 50%; top: 4px; width: 960px; max-width: none; margin: 0; translate: -50% 0; }
     .hnav svg > :not(#navLogo):not(defs) { display: none; }
     .nav-hit:not([data-menu="jpr"]) { display: none; }
@@ -953,26 +955,11 @@
   // curseur
   const REST = { x: -0.35, y: -0.3 };
   let px = null, py = null, cx = 0.5, cy = 0.1;
-  // téléphone : le Mac suit l'inclinaison de l'appareil (gyroscope) — penché à gauche, il pivote à gauche ; penché vers l'avant, il penche aussi
-  let tiltX = null, tiltY = 0, beta0 = null;
-  const onTilt = (e) => {
-    if (e.gamma == null || e.beta == null) return;
-    const ang = (screen.orientation && screen.orientation.angle) || window.orientation || 0;
-    let lr = e.gamma, fb = e.beta;                     // portrait
-    if (ang === 90) { lr = e.beta; fb = -e.gamma; } else if (ang === -90 || ang === 270) { lr = -e.beta; fb = e.gamma; }
-    if (beta0 === null) beta0 = fb;
-    beta0 += (fb - beta0) * 0.004;                     // la position de repos suit doucement la façon dont on tient le téléphone
-    tiltX = Math.max(-1, Math.min(1, lr / 25));
-    tiltY = Math.max(-1, Math.min(1, (fb - beta0) / 22));
-  };
-  if ('DeviceOrientationEvent' in window && matchMedia('(pointer: coarse)').matches) {
-    addEventListener('deviceorientation', onTilt);
-    // iPhone : l'accès au gyroscope se demande au premier toucher
-    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-      const ask = () => { DeviceOrientationEvent.requestPermission().catch(() => {}); };
-      addEventListener('touchend', ask, { once: true, passive: true });
-    }
-  }
+  // téléphone : 9 nov. — plus de gyroscope (iOS demandait une permission au premier toucher, pour un mouvement trop discret).
+  // Le Mac suit le défilement : il pivote doucement de gauche à droite au fil de la page, et lève ou baisse la tête selon la vitesse,
+  // comme s'il regardait le texte passer. Aucune permission, sur tous les téléphones.
+  const coarse = matchMedia('(pointer: coarse)').matches;
+  let sv = 0, lastSY = scrollY;
   addEventListener('pointermove', (e) => { px = e.clientX; py = e.clientY; }, { passive: true });
   const rest = () => { px = py = null; };
   document.addEventListener('pointerleave', rest);
@@ -1039,7 +1026,12 @@
 
     // regard vers le curseur
     let tx = REST.x, ty = REST.y;
-    if (px === null && tiltX !== null) { tx = tiltX; ty = tiltY; }   // pas de curseur : l'inclinaison du téléphone
+    if (px === null && coarse) {   // pas de curseur : le défilement
+      const d = scrollY - lastSY; lastSY = scrollY;
+      sv += (d / Math.max(1, dt / 16.67) - sv) * (1 - Math.pow(1 - 0.12, dt / 16.67));   // vitesse lissée, en px par image
+      tx = REST.x + 0.5 * Math.sin(scrollY / 360);
+      ty = REST.y - Math.max(-1, Math.min(1, sv / 28)) * 0.7;
+    }
     if (px !== null) {
       tx = Math.max(-1, Math.min(1, (px - x) / (innerWidth * 0.5)));
       ty = Math.max(-1, Math.min(1, (py - y) / (innerHeight * 0.5)));
@@ -2981,6 +2973,7 @@ window.__TRASH = (() => {
   });
 })();
 </script>
+
 <!-- 7 nov. : menu mobile « la grille » (validé) : l'écran se tramifie en blanc cassé, la grille de 5 colonnes se trace en pointillé fin,
      puis les mots tombent en escalier sur les colonnes. « préface » remplace le logo pour revenir à l'accueil.
      Les liens viennent du menu #jmenu de navmorph.html (gardé comme source, jamais affiché). Tout est préfixé jmt : Info a déjà .mt et .grid. -->
