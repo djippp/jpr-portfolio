@@ -4,7 +4,7 @@
 <meta name="theme-color" content="#000000">   <!-- 9 nov. : couleur de la barre du navigateur (Chrome Android ; Safari prend le fond de la page) -->
 <title>JPR Info</title>
 <style>html.pt-in::after{content:"";position:fixed;inset:0;z-index:5999;background:#000;pointer-events:none;animation:pt-kill 0s 3s forwards}@keyframes pt-kill{to{visibility:hidden}}</style><script>if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("pt-in")</script>
-<meta name="description" content="Jean-Philippe Rousseau, directeur artistique à Montréal : parcours, expertises et CV.">
+<meta name="description" content="Jean-Philippe Rousseau, directeur artistique à Montréal : parcours, expertises et fiche technique.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500&display=swap">
@@ -139,7 +139,7 @@
   .cvv-sc { position: absolute; inset: 0; overflow: auto; overscroll-behavior: contain; display: grid; padding: 72px 16px 96px; box-sizing: border-box; cursor: zoom-out; scrollbar-width: none; }
   .cvv-sc::-webkit-scrollbar { display: none; }
   .cvv-sc:focus { outline: none; }
-  .cvv-img { display: block; width: min(calc((100vh - 168px) * 1800 / 2329), 100%); height: auto; cursor: default; transform-origin: 0 0; margin: auto; }   /* centré, sans jamais couper le haut si l’image dépasse */
+  .cvv-img { display: block; width: min(calc((100vh - 168px) * 1800 / 2330), 100%); height: auto; cursor: default; transform-origin: 0 0; margin: auto; }   /* centré, sans jamais couper le haut si l’image dépasse */
   .cvv-x, .cvv-dl { opacity: 0; transition: opacity .35s ease; }
   .cvv.on .cvv-dl { opacity: 1; transition-delay: .25s; }
   .cvv.on .cvv-x { opacity: 1; transition: background-color .25s, color .25s, opacity .35s ease .25s; }   /* le délai ne touche que l’apparition, pas le survol */
@@ -301,7 +301,6 @@
 
   <section class="grid say" aria-label="Approche">
     <div class="bigw rv"><p class="big">Je vois chaque projet un peu comme une énigme&nbsp;: il existe une combinaison plus juste que toutes les autres, et vingt ans de métier m’aident à la trouver. J’itère, encore et encore, jusqu’à ce que la vision soit claire.</p>
-    <p class="big">Concrètement, je commence souvent par enlever. Pour Solyt, le logo a perdu ses majuscules et son symbole s’est posé en exposant, comme une petite note&nbsp;: c’est là qu’il a trouvé sa personnalité. Ce qui reste doit tenir partout, de l’icône de 16&nbsp;pixels à l’affiche de quatre mètres.</p>
     <p class="big">Ce site en est un exemple&nbsp;: une grille stricte, des marges réglées au pixel près et, <span class="nw">par-dessus</span>, un logo souple, presque tracé à la main, et des pixels d’une autre époque. Tout est aligné pour que chaque écart se remarque. <span class="mt" data-grid="auto">Maîtriser les codes, <span class="brk">puis les briser.</span></span></p></div>   <!-- 9 nov. : le paragraphe se termine sur l’énoncé ; « puis les briser. » sort de la grille d’une demi-colonne, et la grille pointillée apparaît quand il passe au milieu de l’écran -->
     <div class="s side rv">
       <p>Hors de l’écran, je cherche encore la bonne combinaison&nbsp;: au bâton avec les Frites Sauce (équipe légendaire), au piano, entre Stréliski, Yann&nbsp;Tiersen et mes propres compositions, et au gym, entre séries et répétitions.</p>
@@ -334,13 +333,13 @@
 
   <section class="sec" aria-labelledby="cv">
     <div class="grid cvsec">
-      <h2 id="cv" class="rv">CV</h2>
-      <a class="cvcard" href="doc/CV-Jean-Philippe-Rousseau.pdf" aria-label="Voir le CV de Jean-Philippe Rousseau en grand" aria-haspopup="dialog">
-        <img src="img/cv.webp" alt="" width="900" height="1165" loading="lazy">
+      <h2 id="cv" class="rv">Fiche technique</h2>
+      <a class="cvcard" href="doc/Fiche-technique-Jean-Philippe-Rousseau.pdf" aria-label="Voir la fiche technique en grand" aria-haspopup="dialog">
+        <img src="img/fiche.webp" alt="" width="900" height="1165" loading="lazy">
       </a>
       <div class="s cvtxt rv">
-        <p>Tout tient sur une page. J’ai fait des choix, comme toujours.</p>
-        <p><a class="dl" href="doc/CV-Jean-Philippe-Rousseau.pdf" download>Télécharger le CV ↓</a></p>
+        <p>Le site, en une affiche&nbsp;: logo, couleurs, typo, grille. À imprimer, à épingler.</p>
+        <p><a class="dl" href="doc/Fiche-technique-Jean-Philippe-Rousseau.pdf" download>Télécharger la fiche ↓</a></p>
       </div>
     </div>
   </section>
@@ -349,10 +348,10 @@
   </section>
   <div class="end"></div>
 </main>
-<div class="cvv" id="cvv" role="dialog" aria-modal="true" aria-label="CV de Jean-Philippe Rousseau" hidden>
-  <div class="cvv-sc" id="cvvSc" tabindex="-1"><img class="cvv-img" id="cvvImg" src="img/cv-hd.webp" alt="CV de Jean-Philippe Rousseau" width="1800" height="2329" decoding="async"></div>
+<div class="cvv" id="cvv" role="dialog" aria-modal="true" aria-label="Fiche technique de Jean-Philippe Rousseau" hidden>
+  <div class="cvv-sc" id="cvvSc" tabindex="-1"><img class="cvv-img" id="cvvImg" src="img/fiche-hd.webp" alt="Fiche technique : le logo JPR, la palette, la typographie PP Mori, les pixels de Montréapolis et la grille de 6 colonnes" width="1800" height="2330" decoding="async"></div>
   <button type="button" class="cvv-x" id="cvvX">fermer</button>
-  <a class="cvv-dl" href="doc/CV-Jean-Philippe-Rousseau.pdf" download>Télécharger le PDF ↓</a>
+  <a class="cvv-dl" href="doc/Fiche-technique-Jean-Philippe-Rousseau.pdf" download>Télécharger le PDF ↓</a>
 </div>
 <style>
   /* ---------- pied de page : les items du menu, dans les mêmes colonnes que le menu du haut (maquette 1600 px) ---------- */
@@ -597,7 +596,7 @@
   links.forEach((a) => a.addEventListener('click', async (e) => {
     if (!dl) return;   // pas de capacité : comportement normal du lien
     e.preventDefault();
-    try { const blob = await (await fetch(a.getAttribute('href'))).blob(); await dl.save({ filename: 'CV-Jean-Philippe-Rousseau.pdf', data: blob }); }
+    try { const blob = await (await fetch(a.getAttribute('href'))).blob(); await dl.save({ filename: 'Fiche-technique-Jean-Philippe-Rousseau.pdf', data: blob }); }
     catch (err) { /* refusé ou indisponible : rien à faire */ }
   }));
 })();
@@ -709,6 +708,14 @@
           a = 0; py = f - 0;   // posé à plat : il devient un élément de la page, à cet endroit
           el.style.position = 'absolute';
           el.style.transform = `translate(${px + scrollX}px, ${py - h + scrollY}px) rotate(0rad)`;
+          // 9 nov. (3) : une fois tombé, il montre la grille au survol, comme l'énoncé plus haut (au toucher : 2 secondes)
+          const g = window.__gridPeek;
+          if (g) {
+            el.style.pointerEvents = 'auto';
+            el.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') g.on(); });
+            el.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') g.off(); });
+            el.addEventListener('pointerup', (e) => { if (e.pointerType !== 'mouse') g.flash(); });
+          }
           return;
         }
       }
@@ -730,6 +737,7 @@
   const on = (el) => { clearTimeout(t); root.classList.remove('jgrid-peek'); root.dataset.peek = el.dataset.grid || 'sys'; void root.offsetWidth; root.classList.add('jgrid-peek'); };
   const off = () => { clearTimeout(t); root.classList.remove('jgrid-peek'); };
   const touch = matchMedia('(hover: none)').matches;
+  window.__gridPeek = { on: () => on(els[0]), off, flash: () => { on(els[0]); t = setTimeout(off, 2000); } };   // pour « puis les briser. » une fois tombé
   els.forEach((el) => {
     el.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') on(el); });
     el.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') off(); });
@@ -929,6 +937,12 @@
   html:has(.jcopy.on) .mnav a[data-contact] { text-decoration: line-through; text-decoration-thickness: 1px; }
   @media (max-width: 700px) { .jcopy { row-gap: 4px; padding: 0 16px !important; } }
   @keyframes jtbar { to { transform: scaleX(0); } }
+  /* 11 nov. : pendant que l'adresse est affichée, les autres items du menu s'effacent : il ne reste que le logo et « copié » */
+  :is(.jnav, .hnav) svg > text { transition: opacity .3s ease; }
+  html:has(.jcopy.on:not(.out)) :is(.jnav, .hnav) svg > text:not(#navContact) { opacity: 0; }
+  html:has(.jcopy.on:not(.out)) :is(.jnav, .hnav) a:not([data-contact]):not([aria-label^="JPR"]):not([data-menu="jpr"]) { pointer-events: none; }
+  .mnav a { transition: opacity .3s ease; }
+  html:has(.jcopy.on:not(.out)) .mnav a:not([data-contact]) { opacity: 0; pointer-events: none; }
 </style>
 <script>
 /* menu : « contact » copie l'adresse courriel et l'affiche en très grand, plein écran (clic, Échap ou quelques secondes : retour) ; « info » arrive bientôt */
@@ -972,12 +986,12 @@
   const NS = 'http://www.w3.org/2000/svg';
   const mark = (on) => {
     const svg = document.querySelector('.jnav svg, .hnav svg'); if (!svg) return;
-    const cur = [...svg.querySelectorAll('rect[height="2.4"]')].filter((x) => x.id !== 'ctStrike');
+    const cur = [...svg.querySelectorAll(':scope > rect')].filter((x) => x.id !== 'ctStrike');   // 11 nov. : le trait de la page en cours, quelle que soit son épaisseur (il restait visible depuis qu'il fait 1,4)
     let k = svg.querySelector('#ctStrike');
     if (!on) { if (k) k.remove(); cur.forEach((x) => { x.style.opacity = ''; }); return; }
     const tx = svg.querySelector('#navContact') || [...svg.querySelectorAll('text')].find((x) => x.textContent.trim() === 'contact'); if (!tx) return;
     const save = tx.textContent; if (tx.__w) tx.textContent = tx.__w; const bb = tx.getBBox(); tx.textContent = save;   // mesuré sur le mot final, pas sur le glitch
-    if (!k) { k = document.createElementNS(NS, 'rect'); k.id = 'ctStrike'; k.setAttribute('y', 39.6); k.setAttribute('height', 2.4); svg.appendChild(k); }
+    if (!k) { k = document.createElementNS(NS, 'rect'); k.id = 'ctStrike'; k.setAttribute('y', 38); k.setAttribute('height', 1.4); svg.appendChild(k); }
     k.setAttribute('x', bb.x); k.setAttribute('width', bb.width); k.setAttribute('fill', getComputedStyle(tx).fill || '#F2F0EB');
     cur.forEach((x) => { x.style.opacity = '0'; });
     // le minuteur : le trait raccourcit vers la gauche à mesure que le temps passe ; au survol du courriel, il s'arrête

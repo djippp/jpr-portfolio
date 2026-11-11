@@ -722,6 +722,12 @@
   html:has(.jcopy.on) .mnav a[data-contact] { text-decoration: line-through; text-decoration-thickness: 1px; }
   @media (max-width: 700px) { .jcopy { row-gap: 4px; padding: 0 16px !important; } }
   @keyframes jtbar { to { transform: scaleX(0); } }
+  /* 11 nov. : pendant que l'adresse est affichée, les autres items du menu s'effacent : il ne reste que le logo et « copié » */
+  :is(.jnav, .hnav) svg > text { transition: opacity .3s ease; }
+  html:has(.jcopy.on:not(.out)) :is(.jnav, .hnav) svg > text:not(#navContact) { opacity: 0; }
+  html:has(.jcopy.on:not(.out)) :is(.jnav, .hnav) a:not([data-contact]):not([aria-label^="JPR"]):not([data-menu="jpr"]) { pointer-events: none; }
+  .mnav a { transition: opacity .3s ease; }
+  html:has(.jcopy.on:not(.out)) .mnav a:not([data-contact]) { opacity: 0; pointer-events: none; }
 </style>
 <script>
 /* menu : « contact » copie l'adresse courriel et l'affiche en très grand, plein écran (clic, Échap ou quelques secondes : retour) ; « info » arrive bientôt */
@@ -765,12 +771,12 @@
   const NS = 'http://www.w3.org/2000/svg';
   const mark = (on) => {
     const svg = document.querySelector('.jnav svg, .hnav svg'); if (!svg) return;
-    const cur = [...svg.querySelectorAll('rect[height="2.4"]')].filter((x) => x.id !== 'ctStrike');
+    const cur = [...svg.querySelectorAll(':scope > rect')].filter((x) => x.id !== 'ctStrike');   // 11 nov. : le trait de la page en cours, quelle que soit son épaisseur (il restait visible depuis qu'il fait 1,4)
     let k = svg.querySelector('#ctStrike');
     if (!on) { if (k) k.remove(); cur.forEach((x) => { x.style.opacity = ''; }); return; }
     const tx = svg.querySelector('#navContact') || [...svg.querySelectorAll('text')].find((x) => x.textContent.trim() === 'contact'); if (!tx) return;
     const save = tx.textContent; if (tx.__w) tx.textContent = tx.__w; const bb = tx.getBBox(); tx.textContent = save;   // mesuré sur le mot final, pas sur le glitch
-    if (!k) { k = document.createElementNS(NS, 'rect'); k.id = 'ctStrike'; k.setAttribute('y', 39.6); k.setAttribute('height', 2.4); svg.appendChild(k); }
+    if (!k) { k = document.createElementNS(NS, 'rect'); k.id = 'ctStrike'; k.setAttribute('y', 38); k.setAttribute('height', 1.4); svg.appendChild(k); }
     k.setAttribute('x', bb.x); k.setAttribute('width', bb.width); k.setAttribute('fill', getComputedStyle(tx).fill || '#F2F0EB');
     cur.forEach((x) => { x.style.opacity = '0'; });
     // le minuteur : le trait raccourcit vers la gauche à mesure que le temps passe ; au survol du courriel, il s'arrête

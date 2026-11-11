@@ -48,6 +48,9 @@
   .outro p { max-width: 1600px; margin: 0 auto; box-sizing: border-box; padding: 0 calc(var(--fw) * (1 - 4.06 / 100 - 73.25 / 100)) 0 calc(var(--fw) * 4.06 / 100);
     font: 400 max(16px, calc(var(--fw) * .033))/1.3 var(--grot); letter-spacing: -.03em; color: var(--ink); text-wrap: pretty; }   /* 9 nov. : interligne 1,5 → 1,3 */   /* même typo que l'accueil */
   .outro p + p { margin-top: 1.3em; }
+  /* 9 nov. : vue spirale — le texte de fin remonte : il arrive dès que la spirale a fini de tourner (le bas de l'écran est vide à ce moment-là) */
+  .spiral:not(.as-list) + .outro { padding-top: 0; margin-top: -22vh; }
+  @media (max-width: 700px) { .spiral:not(.as-list) + .outro { margin-top: -14vh; } }
   .outro p:first-child { text-indent: calc(298 / 1600 * var(--fw) - .06em); }   /* alinéa calé sur « pele mele », comme l'accueil */
   @media (max-width: 700px) { .outro p { padding: 0; font-size: 23px; line-height: 1.3; letter-spacing: -.025em; } .outro p:first-child { text-indent: calc(var(--mc) - .06em); } }   /* 7 nov. : alinéa d'une colonne mobile */   /* mobile : même typo que l'accueil */
   /* petite typo de la page Info, utilisée dans la fiche projet (le texte de fin, essayé en petit dans la 5e colonne le 6 nov., est revenu en grand) */
@@ -369,7 +372,7 @@
     </div>
   </section>
   <section class="outro" id="outro" aria-label="Aujourd’hui">
-    <p>J’ai réalisé ces projets chez <a class="kz" href="https://kryzalid.net" target="_blank" rel="noopener">Kryzalid&nbsp;↗</a>, comme directeur artistique et designer&nbsp;: identités visuelles, sites web et systèmes de design, pour des marques, des institutions et des organismes. Pour en voir davantage, ou si vous avez une énigme à résoudre, écrivez-moi.</p>
+    <p>J’ai réalisé ces projets chez <a class="kz" href="https://kryzalid.net" target="_blank" rel="noopener">Kryzalid&nbsp;↗</a>, comme directeur artistique et designer&nbsp;: identités visuelles, sites web et systèmes de design, pour des marques, des institutions et des organismes.</p>
   </section>
   <style>
   /* ---------- pied de page : les items du menu, dans les mêmes colonnes que le menu du haut (maquette 1600 px) ---------- */
@@ -452,13 +455,15 @@
     ["Novalait", "Kryzalid", "", 300, 400, "projects/novalait.webp", "https://kryzalid.net/en/portfolio/novalait/"],
     ["Arsenal de la créativité", "Kryzalid", "", 335, 335, "projects/arsenal.webp", "https://kryzalid.net/en/portfolio/arsenal-de-la-creativite/"],
     ["Marie de France", "Kryzalid", "", 380, 255, "projects/marie-de-france.webp", "https://kryzalid.net/en/portfolio/college-international-marie-de-france/"],
-    ["Via Prévention", "Kryzalid", "", 290, 388, "projects/via-prevention.webp", "https://kryzalid.net/en/portfolio/via-prevention/"],
     // (la carte « porte » vers le Pêle-mêle a été retirée : la spirale finit sur un projet ; le menu mène au Pêle-mêle)
   ];
   // réglages de l'hélice (valeurs par défaut de la maquette)
   const ANGK = .5;   // angle aléatoire des cartes : à moitié (jusqu'à ~3° de lacet, 2° de tangage, 1,5° de roulis) — posées à la main, mais nettes
   const SPREAD_TURNS = 1.55, RISE = 100, RADIUS_SCALE = 1;   // RISE : écart vertical entre deux cartes (82 dans la maquette) ; 100 = spirale plus haute
-  const SCROLL_TURNS = SPREAD_TURNS * (PROJECTS.length - 1) / PROJECTS.length;   // à la fin, la dernière carte revient pile de face
+  // 9 nov. : la spirale compte une place de plus que de projets : à la fin, c'est cette place vide qui revient de face,
+  // et le dernier projet s'arrête un cran avant, décalé vers la gauche, au lieu d'être en plein milieu
+  const SLOTS = PROJECTS.length + 1;
+  const SCROLL_TURNS = SPREAD_TURNS * (SLOTS - 1) / SLOTS;
 
   // le cadre de la maquette de 1600 (même calcul que --fw / --fl en CSS) : bureau = pleine largeur, marges de ~2 % ; mobile = 16 px
   const MR = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--mr')) || .02;   // marge du site sur bureau (part de l'écran)
@@ -599,6 +604,7 @@
     const top = section.offsetTop, max0 = section.offsetHeight - innerHeight, p = max0 > 0 ? Math.min(1, Math.max(0, (scrollY - top) / max0)) : 0, inSec = scrollY >= top && scrollY <= top + max0;
     // bureau : léger ralenti (la liste parcourt 85 % de la distance défilée), qui donne du poids ; mobile : 1 pour 1, la liste reste collée au doigt
     section.style.height = m ? `${Math.round(innerHeight + listTravel() / (innerWidth <= 700 ? 1 : LIST_RATIO))}px` : '';
+    section.classList.toggle('as-list', !!m);   // (le texte de fin se rapproche seulement en vue spirale)
     if (inSec) { const max1 = section.offsetHeight - innerHeight; scrollTo(0, top + p * Math.max(0, max1)); }
     onScroll();
   };
@@ -712,7 +718,7 @@
     const R0 = Math.max(320, Math.min(860, w * 0.56));
     const R = (mob ? w * 0.78 : Math.min(R0, (R0 + fitR()) / 2)) * RADIUS_SCALE, centerZ = -R * 0.58;
     // mobile : plus de tours (les voisines s'écartent assez pour ne plus couvrir la carte de face) et plus d'écart vertical
-    const ST = mob ? 2.7 : SPREAD_TURNS, SCT = ST * (PROJECTS.length - 1) / PROJECTS.length;   // entre-deux : à mi-chemin entre la spirale d'origine et celle calée sur les marges du menu
+    const ST = mob ? 2.7 : SPREAD_TURNS, SCT = ST * (SLOTS - 1) / SLOTS;   // entre-deux : à mi-chemin entre la spirale d'origine et celle calée sur les marges du menu
     // départ identique à avant (1er projet au même endroit) ; arrivée : le dernier projet au centre de l'écran
     const step0 = Math.min(82 * 13 * fit, innerHeight * 1.5) / 13;   // le 1er projet garde sa place d'origine, quelle que soit la hauteur
     const startOff = innerHeight * 0.12 - 0.11 * 13 * step0 + 50;   // + 50 px d'air sous le logo   // position de départ d'origine (calée sur 14 cartes)
@@ -729,11 +735,12 @@
     loT = Math.max(0, (n + 1) * RH - avail) * target;
     lo += (loT - lo) * (reduceMo ? 1 : mob ? 0.32 : 0.14);   // mobile : suit le doigt de près ; bureau : glisse un peu plus, avec de l’inertie
     rowsEl.style.pointerEvents = gm > 0.98 ? 'auto' : 'none';
-    const spreadPx = mob ? Math.min(RISE * 1.5 * (n - 1) * fit, innerHeight * 3) : Math.min(RISE * (n - 1) * fit, innerHeight * 2), step = spreadPx / (n - 1), drift = spreadPx;
+    const ns = SLOTS;   // la géométrie de la spirale suit les places (une de plus que les cartes)
+    const spreadPx = mob ? Math.min(RISE * 1.5 * (ns - 1) * fit, innerHeight * 3) : Math.min(RISE * (ns - 1) * fit, innerHeight * 2), step = spreadPx / (ns - 1), drift = spreadPx;
     for (let i = 0; i < n; i++) {
       const card = cards[i];
-      const t = (i / n) * Math.PI * 2 * ST - s * Math.PI * 2 * SCT;
-      const y = (i - (n - 1) / 2) * step - s * drift + drift / 2;
+      const t = (i / ns) * Math.PI * 2 * ST - s * Math.PI * 2 * SCT;
+      const y = (i - (ns - 1) / 2) * step - s * drift + drift / 2;
       const e = 1, em = 1, rf = 1;   // (plus de sortie de la tête)
       const x = Math.sin(t) * R * rf, z = Math.cos(t) * R * rf + centerZ;
       const depth = (z - centerZ) / R;   // -1 au fond, 1 devant
@@ -1354,12 +1361,13 @@
 })();
 </script>
 <style>
-  /* 9 nov. : fiche, bureau — au survol, une image grandit vers la gauche (son bord droit reste en place) jusqu'à la marge de la page ;
+  /* 9 nov. : fiche, bureau — au clic (9 nov. (2) : plus au survol), une image grandit vers la gauche (son bord droit reste en place) jusqu'à la marge de la page ;
      le texte de la fiche passe au même gris foncé plein que l'aperçu de la grille sur Info */
   @media (hover: hover) and (pointer: fine) and (min-width: 900px) {
-    .lb .gal figure { position: relative; transform-origin: 100% 50%; transition: transform .6s cubic-bezier(.2, .8, .2, 1), box-shadow .6s; }
+    .lb .gal figure { position: relative; transform-origin: 100% 50%; transition: transform .9s cubic-bezier(.45, 0, .15, 1); cursor: zoom-in; }
+    .lb .gal figure.zm.on { cursor: zoom-out; }
     .lb .gal figure.zm { z-index: 6; }
-    .lb .col, .lb .col *, .lb .gal .ends, .lb .gal .ends * { transition: color .35s ease, border-color .35s ease, opacity .35s ease; }
+    .lb .col, .lb .col *, .lb .gal .ends, .lb .gal .ends * { transition: color .6s ease, border-color .6s ease, opacity .6s ease; }
     .lb.gz .col, .lb.gz .col *, .lb.gz .gal .ends, .lb.gz .gal .ends * { color: #282725 !important; border-color: #282725 !important; text-decoration-color: #282725 !important; }
     .lb.gz .col img, .lb.gz .gal .ends img { opacity: .15; }
   }
@@ -1371,7 +1379,7 @@
   const lb = document.getElementById('lb'), gal = document.getElementById('lbGal'), inner = lb && lb.querySelector('.inner');
   if (!lb || !gal || !inner) return;
   let cur = null, px = -1, py = -1, t = 0;
-  const reset = () => { clearTimeout(t); if (cur) { cur.style.transform = ''; const c = cur; setTimeout(() => { if (c !== cur) c.classList.remove('zm'); }, 600); cur = null; } lb.classList.remove('gz'); };
+  const reset = () => { clearTimeout(t); if (cur) { cur.classList.remove('on'); cur.style.transform = ''; const c = cur; setTimeout(() => { if (c !== cur) c.classList.remove('zm'); }, 900); cur = null; } if (lb.classList.contains('gz')) lb.classList.remove('gz'); };   // (classList.remove réécrit l'attribut même sans la classe : sans ce test, l'observateur plus bas tournait en boucle et figeait la page)
   const zoom = (f) => {
     if (f === cur) return; reset(); if (!f) return;
     const r = f.getBoundingClientRect(); if (r.width < 40) return;
@@ -1382,23 +1390,21 @@
     // grandit vers la gauche ; verticalement, on le garde dans l'écran
     const h = r.height * s, cy = r.top + r.height / 2;
     const ty = Math.max(top, Math.min(bot - h, cy - h / 2)) - (cy - h / 2);
-    cur = f; f.classList.add('zm');
+    cur = f; f.classList.add('zm', 'on');
     f.style.transform = `translateY(${ty.toFixed(1)}px) scale(${s.toFixed(4)})`;
     lb.classList.add('gz');
   };
-  // seulement quand la souris bouge vraiment (en défilant, les images passent sous le curseur immobile : rien ne grossit)
-  lb.addEventListener('pointermove', (e) => {
-    if (e.pointerType !== 'mouse' || !mq.matches || !lb.classList.contains('ready')) return;
-    if (Math.abs(e.clientX - px) + Math.abs(e.clientY - py) < 2) return;
-    px = e.clientX; py = e.clientY;
+  // 9 nov. (2) : au clic seulement, en douceur. Un clic sur l'image agrandie (ou n'importe où ailleurs dans la fiche), Échap ou le défilement la remettent en place
+  lb.addEventListener('click', (e) => {
+    if (!mq.matches || !lb.classList.contains('ready')) return;
     const f = e.target.closest && e.target.closest('#lbGal figure');
-    if (f === cur) return;
-    clearTimeout(t);
-    if (f) t = setTimeout(() => zoom(f), cur ? 0 : 90); else reset();
-  }, { passive: true });
-  lb.addEventListener('pointerleave', reset);
+    if (cur && e.target.closest('a, button')) { reset(); return; }   // « fermer », les liens : ils marchent normalement
+    if (cur) { e.preventDefault(); e.stopPropagation(); const was = cur; reset(); if (f && f !== was) zoom(f); return; }   // déjà agrandie : ce clic la remet en place (sans fermer la fiche)
+    if (f && !e.target.closest('a, button')) { e.preventDefault(); zoom(f); }
+  }, true);
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && cur) { e.stopImmediatePropagation(); reset(); } }, true);
   lb.addEventListener('scroll', () => { if (cur) reset(); }, { capture: true, passive: true });
-  new MutationObserver(() => { if (!lb.classList.contains('ready')) reset(); }).observe(lb, { attributes: true, attributeFilter: ['class'] });
+  new MutationObserver(() => { if (!lb.classList.contains('ready') && (cur || lb.classList.contains('gz'))) reset(); }).observe(lb, { attributes: true, attributeFilter: ['class'] });
 })();
 </script>
 <!-- le cadre de la maquette de 1600 : sur bureau, il occupe toute la largeur et ses marges de 65 tombent à --mr de l'écran
@@ -1581,6 +1587,12 @@
   html:has(.jcopy.on) .mnav a[data-contact] { text-decoration: line-through; text-decoration-thickness: 1px; }
   @media (max-width: 700px) { .jcopy { row-gap: 4px; padding: 0 16px !important; } }
   @keyframes jtbar { to { transform: scaleX(0); } }
+  /* 11 nov. : pendant que l'adresse est affichée, les autres items du menu s'effacent : il ne reste que le logo et « copié » */
+  :is(.jnav, .hnav) svg > text { transition: opacity .3s ease; }
+  html:has(.jcopy.on:not(.out)) :is(.jnav, .hnav) svg > text:not(#navContact) { opacity: 0; }
+  html:has(.jcopy.on:not(.out)) :is(.jnav, .hnav) a:not([data-contact]):not([aria-label^="JPR"]):not([data-menu="jpr"]) { pointer-events: none; }
+  .mnav a { transition: opacity .3s ease; }
+  html:has(.jcopy.on:not(.out)) .mnav a:not([data-contact]) { opacity: 0; pointer-events: none; }
 </style>
 <script>
 /* menu : « contact » copie l'adresse courriel et l'affiche en très grand, plein écran (clic, Échap ou quelques secondes : retour) ; « info » arrive bientôt */
@@ -1624,12 +1636,12 @@
   const NS = 'http://www.w3.org/2000/svg';
   const mark = (on) => {
     const svg = document.querySelector('.jnav svg, .hnav svg'); if (!svg) return;
-    const cur = [...svg.querySelectorAll('rect[height="2.4"]')].filter((x) => x.id !== 'ctStrike');
+    const cur = [...svg.querySelectorAll(':scope > rect')].filter((x) => x.id !== 'ctStrike');   // 11 nov. : le trait de la page en cours, quelle que soit son épaisseur (il restait visible depuis qu'il fait 1,4)
     let k = svg.querySelector('#ctStrike');
     if (!on) { if (k) k.remove(); cur.forEach((x) => { x.style.opacity = ''; }); return; }
     const tx = svg.querySelector('#navContact') || [...svg.querySelectorAll('text')].find((x) => x.textContent.trim() === 'contact'); if (!tx) return;
     const save = tx.textContent; if (tx.__w) tx.textContent = tx.__w; const bb = tx.getBBox(); tx.textContent = save;   // mesuré sur le mot final, pas sur le glitch
-    if (!k) { k = document.createElementNS(NS, 'rect'); k.id = 'ctStrike'; k.setAttribute('y', 39.6); k.setAttribute('height', 2.4); svg.appendChild(k); }
+    if (!k) { k = document.createElementNS(NS, 'rect'); k.id = 'ctStrike'; k.setAttribute('y', 38); k.setAttribute('height', 1.4); svg.appendChild(k); }
     k.setAttribute('x', bb.x); k.setAttribute('width', bb.width); k.setAttribute('fill', getComputedStyle(tx).fill || '#F2F0EB');
     cur.forEach((x) => { x.style.opacity = '0'; });
     // le minuteur : le trait raccourcit vers la gauche à mesure que le temps passe ; au survol du courriel, il s'arrête
