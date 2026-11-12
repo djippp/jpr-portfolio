@@ -445,7 +445,7 @@
     ["Solyt", "Identité visuelle · Site web", "", 360, 270, "projects/solyt.webp", "https://kryzalid.net/portfolio/solyt/"],
     ["Jardins Mirabel", "Image de marque · Site web", "", 300, 333, "projects/jardins-mirabel-cover.webp", "https://kryzalid.net/portfolio/jardins-mirabel/"],
     ["Collège Sainte-Marcelline", "Image de marque · UX/UI", "", 330, 341, "projects/sainte-marcelline-cover.webp", "https://kryzalid.net/portfolio/college-sainte-marcelline/"],
-    ["Maison Trinitaire", "Site web · UX/UI", "", 300, 400, "projects/maison-trinitaire.webp", "https://kryzalid.net/portfolio/maison-trinitaire/"],
+    ["Kryzalid", "Site web · UX/UI", "", 360, 270, "projects/kryzalid/01.webp", "https://kryzalid.net/"],
     ["Anti-Troll Kit", "Image de marque · Vidéo", "", 285, 385, "projects/anti-troll.webp", "https://kryzalid.net/en/portfolio/anti-troll-kit/"],
     ["Hôpital de Montréal pour enfants", "Illustration · UX/UI", "", 390, 290, "projects/hme.webp", "https://kryzalid.net/en/portfolio/montreal-childrens-hospital/"],
     ["Institut Douglas", "Kryzalid", "", 305, 305, "projects/douglas.webp", "https://kryzalid.net/en/portfolio/douglas-mental-health-university-institute/"],
@@ -811,7 +811,7 @@
   // la fiche se lit comme une page : le texte reste à gauche, les images du projet montent au défilement ;
   // on change de projet avec les flèches (boutons, clavier ←/→), jamais au défilement
   const DESC = {
-    'Maison Trinitaire': 'Conception de l’expérience et design du site web de la Maison Trinitaire : une structure claire, une navigation simple et un ton chaleureux, à l’image du milieu de vie.',
+    'Kryzalid': 'Le site de l’agence elle-même : une grande typographie, une grille sobre et des touches de couleur franches, pour laisser parler les projets.',
     'Jardins Mirabel': 'Image de marque et site web pour un projet de condos locatifs : une identité végétale et sobre, déclinée de la signature jusqu’à l’expérience en ligne.',
     'Collège Sainte-Marcelline': 'Image de marque et design d’interface pour le Collège Sainte-Marcelline : un système visuel qui porte la mission de l’établissement, du papier à l’écran.',
     'Solyt': [
@@ -835,6 +835,7 @@
   // vrais visuels : après l'image du projet (la même que la carte de la spirale), une suite d'images pleine largeur ;
   // une paire [[a], [b]] s'affiche côte à côte, à la même hauteur (chaque image garde son format, rien n'est recadré)
   const REAL = {
+    'Kryzalid': [["projects/kryzalid/02.webp", 1.3333], ["projects/kryzalid/03.webp", 1.3333], ["projects/kryzalid/04.webp", 1.3333]],
     'Solyt': [["projects/solyt/01.webp", 1.7758], ["projects/solyt/02.webp", 1.1687], ["projects/solyt/03.webp", 1.3158], ["projects/solyt/04.webp", 1.448], [["projects/solyt/05.webp", 1.0582], ["projects/solyt/06.webp", 1.066]], ["projects/solyt/08.webp", 1.3333], [["projects/solyt/07.webp", 0.9124], ["projects/solyt/11.webp", 0.9319]], ["projects/solyt/09.webp", 1.3333], ["projects/solyt/10.webp", 1.227], ["projects/solyt/12.webp", 1.2638], ["projects/solyt/13.webp", 1.2003], ["projects/solyt/14.webp", 1.3322], [["projects/solyt/15.webp", 0.7812], ["projects/solyt/16.webp", 1.1283]], ["projects/solyt/18.webp", 1.5]],
   };
   PROJECTS.forEach((p, i) => { if (REAL[p[0]]) GALLERY[i] = [[p[5], AR], ...REAL[p[0]].filter((r) => r[0] !== p[5])]; });   // si la cover fait déjà partie de la suite, on ne la répète pas
