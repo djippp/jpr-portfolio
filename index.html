@@ -3101,16 +3101,17 @@ window.__TRASH = (() => {
 })();
 </script>
 
-<!-- 7 nov. : menu mobile « la grille » (validé) : l'écran se tramifie en blanc cassé, la grille de 5 colonnes se trace en pointillé fin,
+<!-- 7 nov. : menu mobile « la grille » (validé) ; 12 nov. : l'écran passe au blanc cassé en fondu (la page derrière se floute), la grille de 5 colonnes se trace en pointillé fin,
      puis les mots tombent en escalier sur les colonnes. « préface » remplace le logo pour revenir à l'accueil.
      Les liens viennent du menu #jmenu de navmorph.html (gardé comme source, jamais affiché). Tout est préfixé jmt : Info a déjà .mt et .grid. -->
 <style>
   .jmt { position: fixed; inset: 0; z-index: 8500; display: none; color: #000; font-family: "PP Mori", "Host Grotesk", "Helvetica Neue", Arial, sans-serif; -webkit-tap-highlight-color: transparent;
     --ln: rgba(0, 0, 0, .16); --mcol: calc((100vw - 32px - 48px) / 5); --mc: calc(var(--mcol) + 12px); }
   .jmt.show { display: block; }
-  .jmt.full { background: #F2F0EB; }
-  .jmt canvas { position: absolute !important; inset: 0; width: 100% !important; height: 100% !important; z-index: 0 !important; image-rendering: pixelated; }
-  .jmt.full canvas { display: none; }
+  /* 12 nov. : plus de trame pixel : le blanc cassé arrive en fondu, et la page derrière perd son focus pendant qu'il monte */
+  .jmt { background: rgba(242, 240, 235, 0); -webkit-backdrop-filter: blur(0px); backdrop-filter: blur(0px);
+    transition: background-color .42s cubic-bezier(.4, 0, .2, 1), -webkit-backdrop-filter .42s cubic-bezier(.4, 0, .2, 1), backdrop-filter .42s cubic-bezier(.4, 0, .2, 1); }
+  .jmt.full { background: rgba(242, 240, 235, 1); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
   .jmt .bar { position: absolute; z-index: 3; left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); top: 0; height: 56px; display: flex; justify-content: space-between; align-items: center; }
   .jmt .bar button, .jmt .bar a { font: 400 15px/1 "PP Mori", "Host Grotesk", "Helvetica Neue", Arial, sans-serif !important; letter-spacing: -.01em; background: none; border: 0; padding: 10px 0; margin: 0; cursor: pointer; text-decoration: none; color: inherit; }
   .jmt .bar .lg { position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: 66px; line-height: 0; }
@@ -3127,8 +3128,9 @@ window.__TRASH = (() => {
   .jmt ul { position: relative !important; z-index: 2 !important; display: block !important; width: 100% !important; max-width: none !important; float: none !important; box-sizing: border-box; list-style: none; margin: 0; padding: 112px 16px 0; }
   .jmt li { display: flex; align-items: baseline; overflow: hidden; padding-bottom: .08em; }
   .jmt li a { position: relative; display: inline-block; color: inherit; text-decoration: none; font-size: var(--fs, 46px); line-height: 1.04; letter-spacing: -.04em; white-space: nowrap;
-    margin-left: calc(var(--k) * var(--mc)); translate: 0 105%; transition: translate .6s cubic-bezier(.2, .8, .2, 1); transition-delay: calc(var(--i) * 70ms); }
-  .jmt.words li a { translate: 0 0; }
+    margin-left: calc(var(--k) * var(--mc)); translate: 0 105%; opacity: 0; filter: blur(8px);
+    transition: translate .6s cubic-bezier(.2, .8, .2, 1), opacity .45s ease, filter .6s cubic-bezier(.2, .8, .2, 1); transition-delay: calc(var(--i) * 70ms); }
+  .jmt.words li a { translate: 0 0; opacity: 1; filter: blur(0); }
   .jmt li a .st { position: absolute; left: -.02em; right: -.02em; top: 54%; height: .055em; background: currentColor; transform: scaleX(0); transform-origin: 0 50%; transition: transform .5s cubic-bezier(.6, 0, .2, 1) .45s; }
   .jmt.words li a[aria-current] .st { transform: scaleX(1); }
   .jmt li a:focus-visible, .jmt .bar :focus-visible { outline: 1px solid currentColor; outline-offset: 4px; }
@@ -3136,11 +3138,11 @@ window.__TRASH = (() => {
      Le petit logo du haut est retiré : deux JPR sur le même écran se faisaient concurrence. La barre : fermer … contact */
   /* il apparaît en montant un peu et en se fondant ; sa forme, d.abord plus liquide, se calme jusqu'à l'ondulation lente de l'accueil */
   .jmt .big { position: absolute; z-index: 2; left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(16px, env(safe-area-inset-bottom, 0px)); line-height: 0; pointer-events: none; }
-  .jmt .big svg { display: block; width: 100%; height: auto; overflow: visible; opacity: 0; translate: 0 22px; transition: opacity .22s ease, translate .3s ease; }
-  .jmt.words .big svg { opacity: 1; translate: 0 0; transition: opacity .7s ease .3s, translate 1.1s cubic-bezier(.16, 1, .3, 1) .3s; }
+  .jmt .big svg { display: block; width: 100%; height: auto; overflow: visible; opacity: 0; translate: 0 22px; filter: blur(10px); transition: opacity .22s ease, translate .3s ease, filter .3s ease; }
+  .jmt.words .big svg { opacity: 1; translate: 0 0; filter: blur(0); transition: opacity .7s ease .3s, translate 1.1s cubic-bezier(.16, 1, .3, 1) .3s, filter .9s cubic-bezier(.16, 1, .3, 1) .3s; }
   @media (prefers-reduced-motion: reduce) { .jmt .big svg { transition: none !important; } }
   @media (min-width: 701px) { .jmt { display: none !important; } }
-  @media (prefers-reduced-motion: reduce) { .jmt li a, .jmt .cols i, .jmt .st { transition: none !important; } }
+  @media (prefers-reduced-motion: reduce) { .jmt, .jmt li a, .jmt .cols i, .jmt .st { transition: none !important; } .jmt li a, .jmt .big svg { filter: none !important; } }
 </style>
 <script>
 (() => {
@@ -3161,7 +3163,7 @@ window.__TRASH = (() => {
 
   const build = () => {
     m.className = 'jmt';
-    m.innerHTML = `<canvas aria-hidden="true"></canvas><div class="cols" aria-hidden="true">${[0, 1, 2, 3, 4].map((k) => `<i style="--k:${k}"></i>`).join('')}</div>`
+    m.innerHTML = `<div class="cols" aria-hidden="true">${[0, 1, 2, 3, 4].map((k) => `<i style="--k:${k}"></i>`).join('')}</div>`
       + `<div class="bar"><button type="button" class="x">fermer</button><a href="#" class="ct">contact</a></div>`
       + `<ul>${items().map(li).join('')}</ul><div class="big" aria-hidden="true">${LOGO}</div>`;
     m.classList.add('show');
@@ -3183,19 +3185,7 @@ window.__TRASH = (() => {
     m.querySelectorAll('li a').forEach((a, i) => { a.style.fontSize = '100px'; const w = a.getBoundingClientRect().width / 100; a.style.fontSize = '';
       fs = Math.min(fs, (innerWidth - 32 - (K[i] || 0) * mc - 2) / w); });
     m.style.setProperty('--fs', Math.floor(fs) + 'px');
-    // la trame (Bayer 8×8), blanc cassé, descend du haut vers le bas
-    const cv = m.querySelector('canvas'), CELL = 3, cw = Math.ceil(innerWidth / CELL), ch = Math.ceil(innerHeight / CELL);
-    cv.width = cw; cv.height = ch; const g = cv.getContext('2d');
-    const B = [0, 32, 8, 40, 2, 34, 10, 42, 48, 16, 56, 24, 50, 18, 58, 26, 12, 44, 4, 36, 14, 46, 6, 38, 60, 28, 52, 20, 62, 30, 54, 22, 3, 35, 11, 43, 1, 33, 9, 41, 51, 19, 59, 27, 49, 17, 57, 25, 15, 47, 7, 39, 13, 45, 5, 37, 63, 31, 55, 23, 61, 29, 53, 21];
-    const img = g.createImageData(cw, ch), d = img.data;
-    for (let o = 0; o < d.length; o += 4) { d[o] = 242; d[o + 1] = 240; d[o + 2] = 235; }
-    return (t) => {
-      for (let y = 0; y < ch; y++) {
-        const th = (t * 1.5 - (y / ch) * 0.5) * 64;
-        for (let x = 0; x < cw; x++) d[(y * cw + x) * 4 + 3] = B[(y & 7) * 8 + (x & 7)] < th ? 255 : 0;
-      }
-      g.putImageData(img, 0, 0);
-    };
+    return true;
   };
 
   // l'ondulation : seulement à l'apparition ; elle se calme jusqu'à zéro, puis le logo reste immobile
@@ -3227,16 +3217,16 @@ window.__TRASH = (() => {
     draw = build();
     document.documentElement.style.overflow = 'hidden';
     btns().forEach((b) => { b.setAttribute('aria-expanded', 'true'); b.setAttribute('aria-controls', 'jmt'); });
-    draw(0); await run(draw, 0, 1, 420);
-    m.classList.add('full', 'colon'); await wait(260);
+    void m.offsetWidth; m.classList.add('full'); await wait(300);
+    m.classList.add('colon'); await wait(160);
     m.classList.add('words'); startMorph(); opened = true; busy = false;
     m.querySelector('.x').focus({ preventScroll: true });
   };
   const close = async (fast) => {
     if (busy || !opened) return; busy = true;
     m.classList.remove('words'); await wait(fast ? 0 : 280);
-    m.classList.remove('colon'); await wait(fast ? 0 : 200);
-    m.classList.remove('full'); if (!fast) await run(draw, 1, 0, 380);
+    m.classList.remove('colon'); await wait(fast ? 0 : 140);
+    m.classList.remove('full'); await wait(fast ? 0 : 420);
     m.classList.remove('show'); document.documentElement.style.overflow = ''; opened = false; busy = false;
     btns().forEach((b) => b.setAttribute('aria-expanded', 'false'));
     const b = btns()[0]; if (b) b.focus({ preventScroll: true });
