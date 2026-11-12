@@ -133,11 +133,6 @@
     opacity: var(--crt-o, 0);
     image-rendering: pixelated;
   }
-  /* 11 nov. : au survol d'un item du menu, l'écran montre la vraie page qu'on parcourt (vidéo de la page, en boucle) */
-  .screen video.peek { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none;
-    transform: scale(var(--crt-x, 0), var(--crt-y, 0)); filter: brightness(var(--crt-b, 1)); opacity: var(--crt-o, 0); }
-  .screen video.peek.on { display: block; }
-  html.peek-vid .screen img { visibility: hidden; }
   .screen::after {
     content: ""; position: absolute; inset: 0;
     -webkit-mask: url(mac3d/classic-glass-mask.png) center / 100% 100% no-repeat;
@@ -614,7 +609,7 @@
     <div class="face right"></div>
     <div class="face foot"></div>
     <div class="face notch"></div>
-    <div class="screen front"><img src="mac3d/ville-titre.png" alt="" decoding="async"><video class="peek" data-k="portfolio" muted playsinline loop preload="none" aria-hidden="true" tabindex="-1"><source src="mac3d/portfolio-peek.webm" type="video/webm"><source src="mac3d/portfolio-peek.mp4" type="video/mp4"></video><video class="peek" data-k="pele-mele" muted playsinline loop preload="none" aria-hidden="true" tabindex="-1"><source src="mac3d/pele-mele-peek.webm" type="video/webm"><source src="mac3d/pele-mele-peek.mp4" type="video/mp4"></video><video class="peek" data-k="info" muted playsinline loop preload="none" aria-hidden="true" tabindex="-1"><source src="mac3d/info-peek.webm" type="video/webm"><source src="mac3d/info-peek.mp4" type="video/mp4"></video><video class="peek" data-k="contact" muted playsinline loop preload="none" aria-hidden="true" tabindex="-1"><source src="mac3d/contact-peek.webm" type="video/webm"><source src="mac3d/contact-peek.mp4" type="video/mp4"></video></div>
+    <div class="screen front"><img src="mac3d/ville-titre.png" alt="" decoding="async"></div>
     <div class="glare front"></div>
     <img class="case front" src="mac3d/classic-case.webp" alt="" decoding="async">
   </div>
@@ -1237,19 +1232,11 @@
   });
   MENU.jpr = [homeSrc]; FRAMES.jpr = [1, 1000];
   let navOut = 0, anim = 0, cur = null;
-  const PV = [...screenEl.querySelectorAll('video.peek')];
-  PV.forEach((v) => v.addEventListener('playing', () => { if (cur === v.dataset.k) { v.classList.add('on'); root.classList.add('peek-vid'); } }));
-  let pvLoad = false; const pvWarm = () => { if (!pvLoad) { pvLoad = true; PV.forEach((v) => { v.preload = 'auto'; v.load(); }); } };   // chargées au premier survol du menu
   const showMenu = (k) => {
     clearTimeout(navOut);
     if (k === cur) return;
     cur = k; clearInterval(anim);
     root.classList.toggle('menu-peek', !!k);   // en bas de page aussi : l'image de la page survolée passe devant le bureau du Mac
-    // portfolio, pêle-mêle : la vraie page, qu'on parcourt (la vidéo prend le relais des images 1 bit dès qu'elle joue)
-    root.classList.remove('peek-vid');
-    PV.forEach((v) => { if (v.dataset.k !== k) { v.classList.remove('on'); v.pause(); } });
-    const v = !reduce && PV.find((x) => x.dataset.k === k);
-    if (v) { v.play().catch(() => {}); if (v.readyState >= 3) { v.classList.add('on'); root.classList.add('peek-vid'); } }
     scrImg.src = k ? MENU[k][0] : homeSrc; flick = 1;
     navT = k ? 1 : 0;
     if (k && !reduce && MENU[k].length > 1) {
@@ -1258,7 +1245,7 @@
     }
   };
   document.querySelectorAll('.nav-hit[data-menu]').forEach((a) => {
-    a.addEventListener('pointerenter', () => { pvWarm(); showMenu(a.dataset.menu); });
+    a.addEventListener('pointerenter', () => showMenu(a.dataset.menu));
     a.addEventListener('focus', () => showMenu(a.dataset.menu));
     const out = () => { navOut = setTimeout(() => showMenu(null), 180); };
     a.addEventListener('pointerleave', out); a.addEventListener('blur', out);
@@ -2587,8 +2574,7 @@ window.__TRASH = (() => {
   /* Fine Artist mis en avant : souligné, même typo que le texte, suivi d’une petite fenêtre de logiciel de dessin en 1 bit */
   .intro .faw { white-space: nowrap; }
   .intro .inl.px { image-rendering: pixelated; border-radius: 0; height: 1.1em; vertical-align: -.14em; margin: 0 .02em 0 .08em; }
-  .intro .fa { font-style: normal; white-space: nowrap;
-    text-decoration: underline; text-decoration-thickness: .07em; text-underline-offset: .16em; }
+  .intro .fa { font-style: normal; white-space: nowrap; }   /* 11 nov. : plus de soulignement */
   /* alinéa au début du premier paragraphe seulement */
   .intro p { text-indent: calc(18.625cqw - .06em); }   /* 6 nov. : chaque paragraphe (plus seulement le premier), comme sur Info ; le premier mot démarre au début de la colonne 2 (363 / 1600), comme « pêle-mêle » */
   .intro .ln { text-indent: 0; }
