@@ -722,6 +722,9 @@
   html:has(.jcopy.on) .mnav a[data-contact] { text-decoration: line-through; text-decoration-thickness: 1px; }
   @media (max-width: 700px) { .jcopy { row-gap: 4px; padding: 0 16px !important; } }
   @keyframes jtbar { to { transform: scaleX(0); } }
+  /* 11 nov. : le logo du menu, 10 % plus gros (autour de son centre), sur toutes les pages */
+  #navLogo { transform-box: fill-box; transform-origin: 50% 50%; scale: 1.1; }
+  .jlogo .logo { scale: 1.1; }
   /* 11 nov. : pendant que l'adresse est affichée, les autres items du menu s'effacent : il ne reste que le logo et « copié » */
   :is(.jnav, .hnav) svg > text { transition: opacity .3s ease; }
   html:has(.jcopy.on:not(.out)) :is(.jnav, .hnav) svg > text:not(#navContact) { opacity: 0; }
@@ -1043,9 +1046,9 @@
 })();
 </script>
 <!-- transitions de page (6 nov.) : le menu ne bouge jamais ; seul le trait de la page en cours glisse vers la page choisie,
-     pendant que le contenu disparaît dans une trame 1 bit (le « dissolve » de HyperCard). La nouvelle page apparaît par la même trame. -->
+     pendant que le contenu disparaît. 11 nov. : fondu rapide avec une légère mise au flou (la trame 1 bit est retirée). -->
 <style>
-  .pt-veil { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 5999; pointer-events: none; image-rendering: pixelated; image-rendering: crisp-edges; visibility: hidden; }
+  .pt-veil { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 5999; pointer-events: none; opacity: 0; visibility: hidden; }
   html.pt-run .pt-veil { visibility: visible; }
   html.pt-run .hnav { z-index: 6000; }            /* accueil : le menu reste au-dessus de la trame */
   html.pt-run .jfoot { z-index: auto; }           /* le pied de page, lui, part avec le contenu */
@@ -1061,31 +1064,19 @@
   const HERE = 'pele-mele';
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const root = document.documentElement;
-  const OUT = 470, IN = 560, CELL = () => (innerWidth <= 700 ? 3 : 4);
+  const OUT = 240, IN = 320;
 
-  // ---------- la trame : une toile basse définition, agrandie sans lissage ----------
-  const cv = document.createElement('canvas'); cv.className = 'pt-veil'; cv.setAttribute('aria-hidden', 'true');
+  // ---------- 11 nov. : plus de trame pixelisée. Un fondu rapide vers la couleur de la page d'arrivée, avec une très légère mise au flou
+  //            du contenu (comme un changement de mise au point). Le menu et le logo restent au-dessus du voile, toujours visibles. ----------
+  const cv = document.createElement('div'); cv.className = 'pt-veil'; cv.setAttribute('aria-hidden', 'true');
   document.body.appendChild(cv);
-  const g = cv.getContext('2d');
-  const B8 = [0,32,8,40,2,34,10,42,48,16,56,24,50,18,58,26,12,44,4,36,14,46,6,38,60,28,52,20,62,30,54,22,3,35,11,43,1,33,9,41,51,19,59,27,49,17,57,25,15,47,7,39,13,45,5,37,63,31,55,23,61,29,53,21];
-  let W = 0, H = 0, img = null, px = null, th = null;
-  const rgba = (hex) => { const n = parseInt(hex.slice(1), 16); return (255 << 24) | ((n & 255) << 16) | (((n >> 8) & 255) << 8) | ((n >> 16) & 255); };
-  // seuil de chaque case : la trame de Bayer, plus un léger balayage (dans le sens du trait, ou du haut vers le bas)
-  const field = (mode) => {
-    const c = CELL(); W = Math.ceil(innerWidth / c); H = Math.ceil(innerHeight / c);
-    cv.width = W; cv.height = H; img = g.createImageData(W, H); px = new Uint32Array(img.data.buffer); th = new Float32Array(W * H);
-    const cx = W / 2, cy = H / 2, dm = Math.hypot(cx, cy);
-    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-      const b = B8[(x & 7) + ((y & 7) << 3)] / 64;
-      const s = mode === 'right' ? x / W : mode === 'left' ? 1 - x / W : mode === 'center' ? 1 - Math.hypot(x - cx, y - cy) / dm : y / H;
-      th[x + y * W] = .58 * b + .42 * s;
-    }
-  };
+  const rgba = (hex) => hex, field = () => {};
   const paint = (p, col, covering) => {
-    for (let i = 0; i < th.length; i++) px[i] = (covering ? th[i] <= p : th[i] > p) ? col : 0;
-    g.putImageData(img, 0, 0);
+    const k = Math.max(0, Math.min(1, covering ? p : 1 - p));
+    cv.style.background = col; cv.style.opacity = k.toFixed(3);
+    cv.style.backdropFilter = cv.style.webkitBackdropFilter = `blur(${(Math.min(1, k * 2.2) * 4).toFixed(2)}px)`;
   };
-  const ease = (t) => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const ease = (t) => (t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
   const run = (dur, f) => new Promise((done) => { let t0 = 0; const step = (now) => { if (!t0) t0 = now; const k = Math.min(1, (now - t0) / dur); f(k); if (k < 1) requestAnimationFrame(step); else done(); }; requestAnimationFrame(step); });
 
   // ---------- le trait : il glisse d'un mot du menu à l'autre, le bord avant part le premier, l'autre suit ----------
@@ -1094,14 +1085,14 @@
     return label && [...svg.querySelectorAll('text')].find((t) => t.textContent.trim() === label); };
   const slide = (to) => {
     const svg = navSvg(); if (!svg || innerWidth <= 700) return { dir: null, go: Promise.resolve() };
-    let r = svg.querySelector('rect[height="2.4"]');
+    let r = svg.querySelector(':scope > rect:not(#ctStrike)');
     const t = to === 'home' ? null : word(svg, to);
     let a0, b0;
     if (r) { a0 = +r.getAttribute('x'); b0 = a0 + +r.getAttribute('width'); }
     else {                                                  // accueil : pas encore de trait, il naît au centre du mot visé
       if (!t) return { dir: null, go: Promise.resolve() };
       const bb = t.getBBox(); a0 = b0 = bb.x + bb.width / 2;
-      r = document.createElementNS('http://www.w3.org/2000/svg', 'rect'); r.setAttribute('y', 39.6); r.setAttribute('height', 2.4);
+      r = document.createElementNS('http://www.w3.org/2000/svg', 'rect'); r.setAttribute('y', 38); r.setAttribute('height', 1.4);
       r.setAttribute('fill', getComputedStyle(t).fill || '#F2F0EB'); r.setAttribute('x', a0); r.setAttribute('width', 0);
       const defs = svg.querySelector('defs'); svg.insertBefore(r, defs || null);
     }
