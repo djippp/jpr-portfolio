@@ -137,10 +137,6 @@
   .screen video.peek { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none;
     transform: scale(var(--crt-x, 0), var(--crt-y, 0)); filter: brightness(var(--crt-b, 1)); opacity: var(--crt-o, 0); }
   .screen video.peek.on { display: block; }
-  /* 11 nov. : au clic sur le menu, on entre dans l'écran du Mac : la page qu'il montrait grandit jusqu'à remplir la fenêtre, puis la vraie page prend le relais */
-  .dive { position: fixed; z-index: 100002; overflow: hidden; background: #000; pointer-events: none; }
-  .dive canvas, .dive video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-  .dive i { position: absolute; inset: 0; opacity: 0; }
   html.peek-vid .screen img { visibility: hidden; }
   .screen::after {
     content: ""; position: absolute; inset: 0;
@@ -1261,33 +1257,6 @@
       anim = setInterval(() => { i = (i + 1) % MENU[k].length; scrImg.src = MENU[k][i]; }, FRAMES[k][1]);
     }
   };
-  // ---------- au clic : on entre dans l'écran ----------
-  const DIVE = { portfolio: '#000', 'pele-mele': '#F2F0EB', info: '#000' };   // la couleur de fond de la page d'arrivée
-  let diving = null;
-  const dive = (a, e) => {
-    const k = a.dataset.menu;
-    if (diving || inside || reduce || !(k in DIVE) || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
-    const href = a.getAttribute('href'); if (!href || href === '#') return;
-    const v = PV.find((x) => x.dataset.k === k), r = screenEl.getBoundingClientRect();
-    if (!v || v.readyState < 2 || r.width < 40 || r.bottom < 20 || r.top > innerHeight - 20 || r.right < 20 || r.left > innerWidth - 20) return;   // pas de Mac à l'écran, ou vidéo pas prête : lien normal
-    e.preventDefault(); e.stopImmediatePropagation();
-    clearTimeout(navOut);
-    const d = document.createElement('div'); d.className = 'dive';
-    const c = document.createElement('canvas'); c.width = v.videoWidth; c.height = v.videoHeight;
-    try { c.getContext('2d').drawImage(v, 0, 0); } catch (x) {}
-    const fade = document.createElement('i'); fade.style.background = DIVE[k];
-    d.append(c, v, fade); v.className = ''; v.play().catch(() => {});
-    document.body.appendChild(d); diving = { d, v };
-    const bx = (q, rad) => ({ left: q.left + 'px', top: q.top + 'px', width: q.width + 'px', height: q.height + 'px', borderRadius: rad + 'px' });
-    const g = d.animate([bx(r, r.width * .04), bx({ left: 0, top: 0, width: innerWidth, height: innerHeight }, 0)], { duration: 850, easing: 'cubic-bezier(.7, 0, .2, 1)', fill: 'forwards' });
-    fade.animate([{ opacity: 0 }, { opacity: 0, offset: .72 }, { opacity: 1 }], { duration: 850, easing: 'ease-in', fill: 'forwards' });
-    // puis on suit le lien, par une ancre hors page : la transition tramée entre les pages ne se rejoue pas par-dessus
-    g.finished.then(() => { const b = document.createElement('a'); b.href = a.href; b.target = a.target || '_top'; b.rel = a.rel; b.click(); });
-  };
-  // sur window, en capture : avant la transition tramée entre les pages (document, en capture)
-  addEventListener('click', (e) => { const a = e.target.closest && e.target.closest('.nav-hit[data-menu]'); if (a) dive(a, e); }, true);
-  // retour arrière (page restaurée telle quelle) : on remet l'écran en place
-  addEventListener('pageshow', (ev) => { if (!ev.persisted || !diving) return; const { d, v } = diving; v.className = 'peek'; v.pause(); screenEl.appendChild(v); d.remove(); diving = null; showMenu(null); });
   document.querySelectorAll('.nav-hit[data-menu]').forEach((a) => {
     a.addEventListener('pointerenter', () => { pvWarm(); showMenu(a.dataset.menu); });
     a.addEventListener('focus', () => showMenu(a.dataset.menu));
