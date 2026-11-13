@@ -895,7 +895,7 @@
   if (document.getElementById('scene')) { document.documentElement.classList.add('pf'); return; }   // portfolio : on garde le dégradé, pas d'effet sur le texte
   const MID = 170, TOP = 110;   // gris quand le milieu du groupe passe à 170 px du haut, ou son haut à 110 px (longs paragraphes)
   const BIG = 21;               // px : au-dessus, on découpe par phrase ; en dessous, par paragraphe
-  const SKIP = '.jnav, .hnav, .mnav, .jlogo, .jfoot, .jcopy, .gm, .lb, #lb, #scene, #os, .os, .pt-veil, .brk-fall, script, style, noscript, svg, button, [aria-hidden="true"]';
+  const SKIP = '.mur, .jnav, .hnav, .mnav, .jlogo, .jfoot, .jcopy, .gm, .lb, #lb, #scene, #os, .os, .pt-veil, .brk-fall, script, style, noscript, svg, button, [aria-hidden="true"]';
   const END = /[.!?…][»"”’')\]]*$/;   // fin de phrase
   let words = [], groups = [], ready = false, gid = 0;
   const pinned = (el) => { for (let n = el; n && n !== document.body; n = n.parentElement) { const p = getComputedStyle(n).position; if (p === 'fixed' || p === 'sticky') return true; } return false; };

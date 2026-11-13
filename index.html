@@ -57,7 +57,7 @@
   .hl-logo { position: fixed; left: 50%; top: 50%; width: min(calc(22vw * 124 / 111), calc(220px * 124 / 111));   /* 8 nov. : cadre élargi (124 × 51 au lieu de 111 × 39) : le ® dépassait de 2 unités à droite et, ondulé, se faisait couper (Safari rogne le filtre au cadre du SVG) ; même taille de logo à l'écran */ height: auto; translate: -50% -50%; transform-origin: 50% 50%; overflow: visible; }
   #navLogo { transform-box: fill-box; transform-origin: 50% 50%; }
   html.hload .hnav { opacity: 0; }
-  .hnav { transition: opacity .6s ease; }
+  .hnav { transition: opacity .6s ease; mix-blend-mode: difference; }   /* 13 nov. : le menu inverse ce qui passe dessous, comme sur les autres pages */
   .hnav { position: fixed; z-index: 20; top: 0; left: 0; right: 0; pointer-events: none;
     padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
   .hnav::before { content: ""; position: absolute; left: 0; right: 0; top: 0; pointer-events: none;
@@ -2967,7 +2967,7 @@ window.__TRASH = (() => {
   if (document.getElementById('scene')) { document.documentElement.classList.add('pf'); return; }   // portfolio : on garde le dégradé, pas d'effet sur le texte
   const MID = 170, TOP = 110;   // gris quand le milieu du groupe passe à 170 px du haut, ou son haut à 110 px (longs paragraphes)
   const BIG = 21;               // px : au-dessus, on découpe par phrase ; en dessous, par paragraphe
-  const SKIP = '.jnav, .hnav, .mnav, .jlogo, .jfoot, .jcopy, .gm, .lb, #lb, #scene, #os, .os, .pt-veil, .brk-fall, script, style, noscript, svg, button, [aria-hidden="true"]';
+  const SKIP = '.mur, .jnav, .hnav, .mnav, .jlogo, .jfoot, .jcopy, .gm, .lb, #lb, #scene, #os, .os, .pt-veil, .brk-fall, script, style, noscript, svg, button, [aria-hidden="true"]';
   const END = /[.!?…][»"”’')\]]*$/;   // fin de phrase
   let words = [], groups = [], ready = false, gid = 0;
   const pinned = (el) => { for (let n = el; n && n !== document.body; n = n.parentElement) { const p = getComputedStyle(n).position; if (p === 'fixed' || p === 'sticky') return true; } return false; };
