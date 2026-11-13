@@ -531,8 +531,8 @@
 </svg>
 
   <div class="intro">
-    <p>Je suis Jean-Philippe Rousseau, directeur artistique à&nbsp;Montréal. Je conçois des identités visuelles et des expériences numériques. Je cherche ce qui donne à chaque projet son caractère, puis je le précise&nbsp;: une typographie, un rythme, une interaction. Des choix qui donnent une direction à l’ensemble et une raison de s’y attarder.</p>
-    <p>Ma curiosité pour le numérique remonte au Macintosh familial, à <em class="fa">Kid&nbsp;Pix</em> et à <em class="fa">Fine&nbsp;Artist</em>. J’y découvrais qu’un logiciel pouvait avoir son propre univers et que l’interface elle-même pouvait donner envie de créer. Ce portfolio en garde quelque chose.</p>
+    <p>Je suis <span class="nw">Jean-Philippe</span> Rousseau, directeur artistique à&nbsp;Montréal. Je conçois des identités visuelles et des expériences numériques. Je cherche ce qui donne à chaque projet son caractère, puis je le précise&nbsp;: une typographie, un rythme, une interaction. Des choix qui donnent une direction à l’ensemble et une raison de s’y attarder.</p>
+    <p>Ma curiosité pour le numérique remonte au Macintosh familial, à <em class="fa">Kid&nbsp;Pix</em> et à <em class="fa">Fine&nbsp;Artist</em>. J’y découvrais qu’un logiciel pouvait avoir son propre univers et que l’interface <span class="nw">elle-même</span> pouvait donner envie de créer. Ce portfolio en garde quelque chose.</p>
     <p>Aujourd’hui, en agence, je développe des directions artistiques et conçois le design de projets web d’envergure. J’aime faire le lien entre l’idée et sa réalisation, travailler avec les équipes et pousser les détails jusqu’à ce que le résultat soit juste.</p>
   </div>
   <div class="slot" id="slot"></div>
@@ -2565,84 +2565,19 @@ window.__TRASH = (() => {
 })();
 </script>
 <style>
-  /* le texte d'intro reste droit ; en montant vers le menu, les lignes s'enroulent vers l'arrière */
-  .intro { perspective: 900px; }
+  /* 13 nov. : plus d'enroulement des lignes de l'intro vers le menu : le passage au gris par phrase (navmorph) suffit */
   /* petite image dans la ligne (Loud, après « 56k ») : à la hauteur des lettres, légèrement de travers ; grandit au survol */
   .intro .inl { display: inline-block; height: 1.05em; width: auto; vertical-align: -.16em; margin: 0 .05em; rotate: -4deg; border-radius: 2px;
     transition: scale .35s cubic-bezier(.2, .8, .2, 1), rotate .35s; position: relative; z-index: 3; }
   .intro .inl:hover { scale: 2.6; rotate: 2deg; }
   /* Fine Artist mis en avant : souligné, même typo que le texte, suivi d’une petite fenêtre de logiciel de dessin en 1 bit */
-  .intro .faw { white-space: nowrap; }
+  .intro .faw, .intro .nw { white-space: nowrap; }   /* .nw : un mot à trait d'union ne se coupe pas en fin de ligne */
   .intro .inl.px { image-rendering: pixelated; border-radius: 0; height: 1.1em; vertical-align: -.14em; margin: 0 .02em 0 .08em; }
   .intro .fa { font-style: normal; white-space: nowrap; }   /* 11 nov. : plus de soulignement */
   /* alinéa au début du premier paragraphe seulement */
   .intro p { text-indent: calc(18.625cqw - .06em); }   /* 6 nov. : chaque paragraphe (plus seulement le premier), comme sur Info ; le premier mot démarre au début de la colonne 2 (363 / 1600), comme « pêle-mêle » */
-  .intro .ln { text-indent: 0; }
-  .intro p .ln:first-child { text-indent: calc(18.625cqw - .06em); }
-  @media (max-width: 700px) { .intro p, .intro p .ln:first-child { text-indent: calc(var(--mc) - .06em); } }   /* 7 nov. : mobile, alinéa d'une colonne de la grille de 5 */
-  .intro .ln { display: block; white-space: nowrap; transform-origin: 50% 50%; will-change: transform; backface-visibility: hidden; }
+  @media (max-width: 700px) { .intro p { text-indent: calc(var(--mc) - .06em); } }   /* 7 nov. : mobile, alinéa d'une colonne de la grille de 5 */
 </style>
-<script>
-(() => {
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const intro = document.querySelector('.intro');
-  const ps = [...intro.querySelectorAll('p')];
-  // chaque paragraphe en jetons : des mots, et des éléments (la petite image) gardés tels quels
-  const src = ps.map((p) => {
-    const toks = [];
-    p.childNodes.forEach((n) => {
-      if (n.nodeType === 3) n.textContent.split(/(\s+)/).forEach((w) => { if (w.trim()) toks.push({ w }); else if (w && toks.length) toks[toks.length - 1].sp = true; });
-      else toks.push({ el: n.cloneNode(true) });
-    });
-    return toks;
-  });
-  let lines = [], pos = [], introTop = 0;
-  // découpe chaque paragraphe en lignes réelles (selon la largeur), pour pouvoir les courber une à une
-  const split = () => {
-    lines = [];
-    ps.forEach((p, i) => {
-      const toks = src[i];
-      p.textContent = '';
-      const spans = toks.map((t) => { const sp = document.createElement('span'); sp.style.whiteSpace = 'nowrap'; /* 9 nov. : un mot à trait d'union (« elle-même ») ne se coupe plus à la mesure : sinon la ligne, sans retour, dépassait la col. 4 */ if (t.el) sp.appendChild(t.el.cloneNode(true)); else sp.textContent = t.w; p.appendChild(sp); if (t.sp) p.append(' '); return sp; });   /* l'espace hors du mot : la coupure se fait entre les mots */
-      const groups = []; let top = null;
-      spans.forEach((sp, k) => { const tp = sp.getBoundingClientRect().top; if (top === null || tp > top + 8) { groups.push([]); top = tp; } groups[groups.length - 1].push(toks[k]); });
-      p.textContent = '';
-      groups.forEach((g) => {
-        const l = document.createElement('span'); l.className = 'ln';
-        g.forEach((t, k) => { if (t.el) l.appendChild(t.el.cloneNode(true)); else l.append(t.w); if (t.sp && k < g.length - 1) l.append(' '); });
-        p.appendChild(l); lines.push(l);
-      });
-    });
-    measure();
-  };
-  const measure = () => {
-    introTop = intro.getBoundingClientRect().top + scrollY;
-    pos = lines.map((l) => { l.style.transform = ''; return introTop + l.offsetTop + l.offsetHeight / 2 - intro.offsetTop + intro.offsetTop; });
-    // offsetTop des lignes est relatif à .intro (positionnée) : on le ramène au document
-    pos = lines.map((l) => introTop + l.offsetTop + l.offsetHeight / 2);
-  };
-  const frame = () => {
-    requestAnimationFrame(frame);
-    // le texte reste droit ; seul le haut de l'écran s'enroule vers l'arrière
-    // (jamais au-dessus de la 1re ligne au chargement : rien ne courbe avant qu'on commence à défiler)
-    const H = innerHeight, R = H * 0.3, c = scrollY + H / 2, edge = scrollY + Math.min(H * 0.28, (pos[0] || H) - 6);
-    intro.style.perspectiveOrigin = `50% ${(c - introTop).toFixed(1)}px`;
-    for (let i = 0; i < lines.length; i++) {
-      const dy = pos[i] - edge;
-      if (dy >= 0 || dy < -H) { if (lines[i]._on) { lines[i].style.transform = ''; lines[i]._on = false; } continue; }
-      const th = Math.max(-1.45, dy / R);   // position sur le tambour (radians)
-      const ty = R * Math.sin(th) - dy, tz = R * (Math.cos(th) - 1);
-      lines[i].style.transform = `translate3d(0,${ty.toFixed(1)}px,${tz.toFixed(1)}px) rotateX(${(-th).toFixed(4)}rad)`;
-      lines[i]._on = true;
-    }
-  };
-  let rt = 0;
-  addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(split, 120); });
-  split();
-  if (document.fonts) document.fonts.ready.then(split);
-  requestAnimationFrame(frame);
-})();
-</script>
 
 <script>
 /* chargement de l'accueil : le logo ondule au centre tant que la page charge (au moins 1,3 s), puis vole à sa place dans le menu */
@@ -2873,9 +2808,11 @@ window.__TRASH = (() => {
   /* 11 nov. : le logo du menu, 10 % plus gros (autour de son centre), sur toutes les pages */
   #navLogo { transform-box: fill-box; transform-origin: 50% 50%; scale: 1.045; }   /* 12 nov. : 5 % plus petit (1,1 × 0,95) */
   .jlogo .logo { scale: 1.045; }
-  /* 12 nov. : plus de dégradé noir sous le menu ; le texte qui monte vers le menu passe au gris, ligne par ligne, à partir de 200 px du haut */
+  /* 12 nov. : plus de dégradé noir sous le menu ; le texte qui monte vers le menu passe au gris (13 nov. : par phrase ou par paragraphe) */
   html:not(.pf) .hnav::before, html:not(.pf) .jnav::before { display: none !important; }   /* le portfolio garde son dégradé (les images y passent sous le menu) */
-  .tw { color: color-mix(in srgb, currentColor, #4a4844 calc(var(--k, 0) * 100%)); }   /* 12 nov. : gris plus clair, on garde une trace du texte */
+  /* 13 nov. : par phrase (grosse typo) ou par paragraphe (petite typo) : le groupe entier bascule au gris d'un fondu, mot après mot */
+  .tw { transition: color .6s cubic-bezier(.3,.1,.3,1); transition-delay: var(--d, 0ms); }
+  .tw.gr { color: #4a4844; }
   /* 11 nov. : pendant que l'adresse est affichée, les autres items du menu s'effacent : il ne reste que le logo et « copié » */
   :is(.jnav, .hnav) svg > text { transition: opacity .3s ease; }
   html:has(.jcopy.on:not(.out)) :is(.jnav, .hnav) svg > text:not(#navContact) { opacity: 0; }
@@ -3022,15 +2959,20 @@ window.__TRASH = (() => {
   .jgrid .c { left: 50%; --ln: rgba(242, 240, 235, .15); }   /* l'axe central, plus discret */
 </style>
 <script>
-/* 12 nov. : le texte passe au gris en montrant vers le menu, au lieu du dégradé noir.
-   Chaque mot est enveloppé ; les mots d'une même ligne partagent la même teinte (les grandes lignes changent d'un bloc).
+/* 13 nov. : le texte passe au gris en montant vers le menu, au lieu du dégradé noir.
+   Grosse typo : phrase par phrase. Petite typo : paragraphe par paragraphe. Le groupe bascule d'un coup (fondu de couleur, léger balayage mot à mot),
+   au lieu d'un dégradé recalculé à chaque image : plus fluide.
    Seul le texte qui défile avec la page est touché : ni le menu, ni les éléments fixes ou collants, ni les images. */
 (() => {
   if (document.getElementById('scene')) { document.documentElement.classList.add('pf'); return; }   // portfolio : on garde le dégradé, pas d'effet sur le texte
-  const TOP = 200, END = 64;   // gris complet quand la ligne arrive à la hauteur du menu
+  const MID = 170, TOP = 110;   // gris quand le milieu du groupe passe à 170 px du haut, ou son haut à 110 px (longs paragraphes)
+  const BIG = 21;               // px : au-dessus, on découpe par phrase ; en dessous, par paragraphe
   const SKIP = '.jnav, .hnav, .mnav, .jlogo, .jfoot, .jcopy, .gm, .lb, #lb, #scene, #os, .os, .pt-veil, .brk-fall, script, style, noscript, svg, button, [aria-hidden="true"]';
-  let words = [], lines = [], ready = false, raf = 0;
+  const END = /[.!?…][»"”’')\]]*$/;   // fin de phrase
+  let words = [], groups = [], ready = false, gid = 0;
   const pinned = (el) => { for (let n = el; n && n !== document.body; n = n.parentElement) { const p = getComputedStyle(n).position; if (p === 'fixed' || p === 'sticky') return true; } return false; };
+  // le bloc (paragraphe) d'un texte : le premier parent qui n'est pas en ligne ; les lignes enroulées de l'accueil (.ln) ne comptent pas
+  const blockOf = (el, root) => { for (let n = el; n && n !== root; n = n.parentElement) { if (n.classList.contains('ln')) continue; const d = getComputedStyle(n).display; if (!d.startsWith('inline') && d !== 'contents') return n; } return root; };
   const wrap = () => {
     const main = document.querySelector('main') || document.body;
     const tw = document.createTreeWalker(main, NodeFilter.SHOW_TEXT, { acceptNode: (t) => {
@@ -3038,13 +2980,21 @@ window.__TRASH = (() => {
       const el = t.parentElement; if (!el || el.closest(SKIP) || el.classList.contains('tw')) return NodeFilter.FILTER_REJECT;
       return NodeFilter.FILTER_ACCEPT; } });
     const list = []; while (tw.nextNode()) list.push(tw.currentNode);
-    const cache = new Map();
+    const cache = new Map(), blocks = new Map();
     list.forEach((t) => {
       const host = t.parentElement;
       let ok = cache.get(host); if (ok === undefined) { ok = !pinned(host); cache.set(host, ok); }
       if (!ok) return;
+      const blk = blockOf(host, main);
+      let st = blocks.get(blk);
+      if (!st) blocks.set(blk, st = { big: parseFloat(getComputedStyle(blk).fontSize) >= BIG, g: ++gid, cut: false });
       const f = document.createDocumentFragment();
-      t.nodeValue.split(/(\s+)/).forEach((w) => { if (!w) return; if (/^\s+$/.test(w)) { f.appendChild(document.createTextNode(w)); return; } const s = document.createElement('span'); s.className = 'tw'; s.textContent = w; f.appendChild(s); });
+      t.nodeValue.split(/(\s+)/).forEach((w) => {
+        if (!w) return; if (/^\s+$/.test(w)) { f.appendChild(document.createTextNode(w)); return; }
+        if (st.cut) { st.g = ++gid; st.cut = false; }
+        const s = document.createElement('span'); s.className = 'tw'; s.textContent = w; s.dataset.g = st.g; f.appendChild(s);
+        if (st.big && END.test(w)) st.cut = true;
+      });
       t.replaceWith(f);
     });
     words = [...document.querySelectorAll('.tw')];
@@ -3053,25 +3003,32 @@ window.__TRASH = (() => {
   let mo = null, mt = 0;
   const rewrap = () => { mo && mo.disconnect(); wrap(); measure(); mo && mo.observe(document.querySelector('main') || document.body, { childList: true, subtree: true }); };
   const measure = () => {
-    const y = scrollY, by = new Map();
+    const by = new Map();
     // position dans la page sans les transformations (les lignes de l'accueil s'enroulent en 3D en haut de l'écran : on garde leur place d'origine)
     const docTop = (el) => { let t = 0; for (let n = el; n; n = n.offsetParent) t += n.offsetTop; return t; };
     words = words.filter((w) => w.isConnected);
-    words.forEach((w) => { if (!w.offsetHeight) return; const top = Math.round(docTop(w)); let g = by.get(top); if (!g) by.set(top, g = { top, els: [], k: -1, live: !!w.closest('.intro .ln') }); g.els.push(w); });   // live : ligne enroulée, on suit sa place à l'écran
-    lines = [...by.values()];
+    words.forEach((w) => {
+      if (!w.offsetHeight) return;
+      const t = docTop(w), b = t + w.offsetHeight;
+      let g = by.get(w.dataset.g);
+      if (!g) by.set(w.dataset.g, g = { top: t, bot: b, els: [], on: null, live: !!w.closest('.intro .ln') });   // live : lignes enroulées, on suit leur place à l'écran
+      g.top = Math.min(g.top, t); g.bot = Math.max(g.bot, b); g.els.push(w);
+    });
+    groups = [...by.values()];
+    groups.forEach((g) => { const n = g.els.length, step = Math.min(12, 220 / n); g.els.forEach((e, i) => e.style.setProperty('--d', Math.round(i * step) + 'ms')); });   // balayage : 220 ms au plus pour tout le groupe
     paint(true);
   };
   const paint = (force) => {
-    raf = 0; const y = scrollY;
-    for (const g of lines) {
-      const top = g.live ? g.els[0].getBoundingClientRect().top : g.top - y;
-      let k = top >= TOP ? 0 : top <= END ? 1 : (TOP - top) / (TOP - END);
-      k = Math.round(k * k * (3 - 2 * k) * 1000) / 1000;   // courbe douce (smoothstep), sans paliers
-      if (k !== g.k || force) { g.k = k; const v = String(k); for (const e of g.els) e.style.setProperty('--k', v); }
+    const y = scrollY;
+    for (const g of groups) {
+      let top, bot;
+      if (g.live) { top = g.els[0].getBoundingClientRect().top; bot = g.els[g.els.length - 1].getBoundingClientRect().bottom; }
+      else { top = g.top - y; bot = g.bot - y; }
+      const on = top < TOP || (top + bot) / 2 < MID;
+      if (on !== g.on || force) { g.on = on; for (const e of g.els) e.classList.toggle('gr', on); }
     }
   };
   let idle = 0;
-  // peint tout de suite, dans l'événement de défilement : la couleur suit la même image que le défilement (plus d'image de retard)
   const onScroll = () => { if (!ready) return; paint(false); clearTimeout(idle); idle = setTimeout(measure, 250); };
   const start = () => { if (ready) return; wrap(); measure(); ready = true;
     mo = new MutationObserver((ms) => { if (ms.some((m) => [...m.addedNodes].some((n) => n.nodeType === 3 ? n.nodeValue.trim() && !n.parentElement?.classList.contains('tw') : n.nodeType === 1 && !n.classList.contains('tw')))) { clearTimeout(mt); mt = setTimeout(rewrap, 120); } });

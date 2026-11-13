@@ -940,9 +940,11 @@
   /* 11 nov. : le logo du menu, 10 % plus gros (autour de son centre), sur toutes les pages */
   #navLogo { transform-box: fill-box; transform-origin: 50% 50%; scale: 1.045; }   /* 12 nov. : 5 % plus petit (1,1 × 0,95) */
   .jlogo .logo { scale: 1.045; }
-  /* 12 nov. : plus de dégradé noir sous le menu ; le texte qui monte vers le menu passe au gris, ligne par ligne, à partir de 200 px du haut */
+  /* 12 nov. : plus de dégradé noir sous le menu ; le texte qui monte vers le menu passe au gris (13 nov. : par phrase ou par paragraphe) */
   html:not(.pf) .hnav::before, html:not(.pf) .jnav::before { display: none !important; }   /* le portfolio garde son dégradé (les images y passent sous le menu) */
-  .tw { color: color-mix(in srgb, currentColor, #4a4844 calc(var(--k, 0) * 100%)); }   /* 12 nov. : gris plus clair, on garde une trace du texte */
+  /* 13 nov. : par phrase (grosse typo) ou par paragraphe (petite typo) : le groupe entier bascule au gris d'un fondu, mot après mot */
+  .tw { transition: color .6s cubic-bezier(.3,.1,.3,1); transition-delay: var(--d, 0ms); }
+  .tw.gr { color: #4a4844; }
   /* 11 nov. : pendant que l'adresse est affichée, les autres items du menu s'effacent : il ne reste que le logo et « copié » */
   :is(.jnav, .hnav) svg > text { transition: opacity .3s ease; }
   html:has(.jcopy.on:not(.out)) :is(.jnav, .hnav) svg > text:not(#navContact) { opacity: 0; }
@@ -1089,15 +1091,20 @@
   .jgrid .c { left: 50%; --ln: rgba(242, 240, 235, .15); }   /* l'axe central, plus discret */
 </style>
 <script>
-/* 12 nov. : le texte passe au gris en montrant vers le menu, au lieu du dégradé noir.
-   Chaque mot est enveloppé ; les mots d'une même ligne partagent la même teinte (les grandes lignes changent d'un bloc).
+/* 13 nov. : le texte passe au gris en montant vers le menu, au lieu du dégradé noir.
+   Grosse typo : phrase par phrase. Petite typo : paragraphe par paragraphe. Le groupe bascule d'un coup (fondu de couleur, léger balayage mot à mot),
+   au lieu d'un dégradé recalculé à chaque image : plus fluide.
    Seul le texte qui défile avec la page est touché : ni le menu, ni les éléments fixes ou collants, ni les images. */
 (() => {
   if (document.getElementById('scene')) { document.documentElement.classList.add('pf'); return; }   // portfolio : on garde le dégradé, pas d'effet sur le texte
-  const TOP = 200, END = 64;   // gris complet quand la ligne arrive à la hauteur du menu
+  const MID = 170, TOP = 110;   // gris quand le milieu du groupe passe à 170 px du haut, ou son haut à 110 px (longs paragraphes)
+  const BIG = 21;               // px : au-dessus, on découpe par phrase ; en dessous, par paragraphe
   const SKIP = '.jnav, .hnav, .mnav, .jlogo, .jfoot, .jcopy, .gm, .lb, #lb, #scene, #os, .os, .pt-veil, .brk-fall, script, style, noscript, svg, button, [aria-hidden="true"]';
-  let words = [], lines = [], ready = false, raf = 0;
+  const END = /[.!?…][»"”’')\]]*$/;   // fin de phrase
+  let words = [], groups = [], ready = false, gid = 0;
   const pinned = (el) => { for (let n = el; n && n !== document.body; n = n.parentElement) { const p = getComputedStyle(n).position; if (p === 'fixed' || p === 'sticky') return true; } return false; };
+  // le bloc (paragraphe) d'un texte : le premier parent qui n'est pas en ligne ; les lignes enroulées de l'accueil (.ln) ne comptent pas
+  const blockOf = (el, root) => { for (let n = el; n && n !== root; n = n.parentElement) { if (n.classList.contains('ln')) continue; const d = getComputedStyle(n).display; if (!d.startsWith('inline') && d !== 'contents') return n; } return root; };
   const wrap = () => {
     const main = document.querySelector('main') || document.body;
     const tw = document.createTreeWalker(main, NodeFilter.SHOW_TEXT, { acceptNode: (t) => {
@@ -1105,13 +1112,21 @@
       const el = t.parentElement; if (!el || el.closest(SKIP) || el.classList.contains('tw')) return NodeFilter.FILTER_REJECT;
       return NodeFilter.FILTER_ACCEPT; } });
     const list = []; while (tw.nextNode()) list.push(tw.currentNode);
-    const cache = new Map();
+    const cache = new Map(), blocks = new Map();
     list.forEach((t) => {
       const host = t.parentElement;
       let ok = cache.get(host); if (ok === undefined) { ok = !pinned(host); cache.set(host, ok); }
       if (!ok) return;
+      const blk = blockOf(host, main);
+      let st = blocks.get(blk);
+      if (!st) blocks.set(blk, st = { big: parseFloat(getComputedStyle(blk).fontSize) >= BIG, g: ++gid, cut: false });
       const f = document.createDocumentFragment();
-      t.nodeValue.split(/(\s+)/).forEach((w) => { if (!w) return; if (/^\s+$/.test(w)) { f.appendChild(document.createTextNode(w)); return; } const s = document.createElement('span'); s.className = 'tw'; s.textContent = w; f.appendChild(s); });
+      t.nodeValue.split(/(\s+)/).forEach((w) => {
+        if (!w) return; if (/^\s+$/.test(w)) { f.appendChild(document.createTextNode(w)); return; }
+        if (st.cut) { st.g = ++gid; st.cut = false; }
+        const s = document.createElement('span'); s.className = 'tw'; s.textContent = w; s.dataset.g = st.g; f.appendChild(s);
+        if (st.big && END.test(w)) st.cut = true;
+      });
       t.replaceWith(f);
     });
     words = [...document.querySelectorAll('.tw')];
@@ -1120,25 +1135,32 @@
   let mo = null, mt = 0;
   const rewrap = () => { mo && mo.disconnect(); wrap(); measure(); mo && mo.observe(document.querySelector('main') || document.body, { childList: true, subtree: true }); };
   const measure = () => {
-    const y = scrollY, by = new Map();
+    const by = new Map();
     // position dans la page sans les transformations (les lignes de l'accueil s'enroulent en 3D en haut de l'écran : on garde leur place d'origine)
     const docTop = (el) => { let t = 0; for (let n = el; n; n = n.offsetParent) t += n.offsetTop; return t; };
     words = words.filter((w) => w.isConnected);
-    words.forEach((w) => { if (!w.offsetHeight) return; const top = Math.round(docTop(w)); let g = by.get(top); if (!g) by.set(top, g = { top, els: [], k: -1, live: !!w.closest('.intro .ln') }); g.els.push(w); });   // live : ligne enroulée, on suit sa place à l'écran
-    lines = [...by.values()];
+    words.forEach((w) => {
+      if (!w.offsetHeight) return;
+      const t = docTop(w), b = t + w.offsetHeight;
+      let g = by.get(w.dataset.g);
+      if (!g) by.set(w.dataset.g, g = { top: t, bot: b, els: [], on: null, live: !!w.closest('.intro .ln') });   // live : lignes enroulées, on suit leur place à l'écran
+      g.top = Math.min(g.top, t); g.bot = Math.max(g.bot, b); g.els.push(w);
+    });
+    groups = [...by.values()];
+    groups.forEach((g) => { const n = g.els.length, step = Math.min(12, 220 / n); g.els.forEach((e, i) => e.style.setProperty('--d', Math.round(i * step) + 'ms')); });   // balayage : 220 ms au plus pour tout le groupe
     paint(true);
   };
   const paint = (force) => {
-    raf = 0; const y = scrollY;
-    for (const g of lines) {
-      const top = g.live ? g.els[0].getBoundingClientRect().top : g.top - y;
-      let k = top >= TOP ? 0 : top <= END ? 1 : (TOP - top) / (TOP - END);
-      k = Math.round(k * k * (3 - 2 * k) * 1000) / 1000;   // courbe douce (smoothstep), sans paliers
-      if (k !== g.k || force) { g.k = k; const v = String(k); for (const e of g.els) e.style.setProperty('--k', v); }
+    const y = scrollY;
+    for (const g of groups) {
+      let top, bot;
+      if (g.live) { top = g.els[0].getBoundingClientRect().top; bot = g.els[g.els.length - 1].getBoundingClientRect().bottom; }
+      else { top = g.top - y; bot = g.bot - y; }
+      const on = top < TOP || (top + bot) / 2 < MID;
+      if (on !== g.on || force) { g.on = on; for (const e of g.els) e.classList.toggle('gr', on); }
     }
   };
   let idle = 0;
-  // peint tout de suite, dans l'événement de défilement : la couleur suit la même image que le défilement (plus d'image de retard)
   const onScroll = () => { if (!ready) return; paint(false); clearTimeout(idle); idle = setTimeout(measure, 250); };
   const start = () => { if (ready) return; wrap(); measure(); ready = true;
     mo = new MutationObserver((ms) => { if (ms.some((m) => [...m.addedNodes].some((n) => n.nodeType === 3 ? n.nodeValue.trim() && !n.parentElement?.classList.contains('tw') : n.nodeType === 1 && !n.classList.contains('tw')))) { clearTimeout(mt); mt = setTimeout(rewrap, 120); } });
