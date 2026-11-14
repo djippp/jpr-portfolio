@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">   <!-- 9 nov. : couleur de la barre du navigateur (Chrome Android ; Safari prend le fond de la page) -->
 <title>JPR Portfolio</title>
-<style>html.jmt-arrive::after{display:none!important}html.jmt-arrive::before{content:"";position:fixed;inset:0;z-index:8499;background:rgba(14,14,14,.22);-webkit-backdrop-filter:blur(14px) saturate(1.6) brightness(.82);backdrop-filter:blur(14px) saturate(1.6) brightness(.82);pointer-events:none;animation:ja-kill 0s 3s forwards}@media (max-width:700px){html.jmt-arrive::before{background:#000}}@keyframes ja-kill{to{visibility:hidden}}@view-transition{navigation:auto}</style><script>try{var g=+sessionStorage.getItem("jmtGo");sessionStorage.removeItem("jmtGo");if(g&&Date.now()-g<4000&&!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("jmt-arrive")}catch(e){}addEventListener("pagereveal",function(e){if(e.viewTransition&&!document.documentElement.classList.contains("jmt-arrive"))e.viewTransition.skipTransition()})</script>
+<style>html.jmt-arrive::after{display:none!important}html.jmt-arrive::before{content:"";position:fixed;inset:0;z-index:8499;background:rgba(14,14,14,.22);-webkit-backdrop-filter:blur(14px) saturate(1.6) brightness(.82);backdrop-filter:blur(14px) saturate(1.6) brightness(.82);pointer-events:none;animation:ja-kill 0s 3s forwards}@media (max-width:700px){html.jmt-arrive::before{background:#000}}@keyframes ja-kill{to{visibility:hidden}}@view-transition{navigation:auto}::view-transition-old(root){animation:none;opacity:1;mix-blend-mode:normal}::view-transition-new(root){animation:ja-in .45s cubic-bezier(.4,0,.2,1) both;mix-blend-mode:normal}@keyframes ja-in{from{opacity:0}}</style><script>try{var g=+sessionStorage.getItem("jmtGo");sessionStorage.removeItem("jmtGo");if(g&&Date.now()-g<4000&&!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("jmt-arrive");var l=document.createElement("link");l.rel="expect";l.href="#jmtready";l.setAttribute("blocking","render");document.head.appendChild(l)}}catch(e){}addEventListener("pagereveal",function(e){if(e.viewTransition&&!document.documentElement.classList.contains("jmt-arrive"))e.viewTransition.skipTransition()})</script>
 <style>html.pt-in::after{content:"";position:fixed;inset:0;z-index:5999;background:#000;pointer-events:none;animation:pt-kill 0s 3s forwards}@keyframes pt-kill{to{visibility:hidden}}</style><script>if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("pt-in")</script>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2080,6 +2080,7 @@
   const mk = () => { if (!m) { m = document.createElement('div'); m.id = 'jmt'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-label', 'Menu'); document.body.appendChild(m); } };
   const open = async () => {
     if (busy || opened) return; busy = true;
+    window.__jmtPause = true;   // 14 nov. : ce qui bouge derrière (le Mac de l'accueil) se fige pendant que le menu est ouvert
     mk(); draw = build();
     document.documentElement.style.overflow = 'hidden';
     btns().forEach((b) => { b.setAttribute('aria-expanded', 'true'); b.setAttribute('aria-controls', 'jmt'); });
@@ -2092,7 +2093,7 @@
     if (busy || !opened) return; busy = true;
     m.classList.remove('words'); await wait(fast ? 0 : 280);
     m.classList.remove('colon'); await wait(fast ? 0 : 140);
-    recul(false); m.classList.remove('full'); await wait(fast ? 0 : 420);
+    window.__jmtPause = false; recul(false); m.classList.remove('full'); await wait(fast ? 0 : 420);
     m.classList.remove('show'); document.documentElement.style.overflow = ''; opened = false; busy = false;
     btns().forEach((b) => b.setAttribute('aria-expanded', 'false'));
     if (nofocus) return;
@@ -2120,13 +2121,14 @@
   const arrive = async () => {
     const root = document.documentElement;
     // tout de suite (la police est déjà en cache, venant de la page précédente) : la boîte ne doit jamais manquer entre les deux pages
-    busy = true; mk(); draw = build();
+    window.__jmtPause = true; busy = true; mk(); draw = build();
     root.style.overflow = 'hidden'; m.classList.add('inst', 'full', 'colon', 'words'); root.classList.add('jmt-inst'); recul(true);
     opened = true; startMorph(); mt0 = performance.now() - 2000;
     await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
     m.classList.remove('inst'); root.classList.remove('jmt-inst', 'jmt-arrive');
-    busy = false; await new Promise((r) => setTimeout(r, 420)); close(false, true);
+    busy = false; await new Promise((r) => setTimeout(r, 520)); close(false, true);
   };
+  // la page n'est peinte qu'une fois ce script passé (<link rel=expect> posé dans le <head>) : sa toute première image montre déjà le menu ouvert et le site reculé
   if (document.documentElement.classList.contains('jmt-arrive')) arrive();
   // retour arrière (page gardée en mémoire) : le menu était resté ouvert en plein départ, on le referme
   addEventListener('pageshow', (e) => { if (!e.persisted || !m) return; busy = false; if (opened) close(true); });
@@ -2153,6 +2155,7 @@
   let wasDesk = innerWidth > 700; addEventListener('resize', () => { const d = innerWidth > 700; if (opened && d !== wasDesk) close(true); wasDesk = d; });
 })();
 </script>
+<i id="jmtready" hidden></i>
 <!-- transitions de page (6 nov.) : le menu ne bouge jamais ; seul le trait de la page en cours glisse vers la page choisie,
      pendant que le contenu disparaît. 11 nov. : fondu rapide avec une légère mise au flou (la trame 1 bit est retirée). -->
 <style>
