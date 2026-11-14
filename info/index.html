@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">   <!-- 9 nov. : couleur de la barre du navigateur (Chrome Android ; Safari prend le fond de la page) -->
 <title>JPR Info</title>
-<style>html.jmt-arrive::after{display:none!important}html.jmt-arrive::before{content:"";position:fixed;inset:0;z-index:8499;background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(22px) saturate(.6);backdrop-filter:blur(22px) saturate(.6);pointer-events:none;animation:ja-kill 0s 3s forwards}@media (max-width:700px){html.jmt-arrive::before{background:#000}}@keyframes ja-kill{to{visibility:hidden}}@view-transition{navigation:auto}</style><script>try{var g=+sessionStorage.getItem("jmtGo");sessionStorage.removeItem("jmtGo");if(g&&Date.now()-g<4000&&!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("jmt-arrive")}catch(e){}addEventListener("pagereveal",function(e){if(e.viewTransition&&!document.documentElement.classList.contains("jmt-arrive"))e.viewTransition.skipTransition()})</script>
+<style>html.jmt-arrive::after{display:none!important}html.jmt-arrive::before{content:"";position:fixed;inset:0;z-index:8499;background:rgba(14,14,14,.22);-webkit-backdrop-filter:blur(14px) saturate(1.6) brightness(.82);backdrop-filter:blur(14px) saturate(1.6) brightness(.82);pointer-events:none;animation:ja-kill 0s 3s forwards}@media (max-width:700px){html.jmt-arrive::before{background:#000}}@keyframes ja-kill{to{visibility:hidden}}@view-transition{navigation:auto}</style><script>try{var g=+sessionStorage.getItem("jmtGo");sessionStorage.removeItem("jmtGo");if(g&&Date.now()-g<4000&&!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("jmt-arrive")}catch(e){}addEventListener("pagereveal",function(e){if(e.viewTransition&&!document.documentElement.classList.contains("jmt-arrive"))e.viewTransition.skipTransition()})</script>
 <style>html.pt-in::after{content:"";position:fixed;inset:0;z-index:5999;background:#000;pointer-events:none;animation:pt-kill 0s 3s forwards}@keyframes pt-kill{to{visibility:hidden}}</style><script>if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("pt-in")</script>
 <meta name="description" content="Jean-Philippe Rousseau, directeur artistique à Montréal : parcours, expertises et fiche technique.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1314,16 +1314,15 @@
   /* 13 nov. : à l'ordinateur, le site recule quand le menu s'ouvre (chaque bloc rapetisse vers le centre de l'écran), puis revient */
   /* scale/translate (propriétés individuelles) : s'ajoutent au transform de chaque bloc au lieu de le remplacer, donc le Mac reste où il est */
   .jmt-back { transition: scale .7s cubic-bezier(.2, .8, .2, 1), translate .7s cubic-bezier(.2, .8, .2, 1) !important; }
-  /* 14 nov. : menu ouvert, le menu du haut (logo compris) disparaît : un seul JPR à l'écran, celui de la boîte */
-  :is(.hnav, .jnav, .jlogo) { transition: opacity .3s ease; }
-  html.jmt-recul :is(.hnav, .jnav, .jlogo) { opacity: 0 !important; pointer-events: none !important; }
+  /* 14 nov. : finalement, le menu du haut reste visible et recule avec le reste du site */
   html.jmt-recul .jmt-back { scale: .92 !important; translate: var(--jrx, 0) var(--jry, 0) !important; }
   /* 13 nov. : version ordinateur (ouverte par le logo JPR du menu) : une boîte plus petite au milieu de l'écran, entourée de noir :
      une colonne d'espace à gauche et à droite (--s), en hauteur l'écran en 5 rangées : 1 vide en haut, 3 pour le menu, 1 vide en bas (--t = 1/5) ; la grille de 5 à l'intérieur */
   @media (min-width: 701px) {
     .jmt { --s: 22.7vw; --t: 20vh; --ip: 32px; --g: 16px; --pad: calc(var(--s) + var(--ip)); --mcol: calc((100vw - 2 * var(--pad) - 4 * var(--g)) / 5); --mc: calc(var(--mcol) + var(--g)); }
     .jmt::before { inset: var(--t) var(--s) !important; border-radius: 14px; }
-    .jmt.full { background: rgba(0, 0, 0, .55); -webkit-backdrop-filter: blur(22px) saturate(.6); backdrop-filter: blur(22px) saturate(.6); }   /* 13 nov. : plus de contour noir plein : le site reste visible derrière, fortement voilé et flou */
+    /* 14 nov. : un verre dépoli plutôt qu'un voile sombre : moins noir, flou plus doux, couleurs ravivées ; on lit les formes du site qui recule derrière */
+    .jmt.full { background: rgba(14, 14, 14, .22); -webkit-backdrop-filter: blur(14px) saturate(1.6) brightness(.82); backdrop-filter: blur(14px) saturate(1.6) brightness(.82); }   /* 13 nov. : plus de contour noir plein : le site reste visible derrière, fortement voilé et flou */
     .jmt .cols { left: var(--pad) !important; right: var(--pad) !important; top: var(--t) !important; bottom: var(--t) !important; }
     .jmt .bar { left: var(--pad); right: var(--pad); top: var(--t); height: 64px; }
     .jmt .bar button, .jmt .bar a { font-size: clamp(14px, 1.05vw, 18px) !important; }
@@ -1432,7 +1431,7 @@
   const wait = (ms) => new Promise((r) => setTimeout(r, reduce ? 0 : ms));
   const btns = () => document.querySelectorAll('.mnav-btn');
   // le recul : chaque enfant du body (sauf le menu) rapetisse autour du centre de l'écran
-  const backEls = () => [...document.body.children].filter((el) => el !== m && !/^(SCRIPT|STYLE|LINK|NOSCRIPT|TEMPLATE)$/.test(el.tagName) && !el.classList.contains('jcopy') && !el.matches('.hnav, .jnav, .jlogo'));
+  const backEls = () => [...document.body.children].filter((el) => el !== m && !/^(SCRIPT|STYLE|LINK|NOSCRIPT|TEMPLATE)$/.test(el.tagName) && !el.classList.contains('jcopy'));
   const recul = (on) => {
     if (reduce || innerWidth <= 700) return;
     const root = document.documentElement;
