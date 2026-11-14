@@ -1,6 +1,7 @@
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
 <title>JPR Home brute</title>
+<style>html.jmt-arrive::after{display:none!important}html.jmt-arrive::before{content:"";position:fixed;inset:0;z-index:8499;background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(22px) saturate(.6);backdrop-filter:blur(22px) saturate(.6);pointer-events:none;animation:ja-kill 0s 3s forwards}@media (max-width:700px){html.jmt-arrive::before{background:#000}}@keyframes ja-kill{to{visibility:hidden}}@view-transition{navigation:auto}</style><script>try{var g=+sessionStorage.getItem("jmtGo");sessionStorage.removeItem("jmtGo");if(g&&Date.now()-g<4000&&!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("jmt-arrive")}catch(e){}addEventListener("pagereveal",function(e){if(e.viewTransition&&!document.documentElement.classList.contains("jmt-arrive"))e.viewTransition.skipTransition()})</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">   <!-- 9 nov. : couleur de la barre du navigateur (Chrome Android ; Safari prend le fond de la page) -->
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -483,7 +484,7 @@
   // (sessionStorage) : ce n'est pas un témoin, rien ne quitte l'appareil, et il s'efface en fermant l'onglet.
   (() => { if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     let seen = false; try { seen = sessionStorage.getItem('jpr-intro') === '1'; sessionStorage.setItem('jpr-intro', '1'); } catch (e) {}
-    if (seen) document.documentElement.classList.add('pt-in');
+    if (seen || document.documentElement.classList.contains('jmt-arrive')) document.documentElement.classList.add('pt-in');
     else { document.documentElement.classList.add('hload'); window.__jprLoading = true; } })();
 </script>
 <div class="hloader" id="hloader" aria-hidden="true">
@@ -894,7 +895,8 @@
   const st = obj.style;
   st.setProperty('--pz', (-DEPTH / 2).toFixed(3));
 
-  let W = 560, holdY = 0, fitY = 9999;
+  let W = 560, holdY = 0, fitY = 9999, P3Y = null, dropS = 0, finState = false, rbT0 = 0, rbTo = false;
+  const p3El = document.querySelectorAll('.intro p')[2];
   // ---------- mobile : le texte prend toute la hauteur ; on pousse le grand logo plus bas pour laisser au Mac
   // la place de descendre et de faire son tour, et le Mac part de sous le texte (plus de chevauchement) ----------
   const maq = document.getElementById('maquette'), maqBg = maq.querySelector('rect'), logoG = document.getElementById('footLogo');
@@ -940,7 +942,7 @@
       const contactRight = nav.left + nav.width * 1535 / 1600;   // fin de la colonne 5 (x = 1535 sur 1600), où se termine « contact »
       const colW = nav.width * 278 / 1600;   // largeur d'une colonne de la grille (278 sur 1600)
       K0 = Math.min(1, colW / ((VIS + 0.266) * W));   // 0.266 : du centre au bord gauche visible (on voit le flanc du boîtier)   // au départ, le Mac fait exactement la largeur de la colonne 5 ; il reprend sa taille en pivotant
-      PATH_X[0] = (contactRight - W * K0 * VIS - pgR.left) / pgR.width;   // bord droit sur la fin de « contact »
+      PATH_X[0] = (contactRight - 28 - W * K0 * VIS - pgR.left) / pgR.width;   // bord droit un peu en retrait de la fin de « contact » (13 nov. : 28 px)
     } else {
       // mobile : dès l'arrivée, le Mac attend en petit (1/3 de la largeur de l'écran) dans le coin inférieur droit
       const pgR = document.getElementById('page').getBoundingClientRect();
@@ -951,6 +953,8 @@
     fitY = mobile() ? Infinity : innerHeight - (FEET - 0.5) * W * K0 / 1.5 - 32;   // mobile : le Mac attend sous le texte, hors écran s'il le faut   // plus bas que ça, les pieds du Mac sortent de l'écran
     holdY = Math.min(r.top + scrollY + r.height / 2, innerHeight * 0.58, fitY);   // hauteur où le Mac reste épinglé
     if (mobile()) holdY = innerHeight - 18 - (FEET - 0.5) * W * K0 / 1.5;   // mobile : pieds à 18 px du bas de l'écran
+    // 13 nov. : le Mac passe à gauche (colonne 2, le trou laissé par le 3e paragraphe) au moment où ce paragraphe passe à sa hauteur
+    { const q = document.querySelectorAll('.intro p')[2]; P3Y = q ? q.getBoundingClientRect().top + scrollY + q.offsetHeight / 2 : null; }
     // fin du défilement : le Mac posé sur le logo arrive au centre de l'écran
     const clipEl = document.getElementById('clip'), pg = document.getElementById('page');
     const pageTop = pg.getBoundingClientRect().top + scrollY, clipTop = clipEl.getBoundingClientRect().top + scrollY;
@@ -1029,9 +1033,16 @@
     // (avant : il restait immobile, puis remontait d'un coup avec le texte, puis s'arrêtait net)
     const slotDoc = sR.top + scrollY + sR.height / 2, y0 = Math.min(slotDoc, fitY);
     const pinned = mobile() ? holdY : (y0 <= holdY ? holdY : lerp(y0, holdY, ease(clamp01(sy / Math.max(1, slotDoc - holdY)))));
-    const y = limited ? lerp(pinned, landY, ease(t)) : Math.min(pinned, landY);
-    const xf = t < 0.5 ? lerp(PATH_X[0], PATH_X[1], ease(t / 0.5)) : lerp(PATH_X[1], PATH_X[2], ease((t - 0.5) / 0.5));
+    const y0b = limited ? lerp(pinned, landY, ease(t)) : Math.min(pinned, landY);
+    const tA = P3Y !== null && !mobile() ? Math.max(0.15, Math.min(0.85, (P3Y - holdY - s0) / Math.max(1, s1 - s0))) : 0.5;   // à gauche quand le 3e paragraphe est à la hauteur du Mac
+    const xMid = P3Y !== null && !mobile() ? (363 + 139 - 70) / 1600 : PATH_X[1];   // dans la colonne 2, un peu vers la gauche
+    const xf = t < tA ? lerp(PATH_X[0], xMid, ease(t / tA)) : lerp(xMid, PATH_X[2], ease((t - tA) / (1 - tA)));
     const x = pR.left + pR.width * xf;
+    // 13 nov. : au survol du 3e paragraphe, le bloc glisse d'une colonne vers la gauche ; le Mac glisse avec lui (la colonne 1 se libère)
+    const sh = P3Y !== null && !mobile() && p3El && p3El.parentElement.classList.contains('sh3') ? -(pR.width * 0.18625 + 75) * clamp01(1 - Math.abs(xf - xMid) / 0.2) : 0;
+    dropS += (sh - dropS) * (1 - Math.pow(1 - 0.06, dt / 16.67));
+    window.__macHole = P3Y !== null && !mobile() && clamp01(1 - Math.abs(xf - xMid) / 0.2) > 0.5; window.__macShift = pR.width * 0.18625 + 75;   // 14 nov. : pour le survol du Mac dans le trou
+    const y = y0b;
     hov += (hoverT - hov) * (1 - Math.pow(1 - 0.14, dt / 16.67));
     // en bas de page seulement (Mac posé sur le logo) : le curseur qui s'approche fait grossir le Mac
     const dCur = px === null ? 1e9 : Math.hypot(px - x, (py - y) * 1.15);
@@ -1040,14 +1051,23 @@
     const kS = lerp(K0, 1, ease(t));                // taille : réduite en haut, normale une fois posé
     const lift = kS * (1 + 0.03 * hov + 0.16 * prox);      // au survol de l'écran, le Mac s'avance encore un peu
     const feetHold = 0.16 * prox * (FEET - 0.5) * W / 1.5;   // en grossissant, les pieds restent posés sur le logo
-    fly.style.transform = `translate3d(${(x - W * lift / 2).toFixed(2)}px, ${(y - W * lift / 3 - 6 * hov - feetHold).toFixed(2)}px, 0) scale(${lift.toFixed(4)})`;
+    fly.style.transform = `translate3d(${(x + dropS - W * lift / 2).toFixed(2)}px, ${(y - W * lift / 3 - 6 * hov - feetHold).toFixed(2)}px, 0) scale(${lift.toFixed(4)})`;
     fly.style.transformOrigin = '0 0';
     window.__mac = { x, y, W: W * kS, t };   // pour la souris du bas de page
     st.setProperty('--hov', hov.toFixed(3));
 
-    const spin = SPIN * ease3(t);
-    // l'écran passe de l'immeuble au bureau du Mac pendant le demi-tour, quand on voit le dos : on ne voit pas le changement
-    root.classList.toggle('finder-on', spin > 180);
+    // 13 nov. : le Mac reste de face (il suit le curseur) jusqu'au trou du 3e paragraphe ; il ne fait son tour qu'après
+    const tSp = P3Y !== null && !mobile() ? clamp01((t - tA - 0.04) / Math.max(0.05, 1 - tA - 0.04)) : t;
+    // 13 nov. : plus de tour complet : le Mac reste de face (il suit le curseur). L'écran passe de Montréapolis au menu
+    // comme un vieux moniteur qui redémarre : il s'éteint en une ligne, change d'image dans le noir, puis se rallume
+    const spin = 0;
+    const finWant = tSp > 0.5;
+    if (finWant !== finState && !rbT0) { rbT0 = now; rbTo = finWant; }
+    let rbOff = 0;
+    if (rbT0) { const e = reduce ? 1e9 : now - rbT0;
+      if (e >= 220 && finState !== rbTo) { finState = rbTo; root.classList.toggle('finder-on', finState); }
+      rbOff = e < 220 ? e / 220 : e < 320 ? 1 : Math.max(0, 1 - (e - 320) / 480);
+      if (e > 800) rbT0 = 0; }
     const mid = Math.abs(Math.sin(spin * Math.PI / 180));
 
     // écran : éteint au repos, s'allume en noir et blanc dès qu'on scrolle
@@ -1055,7 +1075,7 @@
     // la nav allume aussi l'écran ; changer d'image fait « sauter » le tube une fraction de seconde
     pw += (Math.max(hoverT, navT) - pw) * (1 - Math.pow(1 - (navT ? 0.14 : 0.06), dt / 16.67));
     flick *= Math.pow(0.82, dt / 16.67);
-    const scr = crt(clamp01(1 - Math.max(clamp01((now - BOOT) / 700), pw) + flick * 0.85));
+    const scr = crt(clamp01(1 - Math.max(clamp01((now - BOOT) / 700), pw) + flick * 0.85 + rbOff));
     st.setProperty('--crt-x', scr.x.toFixed(4)); st.setProperty('--crt-y', scr.y.toFixed(4));
     st.setProperty('--crt-b', scr.b.toFixed(3)); st.setProperty('--crt-o', scr.o.toFixed(3));
     syncEnter(Math.cos(spin * Math.PI / 180));
@@ -1074,7 +1094,7 @@
     }
     const k = 1 - Math.pow(1 - 0.08, dt / 16.67);
     cx += (tx - cx) * k; cy += (ty - cy) * k;
-    const ry = spin + cx * MAX;
+    const ry = spin + cx * MAX + 28 * clamp01(-dropS / Math.max(1, pR.width * 0.18625 + 75));   // 13 nov. : un peu en angle quand il se dégage vers la gauche
     const rx = -cy * MAX * 0.75 - 14 * mid;          // pendant le tour on voit le dessus et la poignée
     root.style.setProperty('--ry', ry.toFixed(3));
     root.style.setProperty('--rx', rx.toFixed(3));
@@ -1094,24 +1114,58 @@
   };
   requestAnimationFrame(tick);
 
-  // logo : ondulation liquide très lente, un peu plus vive au survol ; en pause hors écran
+  // logo : 13 nov. : la loupe liquide (celle du petit logo du menu) : un morph à l'arrivée en bas de page, puis seulement sous le curseur / la souris du Mac
   const footPath = document.getElementById('footPath');
   const noise = document.getElementById('logoNoise'), disp = document.getElementById('logoDisp');
-  if (reduce) footPath.removeAttribute('filter');
+  const LAND_MORPH = false;   // 13 nov. : retiré (le JPR du bas reste net, sans filtre : plus léger pour la page) ; true pour le remettre
+  if (reduce || !LAND_MORPH) footPath.removeAttribute('filter');
   else {
-    let visible = false, hover = 0, hoverT = 0, raf = 0;
-    const t0 = performance.now();
-    footPath.addEventListener('pointerenter', () => { hoverT = 1; });
-    footPath.addEventListener('pointerleave', () => { hoverT = 0; });
+    const ns = 'http://www.w3.org/2000/svg', flt = document.getElementById('logoMorph');
+    disp.setAttribute('result', 'd1');
+    const R = 128, cv = document.createElement('canvas'); cv.width = cv.height = R; const cg = cv.getContext('2d'), im = cg.createImageData(R, R);
+    for (let j = 0; j < R; j++) for (let i = 0; i < R; i++) { const x = (i + .5) / R * 2 - 1, y = (j + .5) / R * 2 - 1, d = Math.hypot(x, y), f = d < 1 ? Math.sin(Math.PI * d) * (1 - d) * 1.6 : 0, o = (j * R + i) * 4;
+      im.data[o] = 128 + 127 * Math.max(-1, Math.min(1, x / (d || 1) * f)); im.data[o + 1] = 128 + 127 * Math.max(-1, Math.min(1, y / (d || 1) * f)); im.data[o + 2] = 128; im.data[o + 3] = 255; }
+    cg.putImageData(im, 0, 0);
+    const el = (tag, at) => { const e = document.createElementNS(ns, tag); for (const k in at) e.setAttribute(k, at[k]); flt.appendChild(e); return e; };
+    el('feFlood', { 'flood-color': 'rgb(128,128,128)', result: 'f' });
+    const bump = el('feImage', { href: cv.toDataURL(), preserveAspectRatio: 'none', x: 0, y: 0, width: 1, height: 1, result: 'b0' });
+    el('feComposite', { in: 'b0', in2: 'f', operator: 'over', result: 'b' });
+    const lensD = el('feDisplacementMap', { in: 'd1', in2: 'b', scale: 0, xChannelSelector: 'R', yChannelSelector: 'G' });
+    const svg = footPath.ownerSVGElement;
+    let bb = null; try { bb = footPath.getBBox(); } catch (e) {}
+    if (!bb || !bb.width) bb = { x: 80, y: 3380, width: 1440, height: 480 };
+    const H = bb.height, RAD = H * .62;
+    // 13 nov. : plus de boucle. En arrivant en bas de page, un morph : le logo ondule fort puis se calme, pendant qu'une goutte le traverse
+    // de gauche à droite ; ensuite seulement le curseur (la souris du Mac, ou le vrai curseur sur le logo) déforme le logo. Au repos : le logo net, sans filtre
+    let lens = 0, raf = 0, cur = null, lx = bb.x, ly = bb.y + bb.height * .55, intro = -1, wasDown = false;
+    const t0 = performance.now(), INTRO = 1700;
+    footPath.removeAttribute('filter');
+    footPath.addEventListener('pointermove', (e) => { const m = svg.getScreenCTM(); if (m) { const q = new DOMPoint(e.clientX, e.clientY).matrixTransform(m.inverse()); cur = { x: q.x, y: q.y }; } kick(); });
+    footPath.addEventListener('pointerleave', () => { cur = null; });
+    const kick = () => { if (!raf) raf = requestAnimationFrame(morph); };
+    addEventListener('pointermove', () => { if (root.classList.contains('mouse-on')) kick(); }, { passive: true });   // la souris du Mac bouge sur le bureau
+    // l'arrivée en bas : quand le Mac se pose (sa course arrive au bout), une fois par arrivée
+    const watch = () => { requestAnimationFrame(watch); const t = window.__mac ? window.__mac.t : 0, down = t > 0.97;
+      if (down && !wasDown) { intro = performance.now(); lx = bb.x - RAD * .3; kick(); } wasDown = down; };
+    requestAnimationFrame(watch);
     const morph = (now) => {
       const tt = (now - t0) / 1000;
-      hover += (hoverT - hover) * 0.05;
-      noise.setAttribute('baseFrequency', (0.0035 + 0.0011 * Math.sin(tt * 0.23)).toFixed(5) + ' ' + (0.005 + 0.0011 * Math.cos(tt * 0.17)).toFixed(5));
-      disp.setAttribute('scale', (9 + 2.5 * Math.sin(tt * 0.31) + 9 * hover).toFixed(2));
-      raf = visible ? requestAnimationFrame(morph) : 0;
+      let mo = null;   // la souris du Mac, quand elle est sur le bureau (le logo) : la goutte se forme autour d'elle
+      if (root.classList.contains('mouse-on') && window.__mouseXY) { const m = svg.getScreenCTM(); if (m) { const q = new DOMPoint(window.__mouseXY.x, window.__mouseXY.y + innerHeight * 0.075).matrixTransform(m.inverse()); mo = { x: q.x, y: q.y };   /* le milieu de la souris (le curseur est à son bout avant) */ } }
+      const tg = mo || cur;
+      const ip = intro < 0 ? 1 : Math.min(1, (now - intro) / INTRO), inIntro = ip < 1, ie = 1 - ip * ip * (3 - 2 * ip);   // 1 → 0, en douceur
+      if (inIntro && !tg) { const sw = ip * ip * (3 - 2 * ip); lx = bb.x - RAD * .3 + (bb.width + RAD * .6) * sw; ly = bb.y + bb.height * (.55 + .12 * Math.sin(ip * Math.PI * 2)); }
+      else if (tg) { lx += (tg.x - lx) * 0.16; ly += (tg.y - ly) * 0.16; }
+      lens += (((tg ? 1 : 0) + (inIntro ? Math.sin(ip * Math.PI) : 0)) - lens) * 0.12;
+      const nz = inIntro ? 14 * ie : 0;
+      if (!inIntro && !tg && lens < 0.004) { footPath.removeAttribute('filter'); raf = 0; return; }   // au repos : net
+      if (!footPath.hasAttribute('filter')) footPath.setAttribute('filter', 'url(#logoMorph)');
+      bump.setAttribute('x', (lx - RAD).toFixed(1)); bump.setAttribute('y', (ly - RAD).toFixed(1)); bump.setAttribute('width', (RAD * 2).toFixed(1)); bump.setAttribute('height', (RAD * 2).toFixed(1));
+      lensD.setAttribute('scale', (-H * .18 * Math.min(1.4, lens)).toFixed(2));
+      noise.setAttribute('baseFrequency', (0.0035 + 0.0011 * Math.sin(tt * 0.9)).toFixed(5) + ' ' + (0.005 + 0.0011 * Math.cos(tt * 0.7)).toFixed(5));
+      disp.setAttribute('scale', (nz + 2 * Math.min(1, lens)).toFixed(2));
+      raf = requestAnimationFrame(morph);
     };
-    new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible && !raf) raf = requestAnimationFrame(morph); })
-      .observe(land);
   }
 
   // ---------- entrer dans l'écran ----------
@@ -1204,7 +1258,7 @@
     root.style.overflow = ''; inside = false; busy = false;
     if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
   };
-  hit.addEventListener('click', enter);
+  hit.addEventListener('click', (e) => { if (window.__SCRMENU && root.classList.contains('finder-on')) { if (window.__screenTap) window.__screenTap(e.clientX, e.clientY); return; } enter(e); });   // 13 nov. : en bas, les mots du menu dans l'écran se cliquent
   // « fermer » : l'étiquette suit la souris dès qu'elle quitte l'écran de jeu (un clic à côté de l'écran ferme déjà) ; au doigt, le bouton est posé sous l'écran
   const osClose = document.getElementById('osClose');
   if (matchMedia('(hover: none)').matches) osClose.classList.add('touch');
@@ -2231,7 +2285,7 @@ window.__TRASH = (() => {
   };
   const open = (ic) => { zoom = { r: icRect(ic), t0: performance.now(), go: () => { zoom = null; go(ic.k); } }; };
 
-  const live = () => root.classList.contains('mouse-on') && (!os || os.hidden) && !window.__footHover;
+  const live = () => !window.__SCRMENU && root.classList.contains('mouse-on') && (!os || os.hidden) && !window.__footHover;   // 13 nov. : le menu mobile a remplacé le bureau dans l'écran
   // en mode souris, les clics vont dans l'écran
   const swallow = (e) => { if (!live() || e.button > 0) return; e.preventDefault(); e.stopPropagation(); };
   addEventListener('click', swallow, true);
@@ -2282,6 +2336,140 @@ window.__TRASH = (() => {
     draw(now);
   };
   requestAnimationFrame(loop);
+})();
+</script>
+
+<style>
+  /* 13 nov. : en bas, l'écran du Mac montre le menu mobile (blanc cassé, la grille de 5 en pointillé, les mots en escalier, le grand JPR) à la place du bureau 1 bit.
+     À la souris, la flèche du Mac le parcourt et un clic ouvre la page sous la flèche ; au doigt, on touche le mot. (13 nov. : le JPR et le menu agrandi, essayés, sont retirés ;
+     la loupe liquide du JPR est passée au petit logo du menu du haut, voir navmorph.html) */
+  .screen canvas.finder { display: none !important; }
+  .scrmenu, .bmenu .pn { -webkit-text-size-adjust: none; text-size-adjust: none; overflow: hidden; container-type: size; background: #F2F0EB; color: #000; font-family: "PP Mori", "Host Grotesk", "Helvetica Neue", Arial, sans-serif; --mcol: 16cqw; --mc: 19cqw; }
+  .scrmenu { position: absolute; inset: 0; display: none; pointer-events: none;
+    transform: scale(var(--crt-x, 0), var(--crt-y, 0)); filter: brightness(var(--crt-b, 1)); opacity: var(--crt-o, 0); }
+  html.finder-on .scrmenu, html.mouse-on .scrmenu { display: block; }
+  html.menu-peek .scrmenu { display: none !important; }
+  :is(.scrmenu, .bmenu) .cols { position: absolute; left: 4cqw; right: 4cqw; top: 0; bottom: 0; pointer-events: none; }
+  :is(.scrmenu, .bmenu) .cols i { position: absolute; top: 0; bottom: 0; left: calc(var(--k) * var(--mc)); width: var(--mcol); }
+  :is(.scrmenu, .bmenu) .cols i::before, :is(.scrmenu, .bmenu) .cols i::after { content: ""; position: absolute; top: 0; bottom: 0; width: 1px; background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, .16) 0 1px, transparent 1px 2px); }
+  :is(.scrmenu, .bmenu) .cols i::before { left: 0; } :is(.scrmenu, .bmenu) .cols i::after { right: 0; }
+  :is(.scrmenu, .bmenu) .bar { position: absolute; left: 4cqw; right: 4cqw; top: 0; height: 10cqw; display: flex; justify-content: space-between; align-items: center; font-size: 3.6cqw; letter-spacing: -.01em; }
+  :is(.scrmenu, .bmenu) ul { position: absolute; left: 4cqw; right: 4cqw; top: 16cqw; margin: 0; padding: 0; list-style: none; }
+  :is(.scrmenu, .bmenu) li { font-size: 11cqw; line-height: 1.04; padding-bottom: .08em; }   /* la taille sur le li : sinon sa ligne garde 16 px de haut dans le petit écran */
+  :is(.scrmenu, .bmenu) .w { position: relative; display: inline-block; color: inherit; text-decoration: none; font-size: 1em; letter-spacing: -.04em; white-space: nowrap; }
+  :is(.scrmenu, .bmenu) li .w { margin-left: calc(var(--k) * var(--mc)); }
+  :is(.scrmenu, .bmenu) .bar .w { font-size: inherit; letter-spacing: inherit; background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; }
+  :is(.scrmenu, .bmenu) .w i { position: absolute; left: -.02em; right: -.02em; top: 54%; height: .055em; background: currentColor; transform: scaleX(0); transform-origin: 0 50%; transition: transform .35s cubic-bezier(.6, 0, .2, 1); pointer-events: none; }
+  :is(.scrmenu, .bmenu) .bar .w i { height: 1px; }
+  :is(.scrmenu, .bmenu) .on i, :is(.scrmenu, .bmenu) .cur i, .bmenu .w:hover i, .bmenu .w:focus-visible i { transform: scaleX(1); }
+  .bmenu .w:focus-visible { outline: 1px solid currentColor; outline-offset: 4px; }
+  :is(.scrmenu, .bmenu) .big { position: absolute; left: 4cqw; bottom: 3.4cqw; width: 64cqw; line-height: 0; }
+  :is(.scrmenu, .bmenu) .big svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .bmenu .big { cursor: default; }
+  /* 13 nov. : version « dossiers » : un bureau suisse, brut et moderne (pas 1 bit) : la grille de 5, un filet noir sous la barre,
+     des dossiers noirs pleins posés sur les colonnes, et « Bureau » en grand en bas. Sous la flèche, le dossier s'évide et son nom se barre */
+  .scrmenu.dossiers .bar { height: 9cqw; border-bottom: 1px solid #000; font-size: 3.4cqw; }
+  .scrmenu.dossiers .bar .w { font-size: inherit; letter-spacing: -.01em; }
+  .scrmenu.dossiers .f { position: absolute; top: 15cqw; left: calc(4cqw + var(--k) * var(--mc)); width: var(--mcol); display: flex; flex-direction: column; align-items: flex-start; gap: 1.4cqw; font-size: 1em; }
+  .scrmenu.dossiers .f svg { width: 12.5cqw; height: auto; display: block; overflow: visible; }
+  .scrmenu.dossiers .f path { fill: #000; stroke: #000; stroke-width: 1.5; stroke-linejoin: miter; transition: fill .2s ease; }
+  .scrmenu.dossiers .f.on path { fill: transparent; }
+  .scrmenu.dossiers .f b { position: relative; font-weight: 400; font-size: 3.4cqw; letter-spacing: -.01em; line-height: 1; }
+  .scrmenu.dossiers .f b i { position: absolute; left: -.02em; right: -.02em; top: 54%; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: 0 50%; transition: transform .3s cubic-bezier(.6, 0, .2, 1); }
+  .scrmenu.dossiers .f.on b i { transform: scaleX(1); }
+  .scrmenu.dossiers > .w > i { display: none; }
+  .scrmenu.dossiers .big { position: absolute; left: 3.4cqw; bottom: 1.2cqw; width: auto; margin: 0; font-size: 17cqw; line-height: .9; letter-spacing: -.055em; }
+  .scrmenu.dossiers .meta { position: absolute; right: 4cqw; bottom: 3.4cqw; margin: 0; font-size: 3.2cqw; letter-spacing: -.01em; }
+  /* la flèche du Mac (1 bit), pilotée par la souris posée sur le bureau */
+  .scrmenu .ptr { position: absolute; left: 0; top: 0; width: 5.2cqw; height: auto; display: none; translate: -12% -6%; }
+  html.mouse-on .scrmenu .ptr { display: block; }
+  /* le menu agrandi : un grand écran 4:3 au milieu, entouré de noir */
+  .bmenu { position: fixed; inset: 0; z-index: 8200; display: none; background: rgba(0, 0, 0, 0); transition: background-color .5s ease; cursor: pointer; }
+  .bmenu.show { display: block; }
+  .bmenu.on { background: rgba(0, 0, 0, .92); }
+  .bmenu .pn:focus { outline: none; }
+  .bmenu .pn { transform-origin: 0 0; }
+  .bmenu .pn { position: absolute; border-radius: 10px; cursor: default; box-shadow: 0 0 0 1px rgba(242, 240, 235, .08); }
+  html.bm-open .hnav, html.bm-open .mnav { opacity: 0; pointer-events: none; transition: opacity .3s ease; }
+</style>
+<script>
+(() => {
+  const root = document.documentElement;
+  const init = () => {
+    const screenEl = document.querySelector('.screen.front'), src = document.querySelector('#jmenu a.jm-logo');
+    if (!screenEl || !src) return;
+    window.__SCRMENU = true;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, ns = 'http://www.w3.org/2000/svg';
+    const nav = [...document.querySelectorAll('#jmenu li a')];
+    const href = (t) => { const a = nav.find((x) => x.textContent.trim().toLowerCase() === t); return a ? a.getAttribute('href') : null; };
+    const IT = [{ t: 'préface', h: src.getAttribute('href'), k: 0, cur: true }, { t: 'portfolio', h: href('portfolio'), k: 1 }, { t: 'pêle-mêle', h: href('pêle-mêle'), k: 2 }, { t: 'info', h: href('info'), k: 1 }];
+    // construit un menu (dans l'écran du Mac, ou agrandi) ; renvoie de quoi piloter sa loupe
+    const build = (box, id, real) => {
+      const tag = (it, i) => real ? `<a class="w${it.cur ? ' cur' : ''}" href="${it.h || '#'}" target="_top" data-i="${i}" style="--k:${it.k}">${it.t}<i></i></a>` : `<span class="w${it.cur ? ' cur' : ''}" data-i="${i}" style="--k:${it.k}">${it.t}<i></i></span>`;
+      box.innerHTML = `<div class="cols">${[0, 1, 2, 3, 4].map((k) => `<i style="--k:${k}"></i>`).join('')}</div>`
+        + (real ? `<div class="bar"><button type="button" class="w x">fermer<i></i></button><button type="button" class="w" data-k="contact">contact<i></i></button></div>`
+                : `<div class="bar"><span class="w">fermer<i></i></span><span class="w" data-k="contact">contact<i></i></span></div>`)
+        + `<ul>${IT.map((it, i) => `<li>${tag(it, i)}</li>`).join('')}</ul>`;
+      return {};
+    };
+
+    // ---------- dans l'écran du Mac ----------
+    const sm = document.createElement('div'); sm.className = 'scrmenu'; sm.setAttribute('aria-hidden', 'true'); screenEl.appendChild(sm);
+    // 13 nov. : deux versions de l'écran : « dossiers » (bureau suisse, dossiers noirs) ou « mots » (le menu mobile en escalier)
+    const SCR = 'dossiers';
+    if (SCR === 'dossiers') {
+      const FOLD = '<svg viewBox="0 0 30 22" aria-hidden="true"><path d="M.75 2.75h10.5l2 2.5h16v16H.75z"/></svg>';
+      const F = [{ i: 1, k: 0 }, { i: 2, k: 1 }, { i: 3, k: 2 }, { c: 'contact', k: 3 }];
+      sm.classList.add('dossiers');
+      sm.innerHTML = `<div class="cols">${[0, 1, 2, 3, 4].map((k) => `<i style="--k:${k}"></i>`).join('')}</div>`
+        + `<div class="bar"><span class="w" data-i="0">JPR<i></i></span><span class="ck"></span></div>`
+        + F.map((f) => `<span class="w f" ${f.c ? `data-k="${f.c}"` : `data-i="${f.i}"`} style="--k:${f.k}">${FOLD}<b>${f.c || IT[f.i].t}<i></i></b></span>`).join('')
+        + `<p class="big">Bureau</p><p class="meta">4 éléments</p>`;
+      const ck = sm.querySelector('.ck'), clk = () => { const d = new Date(); ck.textContent = `${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`; };
+      clk(); setInterval(clk, 20000);
+    } else build(sm, 'smLens', false);
+    sm.insertAdjacentHTML('beforeend', `<svg class="ptr" viewBox="0 0 11 17" shape-rendering="crispEdges"><path d="M1 1v13l3-3 2 5 2-1-2-5h4z" fill="#000" stroke="#fff" stroke-width="1"/></svg>`);
+    const ptr = sm.querySelector('.ptr');
+    let vx = 128, vy = 96, hov = null;
+    const live = () => root.classList.contains('mouse-on') && !document.querySelector('#os:not([hidden])') && !window.__footHover;
+    const pick = () => {   // sous la flèche, en coordonnées de l'écran (avant la perspective)
+      const W = sm.offsetWidth, H = sm.offsetHeight; if (!W) return {};
+      const px = vx / 256 * W, py = vy / 193 * H;
+      const rect = (el) => { let x = 0, y = 0; for (let n = el; n && n !== sm; n = n.offsetParent) { x += n.offsetLeft; y += n.offsetTop; } return { x, y, w: el.offsetWidth, h: el.offsetHeight }; };
+      const inR = (r, pad) => px >= r.x - pad && px <= r.x + r.w + pad && py >= r.y - pad && py <= r.y + r.h + pad;
+      const el = [...sm.querySelectorAll('.w[data-i], .w[data-k]')].find((x) => inR(rect(x), W * .01)) || null;
+      return { el };
+    };
+    // ---------- la boucle : la flèche dans l'écran, les survols, les deux loupes ----------
+    const frame = (now) => {
+      requestAnimationFrame(frame);
+      const on = live(), m = window.__mouseXY;
+      if (on && m) {
+        const top = 84 / 1600 * Math.min(innerWidth - 32, 1600) + 120;
+        const tx = Math.max(0, Math.min(252, (m.x / innerWidth - 0.18) / 0.64 * 252)), ty = Math.max(1, Math.min(189, (m.y - top) / (innerHeight - 120 - top) * 193));
+        vx += (tx - vx) * 0.85; vy += (ty - vy) * 0.85;
+        ptr.style.left = (vx / 256 * 100) + '%'; ptr.style.top = (vy / 193 * 100) + '%';
+      }
+      const p = on ? pick() : {};
+      const el = p.el || null; if (el !== hov) { if (hov) hov.classList.remove('on'); hov = el; if (hov) hov.classList.add('on'); }
+    };
+    requestAnimationFrame(frame);
+    // ---------- en mode souris (la souris du Mac sur le bureau), un clic va dans l'écran : il agrandit le menu ----------
+    const swallow = (e) => { if (pass || !e.isTrusted || !live() || e.button > 0) return; e.preventDefault(); e.stopPropagation(); };   // (les clics programmés, comme celui de la transition de page, passent)
+    addEventListener('click', swallow, true); addEventListener('pointerup', swallow, true);
+    let pass = false;
+    const go = (el) => {
+      if (!el) return;
+      if (el.dataset.k === 'contact') { const a = document.querySelector('.hnav a[data-contact], .jnav a[data-contact], .mnav a[data-contact]'); if (a) { pass = true; a.click(); pass = false; } return; }
+      const it = IT[+el.dataset.i]; if (!it) return;
+      if (it.cur) { scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); return; }
+      if (it.h) { const a = document.createElement('a'); a.href = it.h; a.target = '_top'; document.body.appendChild(a); pass = true; a.click(); pass = false; a.remove(); }
+    };
+    addEventListener('pointerdown', (e) => { if (!live() || e.button > 0) return; e.preventDefault(); e.stopPropagation(); go(hov); }, true);
+    // au doigt (ou sans le mode souris) : toucher l'écran du Mac là où est le mot
+    window.__screenTap = (cx, cy) => { const r = screenEl.getBoundingClientRect(); if (!r.width) return; vx = (cx - r.left) / r.width * 256; vy = (cy - r.top) / r.height * 193; go(pick().el); };
+  };
+  if (document.readyState === 'loading') addEventListener('DOMContentLoaded', init); else setTimeout(init, 0);
 })();
 </script>
 <style>
@@ -2558,10 +2746,40 @@ window.__TRASH = (() => {
   addEventListener('click', (e) => {
     if (e.target !== hit) return;
     e.preventDefault(); e.stopImmediatePropagation();
-    if (root.classList.contains('finder-on')) openDesk();   // en bas : le bureau
+    if (root.classList.contains('finder-on')) { if (window.__SCRMENU) { if (window.__screenTap) window.__screenTap(e.clientX, e.clientY); } else openDesk(); }   // en bas : 13 nov. : on touche un mot du menu dans l'écran (avant : le bureau)
     else showAlert();                                        // en haut : l'alerte (« Essayer quand même » mène à Montréapolis)
   }, true);
   hit.setAttribute('aria-label', 'Toucher l’écran du Macintosh');
+})();
+</script>
+
+<script>
+/* 13 nov. : la 4e colonne du 3e paragraphe revient par la gauche : une copie du paragraphe, posée à la même hauteur, décalée de 5 colonnes */
+(() => {
+  const intro = document.querySelector('.intro'), src = intro && intro.querySelectorAll('p')[2]; if (!src) return;
+  const c = src.cloneNode(true); c.className = 'wrap3 tw-ok'; c.setAttribute('aria-hidden', 'true');
+  intro.appendChild(c);
+  const place = () => { c.style.top = src.offsetTop + 'px'; };
+  // au survol du paragraphe (ou de sa partie revenue à gauche), il glisse d'une colonne ; il revient quand la souris s'en va
+  let textOn = false, macOn = false, zone = null;
+  const upd = () => intro.classList.toggle('sh3', textOn || macOn);
+  const on = (v) => { textOn = v; upd(); };
+  for (const el of [src, c]) { el.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') on(true); }); el.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse' && !(e.relatedTarget && (src.contains(e.relatedTarget) || c.contains(e.relatedTarget)))) on(false); }); }
+  // 14 nov. : survoler le Mac quand il est logé dans le trou fait aussi glisser le texte (et le Mac avec lui).
+  // Le Mac se dérobe sous la souris : la zone retenue couvre donc sa place de départ et celle où il glisse, et l'effet tient tant que la souris y reste.
+  const macBox = () => { let l = Infinity, t = Infinity, r = -Infinity, b = -Infinity;
+    document.querySelectorAll('#fly .face:not(.tp)').forEach((f) => { const q = f.getBoundingClientRect(); if (!q.width && !q.height) return; l = Math.min(l, q.left); t = Math.min(t, q.top); r = Math.max(r, q.right); b = Math.max(b, q.bottom); });
+    return isFinite(l) ? { l, t, r, b } : null; };
+  let pend = false, px = 0, py = 0;
+  addEventListener('pointermove', (e) => { if (e.pointerType !== 'mouse' || innerWidth <= 700) return; px = e.clientX; py = e.clientY;
+    if (pend) return; pend = true;
+    requestAnimationFrame(() => { pend = false;
+      const inQ = (q) => q && px > q.l && px < q.r && py > q.t && py < q.b;
+      if (!macOn) { if (!window.__macHole) return; const q = macBox(); if (inQ(q)) { macOn = true; zone = { l: q.l - (window.__macShift || 0), t: q.t, r: q.r, b: q.b }; upd(); } }
+      else if (!inQ(zone)) { macOn = false; zone = null; upd(); } }); }, { passive: true });
+  document.addEventListener('pointerleave', () => { if (macOn) { macOn = false; upd(); } });
+  place(); addEventListener('resize', place); if (document.fonts) document.fonts.ready.then(place);
+  if ('ResizeObserver' in window) new ResizeObserver(place).observe(intro);
 })();
 </script>
 <style>
@@ -2577,6 +2795,24 @@ window.__TRASH = (() => {
   /* alinéa au début du premier paragraphe seulement */
   .intro p { text-indent: calc(18.625cqw - .06em); }   /* 6 nov. : chaque paragraphe (plus seulement le premier), comme sur Info ; le premier mot démarre au début de la colonne 2 (363 / 1600), comme « pêle-mêle » */
   @media (max-width: 700px) { .intro p { text-indent: calc(var(--mc) - .06em); } }   /* 7 nov. : mobile, alinéa d'une colonne de la grille de 5 */
+  /* 13 nov. : le 2e paragraphe en entier est décalé d'une colonne : le bloc va de la colonne 2 à la 5 (4 colonnes), avec l'alinéa d'une colonne ; le 1er reste sur la colonne 1 */
+  .intro p:nth-of-type(2) { margin-left: 18.625cqw; margin-right: calc(-18.625cqw - 1.25cqw); text-indent: calc(18.625cqw - .06em); }
+  @media (max-width: 700px) { .intro p:nth-of-type(2) { margin-left: var(--mc); margin-right: 0; text-indent: calc(var(--mc) - .06em); } }
+  /* 13 nov. : le 3e paragraphe (« Aujourd’hui… ») : tout le bloc part de la colonne 3 et fait 4 colonnes de large ; il sort de l'écran à droite,
+     et sa 4e colonne revient par la gauche, sur la colonne 1 (une copie du bloc, décalée de 5 colonnes, dont on ne montre que cette colonne) */
+  .intro { --cs: 18.625cqw; --cw: 17.375cqw; }   /* pas d'une colonne (colonne + gouttière) ; largeur d'une colonne */
+  @media (max-width: 700px) { .intro { --cs: var(--mc); --cw: var(--mcol); } }
+  .intro p:nth-of-type(3), .intro p.wrap3 { width: calc(4 * var(--cs) - (var(--cs) - var(--cw))); box-sizing: border-box; text-indent: calc(var(--cs) - .06em) !important; }   /* alinéa d’une colonne (la copie a le même, pour couper aux mêmes endroits) */
+  /* au survol, le bloc glisse d’une colonne vers la gauche (--sh) : la partie cachée à droite apparaît, la partie revenue à gauche se cache ; les bords visibles restent fixes */
+  @property --sh { syntax: '<length>'; inherits: true; initial-value: 0px; }
+  .intro { --sh: 0px; transition: --sh .9s cubic-bezier(.65, 0, .25, 1); }
+  .intro.sh3 { --sh: calc(-1 * var(--cs)); }   /* vers la gauche : le bloc entier devient lisible (colonnes 2 à 5), la partie revenue à gauche disparaît */
+  @media (prefers-reduced-motion: reduce) { .intro { transition: none; } }
+  .intro p:nth-of-type(3) { margin-top: 3.2em; }   /* 13 nov. : plus d'air avant le 3e paragraphe */
+  @media (max-width: 700px) { .intro p:nth-of-type(3) { margin-top: 2.2em; } }
+  .intro p:nth-of-type(3) { margin-left: calc(2 * var(--cs) + var(--sh)); clip-path: inset(-.4em calc(var(--cs) + var(--sh)) -.4em -1em); }
+  .intro p.wrap3 { position: absolute; margin: 0; left: calc(-3 * var(--cs) + var(--sh)); clip-path: inset(-.4em -1em -.4em calc(3 * var(--cs) - (var(--cs) - var(--cw)) - var(--sh))); }   /* la gouttière cachée à droite réapparaît dans la marge de gauche : aucune lettre perdue */
+  .page { overflow-x: clip; }
 </style>
 
 <script>
@@ -2721,29 +2957,45 @@ window.__TRASH = (() => {
   });
 })();
 </script>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="navMorph" x="-20%" y="-40%" width="140%" height="180%" color-interpolation-filters="sRGB"><feTurbulence id="navNoise" type="fractalNoise" baseFrequency="0.04 0.055" numOctaves="1" seed="7" result="n"/><feDisplacementMap id="navDisp" in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="navMorph" filterUnits="userSpaceOnUse" x="720" y="0" width="170" height="84" color-interpolation-filters="sRGB"><feTurbulence id="navNoise" type="fractalNoise" baseFrequency="0.049 0.07" numOctaves="1" seed="7" result="n"/><feDisplacementMap id="navDisp" in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G" result="d1"/><feFlood flood-color="rgb(128,128,128)" result="f"/><feImage id="navBump" preserveAspectRatio="none" x="0" y="0" width="1" height="1" result="b0"/><feComposite in="b0" in2="f" operator="over" result="b"/><feDisplacementMap id="navLensD" in="d1" in2="b" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
 <script>
-/* petit logo JPR du menu : au survol, une ondulation liquide lente et douce (comme le grand logo de l'accueil) */
+/* petit logo JPR du menu : 13 nov. : la loupe liquide (celle de l'écran du Mac) : sous le curseur, le logo gonfle comme une goutte et ondule un peu ;
+   elle suit le curseur avec un léger retard et grossit avec la vitesse. Au repos : le logo net, sans filtre */
 (() => {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const g = document.getElementById('navLogo') || document.querySelector('.jlogo .fx');
+  const g = document.getElementById('navLogo');
   const hit = document.querySelector('a[aria-label="JPR, accueil"]');
-  const nn = document.getElementById('navNoise'), nd = document.getElementById('navDisp');
-  if (!g || !hit) return;
-  let h = 0, hT = 0, raf = 0, last = 0; const t0 = performance.now();
+  const nn = document.getElementById('navNoise'), nd = document.getElementById('navDisp'), nb = document.getElementById('navBump'), nl = document.getElementById('navLensD');
+  if (!g || !hit || !nb) return;
+  const svg = g.ownerSVGElement;
+  // la carte en bosse (mêmes réglages que dans l'écran du Mac)
+  const R = 128, cv = document.createElement('canvas'); cv.width = cv.height = R; const cg = cv.getContext('2d'), im = cg.createImageData(R, R);
+  for (let j = 0; j < R; j++) for (let i = 0; i < R; i++) { const x = (i + .5) / R * 2 - 1, y = (j + .5) / R * 2 - 1, d = Math.hypot(x, y), f = d < 1 ? Math.sin(Math.PI * d) * (1 - d) * 1.6 : 0, o = (j * R + i) * 4;
+    im.data[o] = 128 + 127 * Math.max(-1, Math.min(1, x / (d || 1) * f)); im.data[o + 1] = 128 + 127 * Math.max(-1, Math.min(1, y / (d || 1) * f)); im.data[o + 2] = 128; im.data[o + 3] = 255; }
+  cg.putImageData(im, 0, 0); nb.setAttribute('href', cv.toDataURL());
+  const H = 35, RAD = H * .62;   // hauteur du logo (unités du menu, 1600 de large) ; rayon de la loupe
+  let lens = 0, lx = 0, ly = 0, px = null, py = null, raf = 0, cur = null; const t0 = performance.now();
+  addEventListener('pointermove', (e) => { if (e.pointerType !== 'mouse') return;
+    const r = hit.getBoundingClientRect(), pad = r.width * .08;
+    cur = e.clientX > r.left - pad && e.clientX < r.right + pad && e.clientY > r.top - pad && e.clientY < r.bottom + pad ? { x: e.clientX, y: e.clientY } : null;
+    if (cur && !raf) raf = requestAnimationFrame(step); }, { passive: true });
+  document.documentElement.addEventListener('mouseleave', () => { cur = null; });
   const step = (now) => {
-    const dt = Math.min(50, now - (last || now)); last = now;
-    const tt = (now - t0) / 1000;
-    h += (hT - h) * (1 - Math.pow(1 - 0.045, dt / 16.67));   // montée et retombée très douces
-    const e = h * h * (3 - 2 * h);
-    nn.setAttribute('baseFrequency', (0.04 + 0.006 * Math.sin(tt * 0.55)).toFixed(4) + ' ' + (0.055 + 0.006 * Math.cos(tt * 0.45)).toFixed(4));
-    nd.setAttribute('scale', (e * (2.4 + 0.6 * Math.sin(tt * 0.8))).toFixed(2));
-    if (hT === 0 && h < 0.005) { g.style.filter = ''; raf = 0; last = 0; return; }   // au repos : logo net, sans filtre
     raf = requestAnimationFrame(step);
+    let p = null;
+    if (cur) { const m = svg.getScreenCTM(); if (m) { const q = new DOMPoint(cur.x, cur.y).matrixTransform(m.inverse()); p = { x: q.x, y: q.y }; } }
+    const want = p ? 1 : 0;
+    if (want) { if (px === null) { lx = p.x; ly = p.y; } lx += (p.x - lx) * 0.22; ly += (p.y - ly) * 0.22; }
+    const sp = px === null || !want ? 0 : Math.min(1, Math.hypot(p.x - px, p.y - py) / 3); px = want ? p.x : null; py = want ? p.y : null;
+    lens += ((want ? 1 + sp * .8 : 0) - lens) * 0.12;
+    const e = Math.min(1.6, lens), tt = (now - t0) / 1000;
+    if (e < 0.004 && !want) { g.style.filter = ''; cancelAnimationFrame(raf); raf = 0; return; }
+    g.style.filter = 'url(#navMorph)';
+    nb.setAttribute('x', (lx - RAD).toFixed(2)); nb.setAttribute('y', (ly - RAD).toFixed(2)); nb.setAttribute('width', (RAD * 2).toFixed(2)); nb.setAttribute('height', (RAD * 2).toFixed(2));
+    nl.setAttribute('scale', (-H * .22 * e).toFixed(3));
+    nn.setAttribute('baseFrequency', (0.049 + 0.012 * Math.sin(tt * 0.6)).toFixed(4) + ' ' + (0.07 + 0.012 * Math.cos(tt * 0.5)).toFixed(4));
+    nd.setAttribute('scale', (0.8 * e).toFixed(3));
   };
-  const on = (v) => { hT = v; if (v) g.style.filter = 'url(#navMorph)'; if (!raf) raf = requestAnimationFrame(step); };
-  hit.addEventListener('pointerenter', () => on(1)); hit.addEventListener('pointerleave', () => on(0));
-  hit.addEventListener('focus', () => on(1)); hit.addEventListener('blur', () => on(0));
 })();
 </script>
 
@@ -2811,7 +3063,7 @@ window.__TRASH = (() => {
   /* 12 nov. : plus de dégradé noir sous le menu ; le texte qui monte vers le menu passe au gris (13 nov. : par phrase ou par paragraphe) */
   html:not(.pf) .hnav::before, html:not(.pf) .jnav::before { display: none !important; }   /* le portfolio garde son dégradé (les images y passent sous le menu) */
   /* 13 nov. : par phrase (grosse typo) ou par paragraphe (petite typo) : le groupe entier bascule au gris d'un fondu, mot après mot */
-  .tw { transition: color .6s cubic-bezier(.3,.1,.3,1); transition-delay: var(--d, 0ms); }
+  .tw { transition: color .32s cubic-bezier(.2,.6,.2,1); transition-delay: var(--d, 0ms); }   /* 13 nov. : plus réactif (0,6 s → 0,32 s ; démarre tout de suite) */
   .tw.gr { color: #4a4844; }
   /* 11 nov. : pendant que l'adresse est affichée, les autres items du menu s'effacent : il ne reste que le logo et « copié » */
   :is(.jnav, .hnav) svg > text { transition: opacity .3s ease; }
@@ -2965,9 +3217,9 @@ window.__TRASH = (() => {
    Seul le texte qui défile avec la page est touché : ni le menu, ni les éléments fixes ou collants, ni les images. */
 (() => {
   if (document.getElementById('scene')) { document.documentElement.classList.add('pf'); return; }   // portfolio : on garde le dégradé, pas d'effet sur le texte
-  const MID = 170, TOP = 110;   // gris quand le milieu du groupe passe à 170 px du haut, ou son haut à 110 px (longs paragraphes)
+  const MID = 130, TOP = 80;   // gris quand le milieu du groupe passe à 130 px du haut, ou son haut à 80 px (13 nov. : plus près du menu)
   const BIG = 21;               // px : au-dessus, on découpe par phrase ; en dessous, par paragraphe
-  const SKIP = '.mur, .jnav, .hnav, .mnav, .jlogo, .jfoot, .jcopy, .gm, .lb, #lb, #scene, #os, .os, .pt-veil, .brk-fall, script, style, noscript, svg, button, [aria-hidden="true"]';
+  const SKIP = '.mur, .jnav, .hnav, .mnav, .jlogo, .jfoot, .jcopy, .gm, .lb, #lb, #scene, #os, .os, .pt-veil, .brk-fall, script, style, noscript, svg, button, [aria-hidden="true"]:not(.tw-ok)';
   const END = /[.!?…][»"”’')\]]*$/;   // fin de phrase
   let words = [], groups = [], ready = false, gid = 0;
   const pinned = (el) => { for (let n = el; n && n !== document.body; n = n.parentElement) { const p = getComputedStyle(n).position; if (p === 'fixed' || p === 'sticky') return true; } return false; };
@@ -3015,7 +3267,7 @@ window.__TRASH = (() => {
       g.top = Math.min(g.top, t); g.bot = Math.max(g.bot, b); g.els.push(w);
     });
     groups = [...by.values()];
-    groups.forEach((g) => { const n = g.els.length, step = Math.min(12, 220 / n); g.els.forEach((e, i) => e.style.setProperty('--d', Math.round(i * step) + 'ms')); });   // balayage : 220 ms au plus pour tout le groupe
+    groups.forEach((g) => { const n = g.els.length, step = Math.min(5, 90 / n); g.els.forEach((e, i) => e.style.setProperty('--d', Math.round(i * step) + 'ms')); });   // balayage : 90 ms au plus pour tout le groupe
     paint(true);
   };
   const paint = (force) => {
@@ -3068,7 +3320,12 @@ window.__TRASH = (() => {
   /* 12 nov. : plus de trame pixel : le blanc cassé arrive en fondu, et la page derrière perd son focus pendant qu'il monte */
   .jmt { background: rgba(242, 240, 235, 0); -webkit-backdrop-filter: blur(0px); backdrop-filter: blur(0px);
     transition: background-color .42s cubic-bezier(.4, 0, .2, 1), -webkit-backdrop-filter .42s cubic-bezier(.4, 0, .2, 1), backdrop-filter .42s cubic-bezier(.4, 0, .2, 1); }
-  .jmt.full { background: rgba(242, 240, 235, 1); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+  /* 13 nov. : le blanc cassé ne prend plus tout l'écran : un panneau aux coins arrondis, entouré de noir (comme un écran dans son cadre) */
+  .jmt.full { background: #000; -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+  .jmt::before { content: ""; position: absolute; z-index: 0; inset: max(8px, env(safe-area-inset-top, 0px)) max(8px, env(safe-area-inset-right, 0px)) max(8px, env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px));
+    border-radius: 12px; background: #F2F0EB; opacity: 0; scale: .97; transition: opacity .42s cubic-bezier(.4, 0, .2, 1), scale .55s cubic-bezier(.2, .8, .2, 1); }
+  .jmt.full::before { opacity: 1; scale: 1; }
+  .jmt .cols { top: 8px !important; bottom: 8px !important; }
   .jmt .bar { position: absolute; z-index: 3; left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); top: 0; height: 56px; display: flex; justify-content: space-between; align-items: center; }
   .jmt .bar button, .jmt .bar a { font: 400 15px/1 "PP Mori", "Host Grotesk", "Helvetica Neue", Arial, sans-serif !important; letter-spacing: -.01em; background: none; border: 0; padding: 10px 0; margin: 0; cursor: pointer; text-decoration: none; color: inherit; }
   .jmt .bar .lg { position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: 66px; line-height: 0; }
@@ -3098,7 +3355,30 @@ window.__TRASH = (() => {
   .jmt .big svg { display: block; width: 100%; height: auto; overflow: visible; opacity: 0; translate: 0 22px; filter: blur(10px); transition: opacity .22s ease, translate .3s ease, filter .3s ease; }
   .jmt.words .big svg { opacity: 1; translate: 0 0; filter: blur(0); transition: opacity .7s ease .3s, translate 1.1s cubic-bezier(.16, 1, .3, 1) .3s, filter .9s cubic-bezier(.16, 1, .3, 1) .3s; }
   @media (prefers-reduced-motion: reduce) { .jmt .big svg { transition: none !important; } }
-  @media (min-width: 701px) { .jmt { display: none !important; } }
+  /* 13 nov. : à l'ordinateur, le site recule quand le menu s'ouvre (chaque bloc rapetisse vers le centre de l'écran), puis revient */
+  /* scale/translate (propriétés individuelles) : s'ajoutent au transform de chaque bloc au lieu de le remplacer, donc le Mac reste où il est */
+  .jmt-back { transition: scale .7s cubic-bezier(.2, .8, .2, 1), translate .7s cubic-bezier(.2, .8, .2, 1) !important; }
+  /* 14 nov. : menu ouvert, le menu du haut (logo compris) disparaît : un seul JPR à l'écran, celui de la boîte */
+  :is(.hnav, .jnav, .jlogo) { transition: opacity .3s ease; }
+  html.jmt-recul :is(.hnav, .jnav, .jlogo) { opacity: 0 !important; pointer-events: none !important; }
+  html.jmt-recul .jmt-back { scale: .92 !important; translate: var(--jrx, 0) var(--jry, 0) !important; }
+  /* 13 nov. : version ordinateur (ouverte par le logo JPR du menu) : une boîte plus petite au milieu de l'écran, entourée de noir :
+     une colonne d'espace à gauche et à droite (--s), en hauteur l'écran en 5 rangées : 1 vide en haut, 3 pour le menu, 1 vide en bas (--t = 1/5) ; la grille de 5 à l'intérieur */
+  @media (min-width: 701px) {
+    .jmt { --s: 22.7vw; --t: 20vh; --ip: 32px; --g: 16px; --pad: calc(var(--s) + var(--ip)); --mcol: calc((100vw - 2 * var(--pad) - 4 * var(--g)) / 5); --mc: calc(var(--mcol) + var(--g)); }
+    .jmt::before { inset: var(--t) var(--s) !important; border-radius: 14px; }
+    .jmt.full { background: rgba(0, 0, 0, .55); -webkit-backdrop-filter: blur(22px) saturate(.6); backdrop-filter: blur(22px) saturate(.6); }   /* 13 nov. : plus de contour noir plein : le site reste visible derrière, fortement voilé et flou */
+    .jmt .cols { left: var(--pad) !important; right: var(--pad) !important; top: var(--t) !important; bottom: var(--t) !important; }
+    .jmt .bar { left: var(--pad); right: var(--pad); top: var(--t); height: 64px; }
+    .jmt .bar button, .jmt .bar a { font-size: clamp(14px, 1.05vw, 18px) !important; }
+    .jmt ul { padding: calc(var(--t) + 84px) var(--pad) 0; }
+    .jmt .big { left: var(--pad); right: auto; bottom: calc(var(--t) + 24px); }
+    .jmt .big svg { width: calc(3 * var(--mcol) + 2 * var(--g)); height: auto; max-width: none; }   /* 13 nov. : 3 colonnes */
+  }
+  /* 14 nov. : d'une page à l'autre par le menu : le trait glisse du mot de la page en cours au mot choisi, puis la page change derrière le voile,
+     toujours floue ; le menu s'y rouvre à l'identique, puis se referme sur la nouvelle page */
+  .jmt .jln { position: absolute; z-index: 3; left: 0; top: 0; background: currentColor; pointer-events: none; }
+  .jmt.inst, .jmt.inst *, .jmt.inst::before, html.jmt-inst .jmt-back { transition: none !important; }
   @media (prefers-reduced-motion: reduce) { .jmt, .jmt li a, .jmt .cols i, .jmt .st { transition: none !important; } .jmt li a, .jmt .big svg { filter: none !important; } }
 </style>
 <script>
@@ -3129,36 +3409,63 @@ window.__TRASH = (() => {
     if (big) { const ps = big.querySelectorAll('path');
       // l'ondulation liquide de l'accueil (mêmes réglages, ramenés à l'échelle de ce logo)
       const ns = 'http://www.w3.org/2000/svg', gg = document.createElementNS(ns, 'g');
-      big.insertAdjacentHTML('afterbegin', '<defs><filter id="jmtMorph" x="-4%" y="-12%" width="108%" height="124%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.049 0.07" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter></defs>');
+      big.insertAdjacentHTML('afterbegin', '<defs><filter id="jmtMorph" x="-4%" y="-12%" width="108%" height="124%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.049 0.07" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G" result="d1"/><feFlood flood-color="rgb(128,128,128)" result="f"/><feImage href="' + bump() + '" preserveAspectRatio="none" x="0" y="0" width="1" height="1" result="b0"/><feComposite in="b0" in2="f" operator="over" result="b"/><feDisplacementMap in="d1" in2="b" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter></defs>');
       ps.forEach((q) => gg.appendChild(q)); big.appendChild(gg); if (!reduce) gg.setAttribute('filter', 'url(#jmtMorph)');
       if (ps[1]) ps[1].setAttribute('transform', 'translate(847.95 25.8) translate(-99.54 -0.17)');
       try { let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
         ps.forEach((q) => { const b = q.getBBox(), t = q.transform.baseVal.consolidate(), mx = t ? t.matrix : { a: 1, d: 1, e: 0, f: 0 };
           x0 = Math.min(x0, b.x * mx.a + mx.e); y0 = Math.min(y0, b.y * mx.d + mx.f); x1 = Math.max(x1, (b.x + b.width) * mx.a + mx.e); y1 = Math.max(y1, (b.y + b.height) * mx.d + mx.f); });
-        if (isFinite(x0)) big.setAttribute('viewBox', `${x0} ${y0} ${x1 - x0} ${y1 - y0}`); } catch (e) {} }
+        if (isFinite(x0)) { big.setAttribute('viewBox', `${x0} ${y0} ${x1 - x0} ${y1 - y0}`);
+          const fl = big.querySelector('#jmtMorph'); if (fl) { fl.setAttribute('filterUnits', 'userSpaceOnUse'); fl.setAttribute('x', x0 - 10); fl.setAttribute('y', y0 - 10); fl.setAttribute('width', x1 - x0 + 20); fl.setAttribute('height', y1 - y0 + 20); } } } catch (e) {} }
     // une seule taille de mot : la plus grande qui laisse chaque mot tenir à partir de sa colonne
-    const mc = (innerWidth - 80) / 5 + 12;
+    const desk = innerWidth > 700, ci = m.querySelectorAll('.cols i');
     let fs = Math.min(64, innerWidth * 0.15);
+    if (desk) {   // la boîte : une colonne de la grille du site de chaque côté (363 / 1600), l'équivalent en haut et en bas, sans descendre sous 60 % de la hauteur
+      const fw = Math.min(innerWidth, 1600), sx = Math.round(fw * 363 / 1600 + Math.max(0, (innerWidth - 1600) / 2)), ty = Math.round(innerHeight / 5); // 14 nov. : l'écran en 5 rangées, 1 vide en haut, 3 pour le menu, 1 vide en bas
+      m.style.setProperty('--s', sx + 'px'); m.style.setProperty('--t', ty + 'px');
+      // 13 nov. : le grand JPR fait 3 colonnes de large (la grille de la boîte) ; sa hauteur en découle
+      const c0 = ci[0].getBoundingClientRect(), c2 = ci[2].getBoundingClientRect(), bw = c2.right - c0.left;
+      const vbx = big && big.viewBox.baseVal, asp = vbx && vbx.height ? vbx.width / vbx.height : 3;
+      const ph = innerHeight - 2 * ty, bh = Math.round(bw / asp); m.style.setProperty('--bh', bh + 'px');
+      fs = Math.min(150, (ph - 84 - bh - 48) / (4 * 1.04));
+    }
+    const mc = ci.length > 1 ? ci[1].getBoundingClientRect().left - ci[0].getBoundingClientRect().left : (innerWidth - 80) / 5 + 12;
+    const colsW = ci.length ? ci[4].getBoundingClientRect().right - ci[0].getBoundingClientRect().left : innerWidth - 32;
     m.querySelectorAll('li a').forEach((a, i) => { a.style.fontSize = '100px'; const w = a.getBoundingClientRect().width / 100; a.style.fontSize = '';
-      fs = Math.min(fs, (innerWidth - 32 - (K[i] || 0) * mc - 2) / w); });
+      fs = Math.min(fs, (colsW - (K[i] || 0) * mc - 2) / w); });
     m.style.setProperty('--fs', Math.floor(fs) + 'px');
     return true;
   };
 
-  // l'ondulation : seulement à l'apparition ; elle se calme jusqu'à zéro, puis le logo reste immobile
-  let mraf = 0, mt0 = 0;
+  // l'ondulation à l'apparition (elle se calme jusqu'à zéro), puis 13 nov. : la loupe liquide sous le curseur (comme le petit logo du menu)
+  let mraf = 0, mt0 = 0, lens = 0, lx = 0, ly = 0, lpx = null, lpy = null, cur = null, BUMP = null;
+  const bump = () => { if (BUMP) return BUMP; const R = 128, cv = document.createElement('canvas'); cv.width = cv.height = R; const cg = cv.getContext('2d'), im = cg.createImageData(R, R);
+    for (let j = 0; j < R; j++) for (let i = 0; i < R; i++) { const x = (i + .5) / R * 2 - 1, y = (j + .5) / R * 2 - 1, d = Math.hypot(x, y), f = d < 1 ? Math.sin(Math.PI * d) * (1 - d) * 1.6 : 0, o = (j * R + i) * 4;
+      im.data[o] = 128 + 127 * Math.max(-1, Math.min(1, x / (d || 1) * f)); im.data[o + 1] = 128 + 127 * Math.max(-1, Math.min(1, y / (d || 1) * f)); im.data[o + 2] = 128; im.data[o + 3] = 255; }
+    cg.putImageData(im, 0, 0); return (BUMP = cv.toDataURL()); };
   const morph = (now) => {
     if (!m || !m.classList.contains('words')) { mraf = 0; return; }
-    const nz = m.querySelector('#jmtMorph feTurbulence'), dp = m.querySelector('#jmtMorph feDisplacementMap');
-    if (!nz || !dp) { mraf = 0; return; }
+    const big = m.querySelector('.big svg'), nz = m.querySelector('#jmtMorph feTurbulence'), dps = m.querySelectorAll('#jmtMorph feDisplacementMap'), bi = m.querySelector('#jmtMorph feImage'), g = m.querySelector('.big g');
+    if (!big || !nz || dps.length < 2 || !g) { mraf = 0; return; }
     const tt = (now - mt0) / 1000, p = Math.min(1, Math.max(0, (tt - 0.3) / 1.2)), settle = 1 - p * p * (3 - 2 * p);
     nz.setAttribute('baseFrequency', (0.049 + 0.015 * Math.sin(tt * 0.23)).toFixed(4) + ' ' + (0.07 + 0.015 * Math.cos(tt * 0.17)).toFixed(4));
-    dp.setAttribute('scale', (3.3 * settle).toFixed(3));
-    // 8 nov. : une fois posé, il ne bouge plus : on retire le filtre (le logo exact, net) et on arrête la boucle
-    if (p >= 1) { const g = m.querySelector('.big g[filter]'); if (g) g.removeAttribute('filter'); mraf = 0; return; }
-    mraf = requestAnimationFrame(morph);
+    // la loupe : position du curseur en unités du logo
+    let q = null; const vb = big.viewBox.baseVal;
+    if (cur && vb && vb.width) { const r = big.getBoundingClientRect(), pad = r.width * .04;
+      if (cur.x > r.left - pad && cur.x < r.right + pad && cur.y > r.top - pad && cur.y < r.bottom + pad) q = { x: vb.x + (cur.x - r.left) / r.width * vb.width, y: vb.y + (cur.y - r.top) / r.height * vb.height }; }
+    if (q) { if (lpx === null) { lx = q.x; ly = q.y; } lx += (q.x - lx) * 0.22; ly += (q.y - ly) * 0.22; }
+    const sp = lpx === null || !q ? 0 : Math.min(1, Math.hypot(q.x - lpx, q.y - lpy) / 3); lpx = q ? q.x : null; lpy = q ? q.y : null;
+    lens += ((q ? 1 + sp * .8 : 0) - lens) * 0.12;
+    const e = Math.min(1.6, lens), H = vb ? vb.height : 35, RAD = H * .62;
+    bi.setAttribute('x', (lx - RAD).toFixed(2)); bi.setAttribute('y', (ly - RAD).toFixed(2)); bi.setAttribute('width', (RAD * 2).toFixed(2)); bi.setAttribute('height', (RAD * 2).toFixed(2));
+    dps[0].setAttribute('scale', (3.3 * settle + 0.8 * e).toFixed(3));
+    dps[1].setAttribute('scale', (-H * .22 * e).toFixed(3));
+    const idle = p >= 1 && e < 0.004 && !q;
+    if (idle) { if (g.hasAttribute('filter')) g.removeAttribute('filter'); } else if (!g.hasAttribute('filter')) g.setAttribute('filter', 'url(#jmtMorph)');
+    mraf = idle ? 0 : requestAnimationFrame(morph);
   };
   const startMorph = () => { if (reduce || mraf) return; mt0 = performance.now(); mraf = requestAnimationFrame(morph); };
+  addEventListener('pointermove', (e) => { if (e.pointerType !== 'mouse' || !opened || !m) return; cur = { x: e.clientX, y: e.clientY }; if (!mraf && !reduce) { mt0 = performance.now() - 2000; mraf = requestAnimationFrame(morph); } }, { passive: true });
 
   const run = (fn, from, to, ms) => new Promise((res) => {
     if (reduce) { fn(to); return res(); }
@@ -3168,42 +3475,97 @@ window.__TRASH = (() => {
   });
   const wait = (ms) => new Promise((r) => setTimeout(r, reduce ? 0 : ms));
   const btns = () => document.querySelectorAll('.mnav-btn');
+  // le recul : chaque enfant du body (sauf le menu) rapetisse autour du centre de l'écran
+  const backEls = () => [...document.body.children].filter((el) => el !== m && !/^(SCRIPT|STYLE|LINK|NOSCRIPT|TEMPLATE)$/.test(el.tagName) && !el.classList.contains('jcopy') && !el.matches('.hnav, .jnav, .jlogo'));
+  const recul = (on) => {
+    if (reduce || innerWidth <= 700) return;
+    const root = document.documentElement;
+    // on garde l'origine propre à chaque bloc et on compense : translate = (1 - .92) × (centre de l'écran - origine)
+    if (on) { backEls().forEach((el) => { const cs = getComputedStyle(el); if (cs.display === 'none') return;
+        const tf = el.style.transform; el.style.transform = 'none'; const r = el.getBoundingClientRect(); el.style.transform = tf;
+        const o = cs.transformOrigin.split(' ').map(parseFloat), k = .08;
+        el.style.setProperty('--jrx', (k * (innerWidth / 2 - r.left - o[0])).toFixed(1) + 'px'); el.style.setProperty('--jry', (k * (innerHeight / 2 - r.top - o[1])).toFixed(1) + 'px');
+        el.classList.add('jmt-back'); });
+      void root.offsetWidth; root.classList.add('jmt-recul'); }
+    else { root.classList.remove('jmt-recul'); setTimeout(() => { if (root.classList.contains('jmt-recul')) return; document.querySelectorAll('.jmt-back').forEach((el) => { el.classList.remove('jmt-back'); el.style.removeProperty('--jrx'); el.style.removeProperty('--jry'); }); }, 720); }
+  };
+  const mk = () => { if (!m) { m = document.createElement('div'); m.id = 'jmt'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-label', 'Menu'); document.body.appendChild(m); } };
   const open = async () => {
     if (busy || opened) return; busy = true;
-    if (!m) { m = document.createElement('div'); m.id = 'jmt'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-label', 'Menu'); document.body.appendChild(m); }
-    draw = build();
+    mk(); draw = build();
     document.documentElement.style.overflow = 'hidden';
     btns().forEach((b) => { b.setAttribute('aria-expanded', 'true'); b.setAttribute('aria-controls', 'jmt'); });
-    void m.offsetWidth; m.classList.add('full'); await wait(300);
+    void m.offsetWidth; m.classList.add('full'); recul(true); await wait(300);
     m.classList.add('colon'); await wait(160);
     m.classList.add('words'); startMorph(); opened = true; busy = false;
     m.querySelector('.x').focus({ preventScroll: true });
   };
-  const close = async (fast) => {
+  const close = async (fast, nofocus) => {
     if (busy || !opened) return; busy = true;
     m.classList.remove('words'); await wait(fast ? 0 : 280);
     m.classList.remove('colon'); await wait(fast ? 0 : 140);
-    m.classList.remove('full'); await wait(fast ? 0 : 420);
+    recul(false); m.classList.remove('full'); await wait(fast ? 0 : 420);
     m.classList.remove('show'); document.documentElement.style.overflow = ''; opened = false; busy = false;
     btns().forEach((b) => b.setAttribute('aria-expanded', 'false'));
-    const b = btns()[0]; if (b) b.focus({ preventScroll: true });
+    if (nofocus) return;
+    const b = innerWidth > 700 ? document.querySelector('a[aria-label="JPR, accueil"]') : btns()[0]; if (b) b.focus({ preventScroll: true });
   };
+  // 14 nov. : départ par le menu. Le trait quitte le mot de la page en cours et file vers le mot choisi (le bord avant part le premier, l'autre suit),
+  // puis on change de page. Un drapeau d'onglet (sessionStorage, ni témoin ni envoi) dit à la page d'arrivée de rouvrir le menu tel quel.
+  const strike = (a) => { const r = a.getBoundingClientRect(), f = parseFloat(getComputedStyle(a).fontSize) || 46;
+    return { x0: r.left - .02 * f, x1: r.right + .02 * f, y: r.top + r.height * .54, h: Math.max(1, .055 * f) }; };
+  const go = (a) => {
+    busy = true;
+    const src = m.querySelector('li a[aria-current]'), B = strike(a);
+    const A = src ? strike(src) : { x0: (B.x0 + B.x1) / 2, x1: (B.x0 + B.x1) / 2, y: B.y, h: B.h };
+    const ln = document.createElement('i'); ln.className = 'jln'; ln.setAttribute('aria-hidden', 'true'); m.appendChild(ln);
+    if (src) { const st = src.querySelector('.st'); st.style.transition = 'none'; st.style.transform = 'scaleX(0)'; }
+    const fwd = B.x0 + B.x1 >= A.x0 + A.x1, lead = .18, T = 620, t0 = performance.now(), sm = (t) => t * t * (3 - 2 * t);
+    const place = (x0, x1, y, h) => { ln.style.transform = `translate(${x0.toFixed(1)}px, ${(y - h / 2).toFixed(1)}px)`; ln.style.width = Math.max(0, x1 - x0).toFixed(1) + 'px'; ln.style.height = h.toFixed(2) + 'px'; };
+    place(A.x0, A.x1, A.y, A.h);
+    const leave = () => { try { sessionStorage.setItem('jmtGo', String(Date.now())); } catch (e) {}
+      const b = document.createElement('a'); b.href = a.href; b.target = a.target || '_top'; b.setAttribute('data-jmt-go', ''); b.hidden = true; document.body.appendChild(b); b.click(); };
+    const f = (now) => { const k = Math.min(1, (now - t0) / T), kf = sm(Math.min(1, k / (1 - lead))), ks = sm(Math.max(0, (k - lead) / (1 - lead))), km = sm(k);
+      const l = A.x0 + (B.x0 - A.x0) * (fwd ? ks : kf), r = A.x1 + (B.x1 - A.x1) * (fwd ? kf : ks);
+      place(l, Math.max(l, r), A.y + (B.y - A.y) * km, A.h + (B.h - A.h) * km);
+      if (k < 1) requestAnimationFrame(f); else setTimeout(leave, 110); };
+    requestAnimationFrame(f);
+  };
+  // arrivée par le menu : il est déjà ouvert, sans animation, le trait sur la page d'arrivée ; un temps, puis il se referme sur la nouvelle page
+  const arrive = async () => {
+    const root = document.documentElement;
+    await Promise.race([document.fonts ? document.fonts.ready : Promise.resolve(), new Promise((r) => setTimeout(r, 350))]);
+    busy = true; mk(); draw = build();
+    root.style.overflow = 'hidden'; m.classList.add('inst', 'full', 'colon', 'words'); root.classList.add('jmt-inst'); recul(true);
+    opened = true; startMorph(); mt0 = performance.now() - 2000;
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    m.classList.remove('inst'); root.classList.remove('jmt-inst', 'jmt-arrive');
+    busy = false; await new Promise((r) => setTimeout(r, 420)); close(false, true);
+  };
+  if (document.documentElement.classList.contains('jmt-arrive')) arrive();
+  // retour arrière (page gardée en mémoire) : le menu était resté ouvert en plein départ, on le referme
+  addEventListener('pageshow', (e) => { if (!e.persisted || !m) return; const ln = m.querySelector('.jln'); if (ln) ln.remove(); busy = false; if (opened) close(true); });
   // en capture : passe avant l'ancien menu (#jmenu) et avant la transition de page
   document.addEventListener('click', (e) => {
     const t = e.target.closest ? e.target : e.target.parentElement;
     if (t.closest('.mnav-btn')) { e.preventDefault(); e.stopPropagation(); open(); return; }
+    if (innerWidth > 700 && t.closest('.hnav a[aria-label="JPR, accueil"], .jnav a[aria-label="JPR, accueil"], .jlogo a[aria-label="JPR, accueil"]')) { e.preventDefault(); e.stopImmediatePropagation(); opened ? close() : open(); return; }   // 13 nov. : à l'ordinateur, le logo ouvre le menu
     if (!m || !t.closest('.jmt')) return;
+    if (innerWidth > 700 && opened && !t.closest('a, button')) {   // 13 nov. : un clic dans le noir, hors de la boîte, referme
+      const cs = getComputedStyle(m), sx = parseFloat(cs.getPropertyValue('--s')), ty = parseFloat(cs.getPropertyValue('--t'));
+      if (e.clientX < sx || e.clientX > innerWidth - sx || e.clientY < ty || e.clientY > innerHeight - ty) { e.preventDefault(); e.stopPropagation(); close(); return; } }
     if (t.closest('.jmt .x')) { e.preventDefault(); e.stopPropagation(); close(); return; }
     if (t.closest('.jmt .ct')) {   // « contact » : on referme le menu, puis on lance le vrai contact (le courriel copié)
       e.preventDefault(); e.stopPropagation();
-      close(true).then(() => { const c = document.querySelector('.mnav a[data-contact]'); if (c) c.click(); });
+      close(true).then(() => { const c = document.querySelector(innerWidth > 700 ? '.hnav a[data-contact], .jnav a[data-contact]' : '.mnav a[data-contact]'); if (c) c.click(); });
       return; }
     const a = t.closest('.jmt li a');
     if (a && (a.hasAttribute('aria-current') || a.getAttribute('href') === '#')) { e.preventDefault(); e.stopPropagation(); close(); }   // la page où l'on est : on referme, simplement
+    else if (a && opened && !busy && !reduce) { e.preventDefault(); e.stopImmediatePropagation(); go(a); }   // 14 nov. : une autre page : le trait glisse, puis on y va
     // les autres liens continuent vers la transition tramée de la page (pagetrans.html)
   }, true);
   addEventListener('keydown', (e) => { if (e.key === 'Escape' && opened) close(); });
-  addEventListener('resize', () => { if (opened && innerWidth > 700) close(true); });
+  let wasDesk = innerWidth > 700; addEventListener('resize', () => { const d = innerWidth > 700; if (opened && d !== wasDesk) close(true); wasDesk = d; });
 })();
 </script>
 <!-- transitions de page (6 nov.) : le menu ne bouge jamais ; seul le trait de la page en cours glisse vers la page choisie,
@@ -3288,7 +3650,7 @@ window.__TRASH = (() => {
   const clean = (u) => { try { const x = new URL(u, location.href); return x.origin + x.pathname.replace(/\/$/, ''); } catch (e) { return ''; } };
   const KEYS = Object.keys(PAGES).reduce((o, u) => { o[clean(u)] = PAGES[u]; return o; }, {});
   document.addEventListener('click', (e) => {
-    const a = e.target.closest && e.target.closest('a[href]'); if (!a || passing.has(a)) return;
+    const a = e.target.closest && e.target.closest('a[href]'); if (!a || passing.has(a) || a.hasAttribute('data-jmt-go')) return;   // 14 nov. : le menu gère lui-même sa transition
     if (e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     const dest = KEYS[clean(a.getAttribute('href'))]; if (!dest || dest.page === HERE) return;
     if (reduce) return;
@@ -3308,7 +3670,8 @@ window.__TRASH = (() => {
     root.classList.remove('pt-in');
     return run(IN, (k) => paint(ease(k), col, false)).then(() => { root.classList.remove('pt-run', 'pt-menu'); }); };
   const here = Object.values(PAGES).find((p) => p.page === HERE);
-  if (root.classList.contains('pt-in') && here) {
+  if (root.classList.contains('jmt-arrive')) root.classList.remove('pt-in');   // 14 nov. : arrivée par le menu : c'est lui qui fait la transition
+  else if (root.classList.contains('pt-in') && here) {
     const go = () => requestAnimationFrame(() => enter(rgba(here.bg)));
     (document.fonts && document.fonts.ready ? Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 400))]) : Promise.resolve()).then(go);
   }

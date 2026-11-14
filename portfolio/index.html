@@ -3,6 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">   <!-- 9 nov. : couleur de la barre du navigateur (Chrome Android ; Safari prend le fond de la page) -->
 <title>JPR Portfolio</title>
+<style>html.jmt-arrive::after{display:none!important}html.jmt-arrive::before{content:"";position:fixed;inset:0;z-index:8499;background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(22px) saturate(.6);backdrop-filter:blur(22px) saturate(.6);pointer-events:none;animation:ja-kill 0s 3s forwards}@media (max-width:700px){html.jmt-arrive::before{background:#000}}@keyframes ja-kill{to{visibility:hidden}}@view-transition{navigation:auto}</style><script>try{var g=+sessionStorage.getItem("jmtGo");sessionStorage.removeItem("jmtGo");if(g&&Date.now()-g<4000&&!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("jmt-arrive")}catch(e){}addEventListener("pagereveal",function(e){if(e.viewTransition&&!document.documentElement.classList.contains("jmt-arrive"))e.viewTransition.skipTransition()})</script>
 <style>html.pt-in::after{content:"";position:fixed;inset:0;z-index:5999;background:#000;pointer-events:none;animation:pt-kill 0s 3s forwards}@keyframes pt-kill{to{visibility:hidden}}</style><script>if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("pt-in")</script>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -84,6 +85,8 @@
   .row { position: absolute; left: 0; right: 0; text-decoration: none; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 1.5em;
     border-bottom: 1px solid rgba(242, 240, 235, .14); color: var(--ink); font: 400 16px/1 var(--grot); }
   .row .n { color: var(--muted); }
+  .row .t, .row .c { opacity: var(--tf, 1); }   /* 13 nov. : à l'arrière de la roue, seul le filet de la ligne reste */
+  .row { --rl: calc(.14 + .16 * (1 - var(--tf, 1))); border-bottom-color: rgba(242, 240, 235, var(--rl)); }   /* derrière, le filet est un peu plus marqué : on lit l'anneau */
   .row .t { font: 400 max(16px, calc(52.8 / 1600 * var(--fw, 100vw)))/1 var(--grot);   /* 8 nov. : style Grande (avant : jusqu'à 44 px) */ letter-spacing: -.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .row .t { padding: .14em 0 .22em; margin: -.14em 0 -.22em; }   /* le masque (overflow) coupait le bas des lettres (y, g, p) et le haut des accents : on lui donne de l'air sans bouger la ligne */
   .row .c { color: var(--muted); text-align: right; white-space: nowrap; font: 400 clamp(14px, calc(16.5 / 1600 * var(--fw, 100vw)), 17px)/1 var(--grot);   /* 8 nov. : style Petite */ letter-spacing: -.005em; }
@@ -166,6 +169,8 @@
   .jlogo .jnav-in { aspect-ratio: 1600 / 84; }
   .logo:focus-visible { outline: 1px solid var(--ink); outline-offset: 6px; }
   .logo .fx { position: absolute; inset: 0; }   /* logo blanc, sans effet */
+  .jlogo .logo { scale: 1 !important; }   /* 14 nov. : l'agrandissement de 4,5 % est porté par #navLogo, dans le SVG */
+  .logo .lsv { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; display: block; }
   .logo .fx i { position: absolute; inset: 0; mix-blend-mode: screen; will-change: transform;
     -webkit-mask: url(assets/logo.svg) center / 100% 100% no-repeat; mask: url(assets/logo.svg) center / 100% 100% no-repeat; }
 
@@ -336,7 +341,11 @@
 </div></nav>
 <div class="mnav"><span><a href="#" aria-current="page">portfolio</a><a href="../pele-mele/index.html" target="_top">pêle-mêle</a></span><span><a href="../info/index.html" target="_top">info</a><a href="#" data-contact>contact</a></span></div>
 <div class="jlogo"><div class="jnav-in"><a class="logo" href="../index.html" target="_top" aria-label="JPR, accueil">
-  <span class="fx" aria-hidden="true"><i style="background:#F2F0EB"></i></span>   <!-- 6 nov. : blanc cassé -->
+  <!-- 14 nov. : le logo en SVG (mêmes tracés que le menu des autres pages) pour recevoir la loupe liquide au survol -->
+  <svg class="lsv" viewBox="747 25 113 35" aria-hidden="true" focusable="false"><g id="navLogo"><g clip-path="url(#navclip)">
+<path d="M756.612 59.2238C751.925 58.3817 748.883 56.3812 747.928 53.5127C747.517 52.2806 747.459 51.4127 747.706 50.1716C748.33 47.0345 750.663 44.6581 754.177 43.5797C754.974 43.3356 755.445 43.2801 756.721 43.2814C759.109 43.2852 759.961 43.6262 763.507 46.0013C764.081 46.3849 765.02 46.8886 765.594 47.1184C766.572 47.5098 766.739 47.5369 768.215 47.5369H769.79L770.908 46.988C773.279 45.8256 774.731 43.3679 774.706 40.5627C774.68 37.7446 773.173 35.4225 770.618 34.2666C770.152 34.0561 769.356 33.6945 768.85 33.4633C767.639 32.9118 767.005 32.341 766.552 31.3943C765.862 29.9491 766.132 28.3889 767.269 27.2653C768.67 25.8808 770.107 25.5166 774.181 25.5166C776.552 25.5166 777.124 25.5553 778 25.7775C779.785 26.2295 781.021 27.2007 781.744 28.7221C782.186 29.6546 783.085 30.0162 783.911 29.5939C784.109 29.4919 784.608 29.0295 785.019 28.5672C786.355 27.0613 788.389 25.9945 790.586 25.6496C791.29 25.5398 793.869 25.5114 799.848 25.5476C807.81 25.5967 808.173 25.6096 809.13 25.8731C812.971 26.9295 815.025 28.8113 815.954 32.124C816.219 33.0655 816.727 33.524 817.506 33.5227C818.155 33.5227 818.395 33.3677 819.682 32.1253C821.455 30.4114 823.585 28.9482 826.188 27.6566C833.122 24.2148 839.95 25.0529 843.036 29.7244C843.928 31.074 844.276 32.319 844.276 34.1697C844.277 35.3902 844.223 35.8164 843.969 36.559C843.4 38.2315 842.859 39.0258 841.135 40.7216C839.448 42.3812 839.254 42.7079 839.444 43.5681C839.551 44.0485 840.18 44.6426 841.016 45.0533C841.375 45.229 842.813 45.7662 844.213 46.2454C849.771 48.1504 851.737 49.3334 852.762 51.3908C853.598 53.0736 853.642 54.7151 852.892 56.3476C851.803 58.7201 848.803 59.8825 845.768 59.1076C843.449 58.516 842.379 57.7889 838.994 54.5136C836.071 51.6839 835.33 51.1131 833.965 50.6365C832.509 50.1277 831.366 50.2439 830.446 50.9943C829.781 51.5367 829.393 52.1993 828.952 53.5489C828.74 54.1921 828.445 54.914 828.294 55.1568C827.578 56.305 826.12 56.4483 825.209 55.4603C824.859 55.0793 824.545 54.4542 823.923 52.8967C822.186 48.5585 820.134 45.9625 817.638 44.9474C816.754 44.5871 815.605 44.5328 814.916 44.8183C814.667 44.9203 814.187 45.2742 813.849 45.6048C812.671 46.7542 811.05 47.6325 809.177 48.1362C808.212 48.3958 807.716 48.4242 802.588 48.5042C797.486 48.5843 796.977 48.6127 796.232 48.8568C793.979 49.5917 792.878 50.9814 792.528 53.5231C792.211 55.831 791.706 56.9649 790.512 58.0446C789.352 59.0946 787.796 59.5286 786.229 59.2406C783.576 58.7511 782.232 56.6124 782.232 52.8838C782.232 51.4528 781.761 50.7011 780.862 50.7011C780.393 50.7011 779.977 50.9659 779.443 51.5987C776.441 55.1646 771.538 57.8884 766.051 59.0378C764.6 59.3413 764.066 59.3852 761.223 59.4291C758.465 59.4718 757.832 59.4434 756.612 59.2238ZM802.155 42.1707C805.017 41.7922 807.219 40.4827 808.15 38.6061C808.479 37.9435 808.525 37.7085 808.524 36.6882C808.524 35.717 808.473 35.4303 808.214 34.9446C807.428 33.4607 806.476 32.7129 804.553 32.0684L803.305 31.6513H799.26C795.384 31.6513 795.175 31.6642 794.237 31.9535C792.052 32.629 790.673 33.6725 789.944 35.2029C789.662 35.7945 789.604 36.098 789.604 37.0111C789.604 37.9913 789.653 38.2096 790.052 39.0555C790.867 40.7771 792.591 41.8529 795.04 42.1668C796.263 42.3244 800.978 42.3269 802.155 42.1707ZM830.033 41.069C832.843 40.3509 835.159 38.0133 834.902 36.1561C834.598 33.9592 832.27 32.833 829.317 33.4529C825.791 34.1917 823.264 37.0963 824.241 39.2828C824.91 40.7823 826.235 41.4552 828.272 41.3325C828.799 41.3002 829.591 41.1814 830.033 41.069Z" fill-rule="evenodd" clip-rule="evenodd" fill="#F2F0EB"/>
+<path fill="#F2F0EB" transform="translate(747.55 25.5) translate(100.4 0.3) scale(1.6) translate(-99.54 -0.17)" fill-rule="evenodd" d="M99.54,3.29c0-1.82,1.33-3.12,3.14-3.12s3.12,1.32,3.12,3.12-1.3,3.12-3.12,3.12-3.14-1.32-3.14-3.12ZM105.1,3.29c.01-1.47-.98-2.49-2.42-2.49s-2.47,1.01-2.44,2.49c-.03,1.48.97,2.49,2.44,2.49s2.44-1.04,2.42-2.49ZM101.566 4.565H102.011V3.607H102.714C102.9 3.607 102.958 3.665 103.001 3.782L103.293 4.565H103.774L103.453 3.734C103.38 3.545 103.304 3.447 103.071 3.41V3.392C103.442 3.315 103.639 3.075 103.639 2.736C103.639 2.314 103.326 2.015 102.87 2.015H101.566ZM102.765 3.243H102.011V2.39H102.79C103.049 2.39 103.198 2.547 103.198 2.802C103.198 3.075 103.031 3.243 102.765 3.243Z"/>
+</g></g><defs><clipPath id="navclip"><rect width="113" height="35" fill="white" transform="translate(747 25)"/></clipPath></defs></svg>
 </a></div></div>
 <div class="lfade" aria-hidden="true"></div>
 <div class="views" role="group" aria-label="Affichage des projets"><i class="thumb" aria-hidden="true"></i><button type="button" id="vSpiral" aria-pressed="true">spirale</button><button type="button" id="vList" aria-pressed="false">liste</button></div>
@@ -521,7 +530,7 @@
     const el = document.elementFromPoint(ptr.x, ptr.y), c = el && el.closest ? el.closest('.card') : null;
     cards.forEach((k) => { const v = k === c ? 1 : 0; if (k.__hT !== v) k.__hT = v; });
   };
-  const rowsEl = document.getElementById('rows');
+  const rowsEl = document.getElementById('rows'), stageEl = document.querySelector('.stage');
   const rows = PROJECTS.map(([name, cat, , , , , url], i) => {
     const r = document.createElement('a'); r.className = 'row'; r.href = '#';
     r.innerHTML = `<span class="t">${name}</span><span class="c">${cat}</span>`;
@@ -758,7 +767,9 @@
     const loMax = Math.max(0, (n - 1) * RH - 2 * WHEEL_0 * WHEEL_GEO(RH, n).WR);   // du 1er projet un peu au-dessus du centre jusqu'au dernier un peu en dessous
     loT = loMax * target;
     lo += (loT - lo) * (reduceMo ? 1 : mob ? 0.32 : 0.14);   // mobile : suit le doigt de près ; bureau : glisse un peu plus, avec de l’inertie
-    rowsEl.classList.toggle('live', gm > 0.98);   // 13 nov. : le conteneur reste « transparent » aux clics : sinon son plan (z = 0) couvrait les lignes inclinées de la roue, qui passent derrière
+    rowsEl.classList.toggle('live', gm > 0.98);
+    // 13 nov. : en liste, le point de fuite est sur l'axe de la roue : elle se projette en cercle parfait (symétrique en haut et en bas)
+    { const po = modeT ? `50% ${WHEEL_GEO(RH, n).Yc.toFixed(1)}px` : ''; if (stageEl.__po !== po) { stageEl.__po = po; stageEl.style.perspectiveOrigin = po; } }   // 13 nov. : le conteneur reste « transparent » aux clics : sinon son plan (z = 0) couvrait les lignes inclinées de la roue, qui passent derrière
     const ns = SLOTS;   // la géométrie de la spirale suit les places (une de plus que les cartes)
     const spreadPx = mob ? Math.min(RISE * 1.5 * (ns - 1) * fit, innerHeight * 3) : Math.min(RISE * (ns - 1) * fit, innerHeight * 2), step = spreadPx / (ns - 1), drift = spreadPx;
     for (let i = 0; i < n; i++) {
@@ -793,8 +804,12 @@
       // 13 nov. : la roue est centrée verticalement dans l'écran, symétrique entre le menu et « spirale / liste »
       const { Yc, WR, span } = WHEEL_GEO(RH, n);
       const dyc = i * RH - lo - WHEEL_0 * WR;   // 13 nov. : au début, le 1er projet est un peu au-dessus du centre (presque à plat) ; à la fin, le dernier un peu en dessous
-      const th = Math.max(-2.2, Math.min(2.2, dyc / WR)), cty = Yc + WR * Math.sin(th) - (rowTop + RH / 2), ctz = WR * (Math.cos(th) - 1);
-      const fo = cl((Math.PI / 2 + 0.05 - Math.abs(th)) / 0.45);   // s'efface en passant de l'autre côté de la roue
+      // 13 nov. : une roue complète : les lignes passent par-dessus et continuent derrière (à l'envers, en transparence), on voit le cercle entier
+      let th = dyc / WR; th = ((th + Math.PI) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI) - Math.PI;
+      const cty = Yc + WR * Math.sin(th) - (rowTop + RH / 2), ctz = WR * (Math.cos(th) - 1);
+      const back = Math.abs(th) > Math.PI / 2;
+      // devant : la ligne entière ; derrière : seulement son filet (le texte et la vignette s'effacent), un anneau léger qui dessine la roue complète
+      const fo = cl((Math.PI / 2 + 0.05 - Math.abs(th)) / 0.45), fLine = Math.max(fo, cl((Math.abs(th) - Math.PI / 2 + 0.2) / 0.4));
       // big bang : tout part d'un point au centre, jaillit en tournant, dépasse un peu sa place et s'y pose
       const [bp, bs, bo] = bangOf(i, performance.now());
       const BX = lerp(x + jx, lx, k) * bp, BY = lerp(-sceneTY, lerp(y + jy, ly + cty, k), bp) + fl * (fBob - 3),   /* départ : le centre de l'écran, là où était le point */ BZ = lerp(centerZ, lerp(z + jz, ctz, k), bp);   // (pas de recul en profondeur : en perspective, la vignette glissait vers le bord)
@@ -806,16 +821,17 @@
       const bl = blur * (1 - k), br = lerp(dim, 1, k);
       setS(card, 'filter', (br < 0.995 ? `brightness(${br.toFixed(3)}) ` : '') + (bl > 0.05 ? `blur(${bl.toFixed(2)}px)` : '') || 'none');
       setS(card, 'zIndex', String(Math.round(lerp(z + 2000, 3000, k))));
-      setS(card, 'pointerEvents', lerp(opacity, 1, k) < 0.3 ? 'none' : '');
+      setS(card, 'pointerEvents', lerp(opacity, 1, k) < 0.3 || (k > 0.5 && back) ? 'none' : '');
       card.__sc = lerp(fitE * 1365 / Math.max(300, 1365 - (z + jz)), sc, k);   // taille apparente (perspective comprise)
       const kS = k.toFixed(3); if (card.__k !== kS) { card.__k = kS; card.style.setProperty('--k', kS); }
       card.__d = depth; card.__vy = y + jy + sceneTY; card.__e = e * bo;
-      const row = rows[i], rm = cl(k * 1.6 - 0.6), rk = rm * fo;
+      const row = rows[i], rm = cl(k * 1.6 - 0.6), rk = rm * fLine;
       // la géométrie de la ligne ne change qu’au redimensionnement : on ne la réécrit que si elle a changé ; le défilement passe par transform (pas de mise en page)
       const geo = RH + '|' + padL + '|' + thumbW + '|' + LG;
       if (row.__geo !== geo) { row.__geo = geo; Object.assign(row.style, { top: '0px', height: RH + 'px', left: padL + 'px', right: padL + 'px', paddingLeft: (innerWidth <= 700 ? (innerWidth - 80) / 5 + 12 : thumbW + LG) + 'px' }); }   // 7 nov. : mobile, le nom part de la col. 2 ; la vignette tient dans la col. 1
       const ro = rk.toFixed(3), rt = `translate3d(${((1 - rm) * 40).toFixed(1)}px,${(rowTop + cty).toFixed(1)}px,${ctz.toFixed(1)}px) rotateX(${(-th).toFixed(4)}rad)`;
       if (row.__o !== ro) { row.__o = ro; row.style.opacity = ro; }
+      const tf = fo.toFixed(3); if (row.__tf !== tf) { row.__tf = tf; row.style.setProperty('--tf', tf); row.style.pointerEvents = back ? 'none' : ''; }
       if (row.__t !== rt) { row.__t = rt; row.style.transform = rt; }
     }
     // mobile seulement : le nom du projet qui passe à l’avant-plan s’affiche dans une légende fixe, en bas à droite
@@ -1530,29 +1546,45 @@
   });
 })();
 </script>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="navMorph" x="-20%" y="-40%" width="140%" height="180%" color-interpolation-filters="sRGB"><feTurbulence id="navNoise" type="fractalNoise" baseFrequency="0.04 0.055" numOctaves="1" seed="7" result="n"/><feDisplacementMap id="navDisp" in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><filter id="navMorph" filterUnits="userSpaceOnUse" x="720" y="0" width="170" height="84" color-interpolation-filters="sRGB"><feTurbulence id="navNoise" type="fractalNoise" baseFrequency="0.049 0.07" numOctaves="1" seed="7" result="n"/><feDisplacementMap id="navDisp" in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G" result="d1"/><feFlood flood-color="rgb(128,128,128)" result="f"/><feImage id="navBump" preserveAspectRatio="none" x="0" y="0" width="1" height="1" result="b0"/><feComposite in="b0" in2="f" operator="over" result="b"/><feDisplacementMap id="navLensD" in="d1" in2="b" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
 <script>
-/* petit logo JPR du menu : au survol, une ondulation liquide lente et douce (comme le grand logo de l'accueil) */
+/* petit logo JPR du menu : 13 nov. : la loupe liquide (celle de l'écran du Mac) : sous le curseur, le logo gonfle comme une goutte et ondule un peu ;
+   elle suit le curseur avec un léger retard et grossit avec la vitesse. Au repos : le logo net, sans filtre */
 (() => {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const g = document.getElementById('navLogo') || document.querySelector('.jlogo .fx');
+  const g = document.getElementById('navLogo');
   const hit = document.querySelector('a[aria-label="JPR, accueil"]');
-  const nn = document.getElementById('navNoise'), nd = document.getElementById('navDisp');
-  if (!g || !hit) return;
-  let h = 0, hT = 0, raf = 0, last = 0; const t0 = performance.now();
+  const nn = document.getElementById('navNoise'), nd = document.getElementById('navDisp'), nb = document.getElementById('navBump'), nl = document.getElementById('navLensD');
+  if (!g || !hit || !nb) return;
+  const svg = g.ownerSVGElement;
+  // la carte en bosse (mêmes réglages que dans l'écran du Mac)
+  const R = 128, cv = document.createElement('canvas'); cv.width = cv.height = R; const cg = cv.getContext('2d'), im = cg.createImageData(R, R);
+  for (let j = 0; j < R; j++) for (let i = 0; i < R; i++) { const x = (i + .5) / R * 2 - 1, y = (j + .5) / R * 2 - 1, d = Math.hypot(x, y), f = d < 1 ? Math.sin(Math.PI * d) * (1 - d) * 1.6 : 0, o = (j * R + i) * 4;
+    im.data[o] = 128 + 127 * Math.max(-1, Math.min(1, x / (d || 1) * f)); im.data[o + 1] = 128 + 127 * Math.max(-1, Math.min(1, y / (d || 1) * f)); im.data[o + 2] = 128; im.data[o + 3] = 255; }
+  cg.putImageData(im, 0, 0); nb.setAttribute('href', cv.toDataURL());
+  const H = 35, RAD = H * .62;   // hauteur du logo (unités du menu, 1600 de large) ; rayon de la loupe
+  let lens = 0, lx = 0, ly = 0, px = null, py = null, raf = 0, cur = null; const t0 = performance.now();
+  addEventListener('pointermove', (e) => { if (e.pointerType !== 'mouse') return;
+    const r = hit.getBoundingClientRect(), pad = r.width * .08;
+    cur = e.clientX > r.left - pad && e.clientX < r.right + pad && e.clientY > r.top - pad && e.clientY < r.bottom + pad ? { x: e.clientX, y: e.clientY } : null;
+    if (cur && !raf) raf = requestAnimationFrame(step); }, { passive: true });
+  document.documentElement.addEventListener('mouseleave', () => { cur = null; });
   const step = (now) => {
-    const dt = Math.min(50, now - (last || now)); last = now;
-    const tt = (now - t0) / 1000;
-    h += (hT - h) * (1 - Math.pow(1 - 0.045, dt / 16.67));   // montée et retombée très douces
-    const e = h * h * (3 - 2 * h);
-    nn.setAttribute('baseFrequency', (0.04 + 0.006 * Math.sin(tt * 0.55)).toFixed(4) + ' ' + (0.055 + 0.006 * Math.cos(tt * 0.45)).toFixed(4));
-    nd.setAttribute('scale', (e * (2.4 + 0.6 * Math.sin(tt * 0.8))).toFixed(2));
-    if (hT === 0 && h < 0.005) { g.style.filter = ''; raf = 0; last = 0; return; }   // au repos : logo net, sans filtre
     raf = requestAnimationFrame(step);
+    let p = null;
+    if (cur) { const m = svg.getScreenCTM(); if (m) { const q = new DOMPoint(cur.x, cur.y).matrixTransform(m.inverse()); p = { x: q.x, y: q.y }; } }
+    const want = p ? 1 : 0;
+    if (want) { if (px === null) { lx = p.x; ly = p.y; } lx += (p.x - lx) * 0.22; ly += (p.y - ly) * 0.22; }
+    const sp = px === null || !want ? 0 : Math.min(1, Math.hypot(p.x - px, p.y - py) / 3); px = want ? p.x : null; py = want ? p.y : null;
+    lens += ((want ? 1 + sp * .8 : 0) - lens) * 0.12;
+    const e = Math.min(1.6, lens), tt = (now - t0) / 1000;
+    if (e < 0.004 && !want) { g.style.filter = ''; cancelAnimationFrame(raf); raf = 0; return; }
+    g.style.filter = 'url(#navMorph)';
+    nb.setAttribute('x', (lx - RAD).toFixed(2)); nb.setAttribute('y', (ly - RAD).toFixed(2)); nb.setAttribute('width', (RAD * 2).toFixed(2)); nb.setAttribute('height', (RAD * 2).toFixed(2));
+    nl.setAttribute('scale', (-H * .22 * e).toFixed(3));
+    nn.setAttribute('baseFrequency', (0.049 + 0.012 * Math.sin(tt * 0.6)).toFixed(4) + ' ' + (0.07 + 0.012 * Math.cos(tt * 0.5)).toFixed(4));
+    nd.setAttribute('scale', (0.8 * e).toFixed(3));
   };
-  const on = (v) => { hT = v; if (v) g.style.filter = 'url(#navMorph)'; if (!raf) raf = requestAnimationFrame(step); };
-  hit.addEventListener('pointerenter', () => on(1)); hit.addEventListener('pointerleave', () => on(0));
-  hit.addEventListener('focus', () => on(1)); hit.addEventListener('blur', () => on(0));
 })();
 </script>
 
@@ -1620,7 +1652,7 @@
   /* 12 nov. : plus de dégradé noir sous le menu ; le texte qui monte vers le menu passe au gris (13 nov. : par phrase ou par paragraphe) */
   html:not(.pf) .hnav::before, html:not(.pf) .jnav::before { display: none !important; }   /* le portfolio garde son dégradé (les images y passent sous le menu) */
   /* 13 nov. : par phrase (grosse typo) ou par paragraphe (petite typo) : le groupe entier bascule au gris d'un fondu, mot après mot */
-  .tw { transition: color .6s cubic-bezier(.3,.1,.3,1); transition-delay: var(--d, 0ms); }
+  .tw { transition: color .32s cubic-bezier(.2,.6,.2,1); transition-delay: var(--d, 0ms); }   /* 13 nov. : plus réactif (0,6 s → 0,32 s ; démarre tout de suite) */
   .tw.gr { color: #4a4844; }
   /* 11 nov. : pendant que l'adresse est affichée, les autres items du menu s'effacent : il ne reste que le logo et « copié » */
   :is(.jnav, .hnav) svg > text { transition: opacity .3s ease; }
@@ -1774,9 +1806,9 @@
    Seul le texte qui défile avec la page est touché : ni le menu, ni les éléments fixes ou collants, ni les images. */
 (() => {
   if (document.getElementById('scene')) { document.documentElement.classList.add('pf'); return; }   // portfolio : on garde le dégradé, pas d'effet sur le texte
-  const MID = 170, TOP = 110;   // gris quand le milieu du groupe passe à 170 px du haut, ou son haut à 110 px (longs paragraphes)
+  const MID = 130, TOP = 80;   // gris quand le milieu du groupe passe à 130 px du haut, ou son haut à 80 px (13 nov. : plus près du menu)
   const BIG = 21;               // px : au-dessus, on découpe par phrase ; en dessous, par paragraphe
-  const SKIP = '.mur, .jnav, .hnav, .mnav, .jlogo, .jfoot, .jcopy, .gm, .lb, #lb, #scene, #os, .os, .pt-veil, .brk-fall, script, style, noscript, svg, button, [aria-hidden="true"]';
+  const SKIP = '.mur, .jnav, .hnav, .mnav, .jlogo, .jfoot, .jcopy, .gm, .lb, #lb, #scene, #os, .os, .pt-veil, .brk-fall, script, style, noscript, svg, button, [aria-hidden="true"]:not(.tw-ok)';
   const END = /[.!?…][»"”’')\]]*$/;   // fin de phrase
   let words = [], groups = [], ready = false, gid = 0;
   const pinned = (el) => { for (let n = el; n && n !== document.body; n = n.parentElement) { const p = getComputedStyle(n).position; if (p === 'fixed' || p === 'sticky') return true; } return false; };
@@ -1824,7 +1856,7 @@
       g.top = Math.min(g.top, t); g.bot = Math.max(g.bot, b); g.els.push(w);
     });
     groups = [...by.values()];
-    groups.forEach((g) => { const n = g.els.length, step = Math.min(12, 220 / n); g.els.forEach((e, i) => e.style.setProperty('--d', Math.round(i * step) + 'ms')); });   // balayage : 220 ms au plus pour tout le groupe
+    groups.forEach((g) => { const n = g.els.length, step = Math.min(5, 90 / n); g.els.forEach((e, i) => e.style.setProperty('--d', Math.round(i * step) + 'ms')); });   // balayage : 90 ms au plus pour tout le groupe
     paint(true);
   };
   const paint = (force) => {
@@ -1877,7 +1909,12 @@
   /* 12 nov. : plus de trame pixel : le blanc cassé arrive en fondu, et la page derrière perd son focus pendant qu'il monte */
   .jmt { background: rgba(242, 240, 235, 0); -webkit-backdrop-filter: blur(0px); backdrop-filter: blur(0px);
     transition: background-color .42s cubic-bezier(.4, 0, .2, 1), -webkit-backdrop-filter .42s cubic-bezier(.4, 0, .2, 1), backdrop-filter .42s cubic-bezier(.4, 0, .2, 1); }
-  .jmt.full { background: rgba(242, 240, 235, 1); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+  /* 13 nov. : le blanc cassé ne prend plus tout l'écran : un panneau aux coins arrondis, entouré de noir (comme un écran dans son cadre) */
+  .jmt.full { background: #000; -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+  .jmt::before { content: ""; position: absolute; z-index: 0; inset: max(8px, env(safe-area-inset-top, 0px)) max(8px, env(safe-area-inset-right, 0px)) max(8px, env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px));
+    border-radius: 12px; background: #F2F0EB; opacity: 0; scale: .97; transition: opacity .42s cubic-bezier(.4, 0, .2, 1), scale .55s cubic-bezier(.2, .8, .2, 1); }
+  .jmt.full::before { opacity: 1; scale: 1; }
+  .jmt .cols { top: 8px !important; bottom: 8px !important; }
   .jmt .bar { position: absolute; z-index: 3; left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); top: 0; height: 56px; display: flex; justify-content: space-between; align-items: center; }
   .jmt .bar button, .jmt .bar a { font: 400 15px/1 "PP Mori", "Host Grotesk", "Helvetica Neue", Arial, sans-serif !important; letter-spacing: -.01em; background: none; border: 0; padding: 10px 0; margin: 0; cursor: pointer; text-decoration: none; color: inherit; }
   .jmt .bar .lg { position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: 66px; line-height: 0; }
@@ -1907,7 +1944,30 @@
   .jmt .big svg { display: block; width: 100%; height: auto; overflow: visible; opacity: 0; translate: 0 22px; filter: blur(10px); transition: opacity .22s ease, translate .3s ease, filter .3s ease; }
   .jmt.words .big svg { opacity: 1; translate: 0 0; filter: blur(0); transition: opacity .7s ease .3s, translate 1.1s cubic-bezier(.16, 1, .3, 1) .3s, filter .9s cubic-bezier(.16, 1, .3, 1) .3s; }
   @media (prefers-reduced-motion: reduce) { .jmt .big svg { transition: none !important; } }
-  @media (min-width: 701px) { .jmt { display: none !important; } }
+  /* 13 nov. : à l'ordinateur, le site recule quand le menu s'ouvre (chaque bloc rapetisse vers le centre de l'écran), puis revient */
+  /* scale/translate (propriétés individuelles) : s'ajoutent au transform de chaque bloc au lieu de le remplacer, donc le Mac reste où il est */
+  .jmt-back { transition: scale .7s cubic-bezier(.2, .8, .2, 1), translate .7s cubic-bezier(.2, .8, .2, 1) !important; }
+  /* 14 nov. : menu ouvert, le menu du haut (logo compris) disparaît : un seul JPR à l'écran, celui de la boîte */
+  :is(.hnav, .jnav, .jlogo) { transition: opacity .3s ease; }
+  html.jmt-recul :is(.hnav, .jnav, .jlogo) { opacity: 0 !important; pointer-events: none !important; }
+  html.jmt-recul .jmt-back { scale: .92 !important; translate: var(--jrx, 0) var(--jry, 0) !important; }
+  /* 13 nov. : version ordinateur (ouverte par le logo JPR du menu) : une boîte plus petite au milieu de l'écran, entourée de noir :
+     une colonne d'espace à gauche et à droite (--s), en hauteur l'écran en 5 rangées : 1 vide en haut, 3 pour le menu, 1 vide en bas (--t = 1/5) ; la grille de 5 à l'intérieur */
+  @media (min-width: 701px) {
+    .jmt { --s: 22.7vw; --t: 20vh; --ip: 32px; --g: 16px; --pad: calc(var(--s) + var(--ip)); --mcol: calc((100vw - 2 * var(--pad) - 4 * var(--g)) / 5); --mc: calc(var(--mcol) + var(--g)); }
+    .jmt::before { inset: var(--t) var(--s) !important; border-radius: 14px; }
+    .jmt.full { background: rgba(0, 0, 0, .55); -webkit-backdrop-filter: blur(22px) saturate(.6); backdrop-filter: blur(22px) saturate(.6); }   /* 13 nov. : plus de contour noir plein : le site reste visible derrière, fortement voilé et flou */
+    .jmt .cols { left: var(--pad) !important; right: var(--pad) !important; top: var(--t) !important; bottom: var(--t) !important; }
+    .jmt .bar { left: var(--pad); right: var(--pad); top: var(--t); height: 64px; }
+    .jmt .bar button, .jmt .bar a { font-size: clamp(14px, 1.05vw, 18px) !important; }
+    .jmt ul { padding: calc(var(--t) + 84px) var(--pad) 0; }
+    .jmt .big { left: var(--pad); right: auto; bottom: calc(var(--t) + 24px); }
+    .jmt .big svg { width: calc(3 * var(--mcol) + 2 * var(--g)); height: auto; max-width: none; }   /* 13 nov. : 3 colonnes */
+  }
+  /* 14 nov. : d'une page à l'autre par le menu : le trait glisse du mot de la page en cours au mot choisi, puis la page change derrière le voile,
+     toujours floue ; le menu s'y rouvre à l'identique, puis se referme sur la nouvelle page */
+  .jmt .jln { position: absolute; z-index: 3; left: 0; top: 0; background: currentColor; pointer-events: none; }
+  .jmt.inst, .jmt.inst *, .jmt.inst::before, html.jmt-inst .jmt-back { transition: none !important; }
   @media (prefers-reduced-motion: reduce) { .jmt, .jmt li a, .jmt .cols i, .jmt .st { transition: none !important; } .jmt li a, .jmt .big svg { filter: none !important; } }
 </style>
 <script>
@@ -1938,36 +1998,63 @@
     if (big) { const ps = big.querySelectorAll('path');
       // l'ondulation liquide de l'accueil (mêmes réglages, ramenés à l'échelle de ce logo)
       const ns = 'http://www.w3.org/2000/svg', gg = document.createElementNS(ns, 'g');
-      big.insertAdjacentHTML('afterbegin', '<defs><filter id="jmtMorph" x="-4%" y="-12%" width="108%" height="124%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.049 0.07" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter></defs>');
+      big.insertAdjacentHTML('afterbegin', '<defs><filter id="jmtMorph" x="-4%" y="-12%" width="108%" height="124%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.049 0.07" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G" result="d1"/><feFlood flood-color="rgb(128,128,128)" result="f"/><feImage href="' + bump() + '" preserveAspectRatio="none" x="0" y="0" width="1" height="1" result="b0"/><feComposite in="b0" in2="f" operator="over" result="b"/><feDisplacementMap in="d1" in2="b" scale="0" xChannelSelector="R" yChannelSelector="G"/></filter></defs>');
       ps.forEach((q) => gg.appendChild(q)); big.appendChild(gg); if (!reduce) gg.setAttribute('filter', 'url(#jmtMorph)');
       if (ps[1]) ps[1].setAttribute('transform', 'translate(847.95 25.8) translate(-99.54 -0.17)');
       try { let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
         ps.forEach((q) => { const b = q.getBBox(), t = q.transform.baseVal.consolidate(), mx = t ? t.matrix : { a: 1, d: 1, e: 0, f: 0 };
           x0 = Math.min(x0, b.x * mx.a + mx.e); y0 = Math.min(y0, b.y * mx.d + mx.f); x1 = Math.max(x1, (b.x + b.width) * mx.a + mx.e); y1 = Math.max(y1, (b.y + b.height) * mx.d + mx.f); });
-        if (isFinite(x0)) big.setAttribute('viewBox', `${x0} ${y0} ${x1 - x0} ${y1 - y0}`); } catch (e) {} }
+        if (isFinite(x0)) { big.setAttribute('viewBox', `${x0} ${y0} ${x1 - x0} ${y1 - y0}`);
+          const fl = big.querySelector('#jmtMorph'); if (fl) { fl.setAttribute('filterUnits', 'userSpaceOnUse'); fl.setAttribute('x', x0 - 10); fl.setAttribute('y', y0 - 10); fl.setAttribute('width', x1 - x0 + 20); fl.setAttribute('height', y1 - y0 + 20); } } } catch (e) {} }
     // une seule taille de mot : la plus grande qui laisse chaque mot tenir à partir de sa colonne
-    const mc = (innerWidth - 80) / 5 + 12;
+    const desk = innerWidth > 700, ci = m.querySelectorAll('.cols i');
     let fs = Math.min(64, innerWidth * 0.15);
+    if (desk) {   // la boîte : une colonne de la grille du site de chaque côté (363 / 1600), l'équivalent en haut et en bas, sans descendre sous 60 % de la hauteur
+      const fw = Math.min(innerWidth, 1600), sx = Math.round(fw * 363 / 1600 + Math.max(0, (innerWidth - 1600) / 2)), ty = Math.round(innerHeight / 5); // 14 nov. : l'écran en 5 rangées, 1 vide en haut, 3 pour le menu, 1 vide en bas
+      m.style.setProperty('--s', sx + 'px'); m.style.setProperty('--t', ty + 'px');
+      // 13 nov. : le grand JPR fait 3 colonnes de large (la grille de la boîte) ; sa hauteur en découle
+      const c0 = ci[0].getBoundingClientRect(), c2 = ci[2].getBoundingClientRect(), bw = c2.right - c0.left;
+      const vbx = big && big.viewBox.baseVal, asp = vbx && vbx.height ? vbx.width / vbx.height : 3;
+      const ph = innerHeight - 2 * ty, bh = Math.round(bw / asp); m.style.setProperty('--bh', bh + 'px');
+      fs = Math.min(150, (ph - 84 - bh - 48) / (4 * 1.04));
+    }
+    const mc = ci.length > 1 ? ci[1].getBoundingClientRect().left - ci[0].getBoundingClientRect().left : (innerWidth - 80) / 5 + 12;
+    const colsW = ci.length ? ci[4].getBoundingClientRect().right - ci[0].getBoundingClientRect().left : innerWidth - 32;
     m.querySelectorAll('li a').forEach((a, i) => { a.style.fontSize = '100px'; const w = a.getBoundingClientRect().width / 100; a.style.fontSize = '';
-      fs = Math.min(fs, (innerWidth - 32 - (K[i] || 0) * mc - 2) / w); });
+      fs = Math.min(fs, (colsW - (K[i] || 0) * mc - 2) / w); });
     m.style.setProperty('--fs', Math.floor(fs) + 'px');
     return true;
   };
 
-  // l'ondulation : seulement à l'apparition ; elle se calme jusqu'à zéro, puis le logo reste immobile
-  let mraf = 0, mt0 = 0;
+  // l'ondulation à l'apparition (elle se calme jusqu'à zéro), puis 13 nov. : la loupe liquide sous le curseur (comme le petit logo du menu)
+  let mraf = 0, mt0 = 0, lens = 0, lx = 0, ly = 0, lpx = null, lpy = null, cur = null, BUMP = null;
+  const bump = () => { if (BUMP) return BUMP; const R = 128, cv = document.createElement('canvas'); cv.width = cv.height = R; const cg = cv.getContext('2d'), im = cg.createImageData(R, R);
+    for (let j = 0; j < R; j++) for (let i = 0; i < R; i++) { const x = (i + .5) / R * 2 - 1, y = (j + .5) / R * 2 - 1, d = Math.hypot(x, y), f = d < 1 ? Math.sin(Math.PI * d) * (1 - d) * 1.6 : 0, o = (j * R + i) * 4;
+      im.data[o] = 128 + 127 * Math.max(-1, Math.min(1, x / (d || 1) * f)); im.data[o + 1] = 128 + 127 * Math.max(-1, Math.min(1, y / (d || 1) * f)); im.data[o + 2] = 128; im.data[o + 3] = 255; }
+    cg.putImageData(im, 0, 0); return (BUMP = cv.toDataURL()); };
   const morph = (now) => {
     if (!m || !m.classList.contains('words')) { mraf = 0; return; }
-    const nz = m.querySelector('#jmtMorph feTurbulence'), dp = m.querySelector('#jmtMorph feDisplacementMap');
-    if (!nz || !dp) { mraf = 0; return; }
+    const big = m.querySelector('.big svg'), nz = m.querySelector('#jmtMorph feTurbulence'), dps = m.querySelectorAll('#jmtMorph feDisplacementMap'), bi = m.querySelector('#jmtMorph feImage'), g = m.querySelector('.big g');
+    if (!big || !nz || dps.length < 2 || !g) { mraf = 0; return; }
     const tt = (now - mt0) / 1000, p = Math.min(1, Math.max(0, (tt - 0.3) / 1.2)), settle = 1 - p * p * (3 - 2 * p);
     nz.setAttribute('baseFrequency', (0.049 + 0.015 * Math.sin(tt * 0.23)).toFixed(4) + ' ' + (0.07 + 0.015 * Math.cos(tt * 0.17)).toFixed(4));
-    dp.setAttribute('scale', (3.3 * settle).toFixed(3));
-    // 8 nov. : une fois posé, il ne bouge plus : on retire le filtre (le logo exact, net) et on arrête la boucle
-    if (p >= 1) { const g = m.querySelector('.big g[filter]'); if (g) g.removeAttribute('filter'); mraf = 0; return; }
-    mraf = requestAnimationFrame(morph);
+    // la loupe : position du curseur en unités du logo
+    let q = null; const vb = big.viewBox.baseVal;
+    if (cur && vb && vb.width) { const r = big.getBoundingClientRect(), pad = r.width * .04;
+      if (cur.x > r.left - pad && cur.x < r.right + pad && cur.y > r.top - pad && cur.y < r.bottom + pad) q = { x: vb.x + (cur.x - r.left) / r.width * vb.width, y: vb.y + (cur.y - r.top) / r.height * vb.height }; }
+    if (q) { if (lpx === null) { lx = q.x; ly = q.y; } lx += (q.x - lx) * 0.22; ly += (q.y - ly) * 0.22; }
+    const sp = lpx === null || !q ? 0 : Math.min(1, Math.hypot(q.x - lpx, q.y - lpy) / 3); lpx = q ? q.x : null; lpy = q ? q.y : null;
+    lens += ((q ? 1 + sp * .8 : 0) - lens) * 0.12;
+    const e = Math.min(1.6, lens), H = vb ? vb.height : 35, RAD = H * .62;
+    bi.setAttribute('x', (lx - RAD).toFixed(2)); bi.setAttribute('y', (ly - RAD).toFixed(2)); bi.setAttribute('width', (RAD * 2).toFixed(2)); bi.setAttribute('height', (RAD * 2).toFixed(2));
+    dps[0].setAttribute('scale', (3.3 * settle + 0.8 * e).toFixed(3));
+    dps[1].setAttribute('scale', (-H * .22 * e).toFixed(3));
+    const idle = p >= 1 && e < 0.004 && !q;
+    if (idle) { if (g.hasAttribute('filter')) g.removeAttribute('filter'); } else if (!g.hasAttribute('filter')) g.setAttribute('filter', 'url(#jmtMorph)');
+    mraf = idle ? 0 : requestAnimationFrame(morph);
   };
   const startMorph = () => { if (reduce || mraf) return; mt0 = performance.now(); mraf = requestAnimationFrame(morph); };
+  addEventListener('pointermove', (e) => { if (e.pointerType !== 'mouse' || !opened || !m) return; cur = { x: e.clientX, y: e.clientY }; if (!mraf && !reduce) { mt0 = performance.now() - 2000; mraf = requestAnimationFrame(morph); } }, { passive: true });
 
   const run = (fn, from, to, ms) => new Promise((res) => {
     if (reduce) { fn(to); return res(); }
@@ -1977,42 +2064,97 @@
   });
   const wait = (ms) => new Promise((r) => setTimeout(r, reduce ? 0 : ms));
   const btns = () => document.querySelectorAll('.mnav-btn');
+  // le recul : chaque enfant du body (sauf le menu) rapetisse autour du centre de l'écran
+  const backEls = () => [...document.body.children].filter((el) => el !== m && !/^(SCRIPT|STYLE|LINK|NOSCRIPT|TEMPLATE)$/.test(el.tagName) && !el.classList.contains('jcopy') && !el.matches('.hnav, .jnav, .jlogo'));
+  const recul = (on) => {
+    if (reduce || innerWidth <= 700) return;
+    const root = document.documentElement;
+    // on garde l'origine propre à chaque bloc et on compense : translate = (1 - .92) × (centre de l'écran - origine)
+    if (on) { backEls().forEach((el) => { const cs = getComputedStyle(el); if (cs.display === 'none') return;
+        const tf = el.style.transform; el.style.transform = 'none'; const r = el.getBoundingClientRect(); el.style.transform = tf;
+        const o = cs.transformOrigin.split(' ').map(parseFloat), k = .08;
+        el.style.setProperty('--jrx', (k * (innerWidth / 2 - r.left - o[0])).toFixed(1) + 'px'); el.style.setProperty('--jry', (k * (innerHeight / 2 - r.top - o[1])).toFixed(1) + 'px');
+        el.classList.add('jmt-back'); });
+      void root.offsetWidth; root.classList.add('jmt-recul'); }
+    else { root.classList.remove('jmt-recul'); setTimeout(() => { if (root.classList.contains('jmt-recul')) return; document.querySelectorAll('.jmt-back').forEach((el) => { el.classList.remove('jmt-back'); el.style.removeProperty('--jrx'); el.style.removeProperty('--jry'); }); }, 720); }
+  };
+  const mk = () => { if (!m) { m = document.createElement('div'); m.id = 'jmt'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-label', 'Menu'); document.body.appendChild(m); } };
   const open = async () => {
     if (busy || opened) return; busy = true;
-    if (!m) { m = document.createElement('div'); m.id = 'jmt'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-label', 'Menu'); document.body.appendChild(m); }
-    draw = build();
+    mk(); draw = build();
     document.documentElement.style.overflow = 'hidden';
     btns().forEach((b) => { b.setAttribute('aria-expanded', 'true'); b.setAttribute('aria-controls', 'jmt'); });
-    void m.offsetWidth; m.classList.add('full'); await wait(300);
+    void m.offsetWidth; m.classList.add('full'); recul(true); await wait(300);
     m.classList.add('colon'); await wait(160);
     m.classList.add('words'); startMorph(); opened = true; busy = false;
     m.querySelector('.x').focus({ preventScroll: true });
   };
-  const close = async (fast) => {
+  const close = async (fast, nofocus) => {
     if (busy || !opened) return; busy = true;
     m.classList.remove('words'); await wait(fast ? 0 : 280);
     m.classList.remove('colon'); await wait(fast ? 0 : 140);
-    m.classList.remove('full'); await wait(fast ? 0 : 420);
+    recul(false); m.classList.remove('full'); await wait(fast ? 0 : 420);
     m.classList.remove('show'); document.documentElement.style.overflow = ''; opened = false; busy = false;
     btns().forEach((b) => b.setAttribute('aria-expanded', 'false'));
-    const b = btns()[0]; if (b) b.focus({ preventScroll: true });
+    if (nofocus) return;
+    const b = innerWidth > 700 ? document.querySelector('a[aria-label="JPR, accueil"]') : btns()[0]; if (b) b.focus({ preventScroll: true });
   };
+  // 14 nov. : départ par le menu. Le trait quitte le mot de la page en cours et file vers le mot choisi (le bord avant part le premier, l'autre suit),
+  // puis on change de page. Un drapeau d'onglet (sessionStorage, ni témoin ni envoi) dit à la page d'arrivée de rouvrir le menu tel quel.
+  const strike = (a) => { const r = a.getBoundingClientRect(), f = parseFloat(getComputedStyle(a).fontSize) || 46;
+    return { x0: r.left - .02 * f, x1: r.right + .02 * f, y: r.top + r.height * .54, h: Math.max(1, .055 * f) }; };
+  const go = (a) => {
+    busy = true;
+    const src = m.querySelector('li a[aria-current]'), B = strike(a);
+    const A = src ? strike(src) : { x0: (B.x0 + B.x1) / 2, x1: (B.x0 + B.x1) / 2, y: B.y, h: B.h };
+    const ln = document.createElement('i'); ln.className = 'jln'; ln.setAttribute('aria-hidden', 'true'); m.appendChild(ln);
+    if (src) { const st = src.querySelector('.st'); st.style.transition = 'none'; st.style.transform = 'scaleX(0)'; }
+    const fwd = B.x0 + B.x1 >= A.x0 + A.x1, lead = .18, T = 620, t0 = performance.now(), sm = (t) => t * t * (3 - 2 * t);
+    const place = (x0, x1, y, h) => { ln.style.transform = `translate(${x0.toFixed(1)}px, ${(y - h / 2).toFixed(1)}px)`; ln.style.width = Math.max(0, x1 - x0).toFixed(1) + 'px'; ln.style.height = h.toFixed(2) + 'px'; };
+    place(A.x0, A.x1, A.y, A.h);
+    const leave = () => { try { sessionStorage.setItem('jmtGo', String(Date.now())); } catch (e) {}
+      const b = document.createElement('a'); b.href = a.href; b.target = a.target || '_top'; b.setAttribute('data-jmt-go', ''); b.hidden = true; document.body.appendChild(b); b.click(); };
+    const f = (now) => { const k = Math.min(1, (now - t0) / T), kf = sm(Math.min(1, k / (1 - lead))), ks = sm(Math.max(0, (k - lead) / (1 - lead))), km = sm(k);
+      const l = A.x0 + (B.x0 - A.x0) * (fwd ? ks : kf), r = A.x1 + (B.x1 - A.x1) * (fwd ? kf : ks);
+      place(l, Math.max(l, r), A.y + (B.y - A.y) * km, A.h + (B.h - A.h) * km);
+      if (k < 1) requestAnimationFrame(f); else setTimeout(leave, 110); };
+    requestAnimationFrame(f);
+  };
+  // arrivée par le menu : il est déjà ouvert, sans animation, le trait sur la page d'arrivée ; un temps, puis il se referme sur la nouvelle page
+  const arrive = async () => {
+    const root = document.documentElement;
+    await Promise.race([document.fonts ? document.fonts.ready : Promise.resolve(), new Promise((r) => setTimeout(r, 350))]);
+    busy = true; mk(); draw = build();
+    root.style.overflow = 'hidden'; m.classList.add('inst', 'full', 'colon', 'words'); root.classList.add('jmt-inst'); recul(true);
+    opened = true; startMorph(); mt0 = performance.now() - 2000;
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    m.classList.remove('inst'); root.classList.remove('jmt-inst', 'jmt-arrive');
+    busy = false; await new Promise((r) => setTimeout(r, 420)); close(false, true);
+  };
+  if (document.documentElement.classList.contains('jmt-arrive')) arrive();
+  // retour arrière (page gardée en mémoire) : le menu était resté ouvert en plein départ, on le referme
+  addEventListener('pageshow', (e) => { if (!e.persisted || !m) return; const ln = m.querySelector('.jln'); if (ln) ln.remove(); busy = false; if (opened) close(true); });
   // en capture : passe avant l'ancien menu (#jmenu) et avant la transition de page
   document.addEventListener('click', (e) => {
     const t = e.target.closest ? e.target : e.target.parentElement;
     if (t.closest('.mnav-btn')) { e.preventDefault(); e.stopPropagation(); open(); return; }
+    if (innerWidth > 700 && t.closest('.hnav a[aria-label="JPR, accueil"], .jnav a[aria-label="JPR, accueil"], .jlogo a[aria-label="JPR, accueil"]')) { e.preventDefault(); e.stopImmediatePropagation(); opened ? close() : open(); return; }   // 13 nov. : à l'ordinateur, le logo ouvre le menu
     if (!m || !t.closest('.jmt')) return;
+    if (innerWidth > 700 && opened && !t.closest('a, button')) {   // 13 nov. : un clic dans le noir, hors de la boîte, referme
+      const cs = getComputedStyle(m), sx = parseFloat(cs.getPropertyValue('--s')), ty = parseFloat(cs.getPropertyValue('--t'));
+      if (e.clientX < sx || e.clientX > innerWidth - sx || e.clientY < ty || e.clientY > innerHeight - ty) { e.preventDefault(); e.stopPropagation(); close(); return; } }
     if (t.closest('.jmt .x')) { e.preventDefault(); e.stopPropagation(); close(); return; }
     if (t.closest('.jmt .ct')) {   // « contact » : on referme le menu, puis on lance le vrai contact (le courriel copié)
       e.preventDefault(); e.stopPropagation();
-      close(true).then(() => { const c = document.querySelector('.mnav a[data-contact]'); if (c) c.click(); });
+      close(true).then(() => { const c = document.querySelector(innerWidth > 700 ? '.hnav a[data-contact], .jnav a[data-contact]' : '.mnav a[data-contact]'); if (c) c.click(); });
       return; }
     const a = t.closest('.jmt li a');
     if (a && (a.hasAttribute('aria-current') || a.getAttribute('href') === '#')) { e.preventDefault(); e.stopPropagation(); close(); }   // la page où l'on est : on referme, simplement
+    else if (a && opened && !busy && !reduce) { e.preventDefault(); e.stopImmediatePropagation(); go(a); }   // 14 nov. : une autre page : le trait glisse, puis on y va
     // les autres liens continuent vers la transition tramée de la page (pagetrans.html)
   }, true);
   addEventListener('keydown', (e) => { if (e.key === 'Escape' && opened) close(); });
-  addEventListener('resize', () => { if (opened && innerWidth > 700) close(true); });
+  let wasDesk = innerWidth > 700; addEventListener('resize', () => { const d = innerWidth > 700; if (opened && d !== wasDesk) close(true); wasDesk = d; });
 })();
 </script>
 <!-- transitions de page (6 nov.) : le menu ne bouge jamais ; seul le trait de la page en cours glisse vers la page choisie,
@@ -2097,7 +2239,7 @@
   const clean = (u) => { try { const x = new URL(u, location.href); return x.origin + x.pathname.replace(/\/$/, ''); } catch (e) { return ''; } };
   const KEYS = Object.keys(PAGES).reduce((o, u) => { o[clean(u)] = PAGES[u]; return o; }, {});
   document.addEventListener('click', (e) => {
-    const a = e.target.closest && e.target.closest('a[href]'); if (!a || passing.has(a)) return;
+    const a = e.target.closest && e.target.closest('a[href]'); if (!a || passing.has(a) || a.hasAttribute('data-jmt-go')) return;   // 14 nov. : le menu gère lui-même sa transition
     if (e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     const dest = KEYS[clean(a.getAttribute('href'))]; if (!dest || dest.page === HERE) return;
     if (reduce) return;
@@ -2117,7 +2259,8 @@
     root.classList.remove('pt-in');
     return run(IN, (k) => paint(ease(k), col, false)).then(() => { root.classList.remove('pt-run', 'pt-menu'); }); };
   const here = Object.values(PAGES).find((p) => p.page === HERE);
-  if (root.classList.contains('pt-in') && here) {
+  if (root.classList.contains('jmt-arrive')) root.classList.remove('pt-in');   // 14 nov. : arrivée par le menu : c'est lui qui fait la transition
+  else if (root.classList.contains('pt-in') && here) {
     const go = () => requestAnimationFrame(() => enter(rgba(here.bg)));
     (document.fonts && document.fonts.ready ? Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 400))]) : Promise.resolve()).then(go);
   }
