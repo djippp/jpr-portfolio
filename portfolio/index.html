@@ -57,6 +57,7 @@
   /* petite typo de la page Info, utilisée dans la fiche projet (le texte de fin, essayé en petit dans la 5e colonne le 6 nov., est revenu en grand) */
   :root { --os: clamp(14px, calc(16.5 / 1600 * var(--fw)), 17px); }
   body.outro-in .views { opacity: 0; pointer-events: none; }
+  .spiral.as-list + .outro { background: transparent; padding-top: 6vh; }   /* 14 nov. (3) : moins d'espace entre la roue et le texte (18vh → 6vh) */   /* 14 nov. : en liste, la roue reste au centre derrière le texte de fin et s'efface (voir plus bas) */
   .stage { height: 100vh; position: sticky; top: 0; overflow: hidden; perspective: 1365px; perspective-origin: 50% 48%; }
   .scene { position: absolute; inset: 0; transform-style: preserve-3d; will-change: transform; }
 
@@ -545,6 +546,18 @@
   if ('IntersectionObserver' in window)   // la bascule spirale / liste s'efface quand le texte de fin arrive
     new IntersectionObserver(([e]) => document.body.classList.toggle('outro-in', e.isIntersecting || e.boundingClientRect.top < 0)).observe(document.getElementById('outro'));
   const reduceMo = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // 14 nov. : en liste, une fois en bas de la roue, elle ne remonte plus avec la page : elle reste au centre de l'écran
+  // et s'efface à mesure que le paragraphe de fin monte
+  { let pend = false, was = false;
+    const hold = () => { pend = false;
+      const on = section.classList.contains('as-list'), over = scrollY - (section.offsetTop + section.offsetHeight - innerHeight);
+      if (!on || over <= 0) { stageEl.__spin = 0; if (was) { was = false; stageEl.style.transform = ''; stageEl.style.opacity = ''; stageEl.style.visibility = ''; } return; }
+      was = true; const H = innerHeight, room = document.documentElement.scrollHeight - H - (section.offsetTop + section.offsetHeight - H), D = Math.max(120, Math.min(H * .6, room - 60)), f = Math.max(0, Math.min(1, 1 - over / D)), e = f * f * (3 - 2 * f);   // effacée avant le bas de la page, quelle que soit sa hauteur
+      stageEl.__spin = Math.min(1, over / D);   // 14 nov. (2) : et elle continue de tourner un peu : les dernières lignes remontent vers le haut de la roue en s'effaçant
+      stageEl.style.transform = `translateY(${over.toFixed(1)}px)`; stageEl.style.opacity = (.3 + .7 * e).toFixed(3); };   // 14 nov. (3) : la roue ne disparaît pas tout à fait : elle reste à 30 %
+    const req = () => { if (!pend) { pend = true; requestAnimationFrame(hold); } };
+    addEventListener('scroll', req, { passive: true }); addEventListener('resize', req);
+    new MutationObserver(req).observe(section, { attributes: true, attributeFilter: ['class', 'style'] }); }
   // n’écrit un style que s’il a changé : en vue liste presque rien ne bouge, le navigateur n’a alors presque rien à recalculer
   const setS = (el, prop, v) => { const key = '__s_' + prop; if (el[key] !== v) { el[key] = v; el.style[prop] = v; } };
   // légende mobile : nom et catégorie du projet de face ; le texte monte d’un masque, comme les noms au survol
@@ -765,7 +778,7 @@
     // la liste a un début et une fin : sa position suit le défilement de la page (premier projet en haut, dernier en bas)
     const LT = n * RH;
     const loMax = Math.max(0, (n - 1) * RH - 2 * WHEEL_0 * WHEEL_GEO(RH, n).WR);   // du 1er projet un peu au-dessus du centre jusqu'au dernier un peu en dessous
-    loT = loMax * target;
+    loT = loMax * target + (stageEl.__spin || 0) * 1.4 * WHEEL_GEO(RH, n).WR;
     lo += (loT - lo) * (reduceMo ? 1 : mob ? 0.32 : 0.14);   // mobile : suit le doigt de près ; bureau : glisse un peu plus, avec de l’inertie
     rowsEl.classList.toggle('live', gm > 0.98);
     // 13 nov. : en liste, le point de fuite est sur l'axe de la roue : elle se projette en cercle parfait (symétrique en haut et en bas)
@@ -1392,6 +1405,12 @@
     .lb .x:hover { background: none; color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .2em; }
     .lb .col .top { margin-top: calc(-.4 * var(--h2fs) + max(12px, calc(19.5 / 1600 * var(--fw))) + var(--fl) + 65 / 1600 * var(--fw)); }
   }
+  /* 14 nov. : « fermer » passe à droite, en mode différence : il reste lisible par-dessus les images de la galerie */
+  @media (min-width: 900px) {
+    .lb .x { left: auto; right: var(--pl); width: auto; height: auto; white-space: nowrap; z-index: 50; color: #fff; mix-blend-mode: difference; }
+    .lb .x:hover, .lb.gz .x { color: #fff !important; }
+    .lb .gal { padding-top: calc(.96 * max(12px, calc(19.5 / 1600 * var(--fw))) + 1.6vw); }   /* la 1re image commence 1,6 % (la marge du site) sous « fermer » */
+  }
 </style>
 <script>
 (() => {
@@ -1968,7 +1987,7 @@
     .jmt .cols { left: var(--pad) !important; right: var(--pad) !important; top: var(--t) !important; bottom: var(--t) !important; }
     .jmt .bar { left: var(--pad); right: var(--pad); top: var(--t); height: 64px; }
     .jmt .bar button, .jmt .bar a { font-size: clamp(14px, 1.05vw, 18px) !important; }
-    .jmt ul { padding: calc(var(--t) + 84px) var(--pad) 0; }
+    .jmt ul { padding: calc(var(--t) + 20px) var(--pad) 0; }   /* 14 nov. : remonté : « fermer » est à droite, les mots montent jusqu'en haut de la boîte */
     .jmt .big { left: calc(var(--pad) + 2 * var(--mc)); right: auto; bottom: calc(var(--t) + 24px); }   /* 14 nov. : sur les 3 dernières colonnes (3 à 5) */
     .jmt .big svg { width: calc(3 * var(--mcol) + 2 * var(--g)); height: auto; max-width: none; }   /* 13 nov. : 3 colonnes */
   }
@@ -1978,16 +1997,38 @@
   .jmt.inst, .jmt.inst *, .jmt.inst::before, html.jmt-inst .jmt-back { transition: none !important; }
   /* 14 nov. : à côté du JPR (colonnes 1 et 2), une étiquette inspirée de la plaque sous le Macintosh. (2) : en PP Mori, plus épurée,
      sans titre ; les sceaux deviennent de vrais pictogrammes (comme les sceaux d'homologation de la plaque) */
-  .jmt .lbl { display: none; }
+  .jmt .lbl, .jmt .bm, .jmt .bmc { display: none; }
   @media (min-width: 701px) {
     .jmt .lbl { display: grid; grid-template-columns: 1fr; align-items: end;   /* 14 nov. (3) : sans les sceaux */
       position: absolute; z-index: 2; pointer-events: none;
-      left: var(--pad); bottom: calc(var(--t) + 24px); width: calc(1.5 * var(--mcol) + .5 * var(--g)); height: var(--bh, 120px);   /* 14 nov. : 1 colonne et demie */ box-sizing: border-box;
+      left: var(--pad); bottom: calc(var(--t) + 24px); width: calc(1.5 * var(--mcol) + .5 * var(--g)); height: auto; max-height: calc(var(--bh, 120px) + 4em);   /* 14 nov. : 1 colonne et demie ; le contenu se pose en bas */ box-sizing: border-box;
       font: 400 clamp(8.5px, calc(var(--mcol) * .078), 13px)/1.25 "PP Mori", "Host Grotesk", "Helvetica Neue", Arial, sans-serif; letter-spacing: -.005em; color: #1d1c1a;
       opacity: 0; translate: 0 12px; transition: opacity .5s ease, translate .8s cubic-bezier(.16, 1, .3, 1); }
     .jmt.words .lbl { opacity: 1; translate: 0 0; transition-delay: .35s; }
     .jmt .lbl p { margin: 0; }
     .jmt .lbl .mut { color: #6f6c64; }
+    /* 14 nov. : la boîte devient le « contact » à l'ordinateur : le courriel (un clic le copie), puis les coordonnées, au-dessus de l'encadré */
+    .jmt .lbl .mail { display: inline-block; pointer-events: auto; color: inherit; font-size: 1.55em; letter-spacing: -.02em; line-height: 1.1; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; cursor: pointer; }
+    .jmt .lbl .mail:hover { text-decoration-thickness: 2px; }
+    .jmt .lbl .cpd { margin-left: .6em; font-size: .82em; color: #6f6c64; }
+    .jmt .lbl .mail + .cpd + p { margin-top: .55em; }
+    .jmt .lbl .cau { margin-top: .9em !important; }
+    /* 14 nov. : à l'ordinateur, la boîte est le contact : plus de mots de menu (le menu du haut suffit), le courriel en grand à leur place ; un clic le copie */
+    #jmt > ul { display: none !important; }
+    .jmt .bm { display: block; position: absolute; z-index: 2; left: var(--pad); top: calc(var(--t) + 60px); color: inherit; text-decoration: none; white-space: nowrap;
+      font-size: var(--bmfs, 64px); line-height: 1.04; letter-spacing: -.04em; cursor: pointer;
+      opacity: 0; translate: 0 .5em; transition: opacity .45s ease, translate .6s cubic-bezier(.2, .8, .2, 1); }
+    .jmt.words .bm { opacity: 1; translate: 0 0; }
+    .jmt .bm span { display: block; width: max-content; margin-left: calc(var(--k) * var(--mc)); }   /* 14 nov. : en 3 parties, en escalier sur les colonnes 1, 2 et 3 */
+    .jmt .bm:hover span { text-decoration: underline; text-decoration-thickness: .04em; text-underline-offset: .12em; }
+    .jmt .bm:hover { text-decoration: none; text-decoration-thickness: .04em; text-underline-offset: .12em; }
+    .jmt .bmc { display: block; position: absolute; z-index: 2; left: var(--pad); top: calc(var(--t) + 60px + var(--bmfs, 64px) * 3.2); font-size: clamp(13px, 1.05vw, 18px); color: #6f6c64; }
+    .jmt .bar { justify-content: flex-end; pointer-events: none; }
+    .jmt .bar > * { pointer-events: auto; }   /* 14 nov. : « fermer » à droite */
+    .jmt .bar .ct { display: none; }   /* « contact » dans la barre : retiré, la boîte est le contact */
+    .jmt .lbl .so { margin-top: .5em; }
+    .jmt .lbl .so a { pointer-events: auto; color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; margin-right: 1.1em; }
+    .jmt .lbl .so a:hover { text-decoration-thickness: 2px; }
     .jmt .lbl .cau { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .7em; margin-top: 0; padding: .45em .6em; border: 1px solid currentColor; text-align: center; text-transform: uppercase; font-size: .82em; line-height: 1.15; letter-spacing: .02em; }
     .jmt .lbl .cau b { display: block; background: #1d1c1a; color: #F2F0EB; font-weight: 400; letter-spacing: .12em; padding: .14em 0 .06em; margin-bottom: .3em; }
     .jmt .lbl .cau svg { width: 2.3em; height: auto; display: block; }
@@ -2017,7 +2058,7 @@
     m.className = 'jmt';
     m.innerHTML = `<div class="vl" aria-hidden="true"></div><div class="cols" aria-hidden="true">${[0, 1, 2, 3, 4].map((k) => `<i style="--k:${k}"></i>`).join('')}</div>`
       + `<div class="bar"><button type="button" class="x">fermer</button><a href="#" class="ct">contact</a></div>`
-      + `<ul>${items().map(li).join('')}</ul><div class="big" aria-hidden="true">${LOGO}</div><div class="lbl" aria-hidden="true"><div><div class="cau"><svg viewBox="0 0 24 21" aria-hidden="true"><path d="M12 0 24 21H0Z" fill="currentColor"/><path d="M12 18.2C7.3 14.9 7.6 11.2 9.9 10.9c.95-.12 1.7.45 2.1 1.15.4-.7 1.15-1.27 2.1-1.15 2.3.3 2.6 4-2.1 7.3Z" fill="#F2F0EB"/></svg><div><b>Attention</b>Risque de coup de cœur<br>Ouvrir sans crainte</div><svg viewBox="0 0 24 21" aria-hidden="true"><path d="M12 0 24 21H0Z" fill="currentColor"/><path d="M11 7h2l-.4 7.3h-1.2zM12 15.9a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5Z" fill="#F2F0EB"/></svg></div></div></div>`;
+      + `<ul>${items().map(li).join('')}</ul><a class="bm" href="mailto:info@jprousseau.com" aria-label="info@jprousseau.com"><span style="--k:0">info@</span><span style="--k:1">jprousseau</span><span style="--k:2">.com</span></a><span class="bmc" aria-live="polite"></span><div class="big" aria-hidden="true">${LOGO}</div><div class="lbl"><div><p>Jean-Philippe Rousseau</p><p class="mut">Directeur artistique, Montréal</p><p class="mut">Ouvert aux collaborations et aux mandats à distance.</p><p class="so"><a href="#" data-soc="instagram">Instagram</a><a href="#" data-soc="x">X</a><a href="#" data-soc="linkedin">LinkedIn</a></p></div></div>`;
     m.classList.add('show');
     // le gros JPR : le ® reprend sa taille d'origine (le petit logo le grossit 1,6× pour rester lisible), et le cadre colle aux formes, d'une marge à l'autre
     const big = m.querySelector('.big svg');
@@ -2049,6 +2090,10 @@
     m.querySelectorAll('li a').forEach((a, i) => { a.style.fontSize = '100px'; const w = a.getBoundingClientRect().width / 100; a.style.fontSize = '';
       fs = Math.min(fs, (colsW - (K[i] || 0) * mc - 2) / w); });
     m.style.setProperty('--fs', Math.floor(fs) + 'px');
+    const bm = m.querySelector('.bm'); if (desk && bm) { bm.style.fontSize = '100px'; let f = 400;
+      bm.querySelectorAll('span').forEach((sp, k) => { const w = sp.getBoundingClientRect().width / 100; f = Math.min(f, (colsW - k * mc - 2) / w); });
+      bm.style.fontSize = ''; const ph = innerHeight - 2 * parseFloat(m.style.getPropertyValue('--t')), bh = parseFloat(m.style.getPropertyValue('--bh')) || 120;
+      f = Math.min(f, (ph - 60 - bh - 72) / (3 * 1.04)) * .85; m.style.setProperty('--bmfs', Math.floor(f) + 'px'); /* 14 nov. : -15 % */ }
     return true;
   };
 
@@ -2104,11 +2149,14 @@
       void root.offsetWidth; root.classList.add('jmt-recul'); }
     else { root.classList.remove('jmt-recul'); setTimeout(() => { if (root.classList.contains('jmt-recul')) return; document.querySelectorAll('.jmt-back').forEach((el) => { el.classList.remove('jmt-back'); el.style.removeProperty('--jrx'); el.style.removeProperty('--jry'); }); }, 880); }
   };
+  // 14 nov. : adresses des profils (à compléter) ; vide = lien inactif
+  const SOC = { instagram: '', x: '', linkedin: '' };
+  const soc = () => m.querySelectorAll('.lbl .so a').forEach((a) => { const u = SOC[a.dataset.soc]; if (u) { a.href = u; a.target = '_blank'; a.rel = 'noopener'; } });
   const mk = () => { if (!m) { m = document.createElement('div'); m.id = 'jmt'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-label', 'Menu'); document.body.appendChild(m); } };
   const open = async () => {
     if (busy || opened) return; busy = true;
     window.__jmtPause = true;   // 14 nov. : ce qui bouge derrière (le Mac de l'accueil) se fige pendant que le menu est ouvert
-    mk(); draw = build();
+    mk(); draw = build(); soc();
     document.documentElement.style.overflow = 'hidden';
     btns().forEach((b) => { b.setAttribute('aria-expanded', 'true'); b.setAttribute('aria-controls', 'jmt'); });
     void m.offsetWidth; m.classList.add('full'); recul(true); await wait(300);
@@ -2148,7 +2196,7 @@
   const arrive = async () => {
     const root = document.documentElement;
     // tout de suite (la police est déjà en cache, venant de la page précédente) : la boîte ne doit jamais manquer entre les deux pages
-    window.__jmtPause = true; busy = true; mk(); draw = build();
+    window.__jmtPause = true; busy = true; mk(); draw = build(); soc();
     root.style.overflow = 'hidden'; m.classList.add('inst', 'full', 'colon', 'words'); root.classList.add('jmt-inst'); recul(true);
     opened = true; startMorph(); mt0 = performance.now() - 2000;
     await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
@@ -2163,7 +2211,15 @@
   document.addEventListener('click', (e) => {
     const t = e.target.closest ? e.target : e.target.parentElement;
     if (t.closest('.mnav-btn')) { e.preventDefault(); e.stopPropagation(); open(); return; }
-    if (innerWidth > 700 && t.closest('.hnav a[aria-label="JPR, accueil"], .jnav a[aria-label="JPR, accueil"], .jlogo a[aria-label="JPR, accueil"]')) { e.preventDefault(); e.stopImmediatePropagation(); opened ? close() : open(); return; }   // 13 nov. : à l'ordinateur, le logo ouvre le menu
+    // 14 nov. : à l'ordinateur, c'est « contact » qui ouvre la boîte (avant : le logo, qui redevient un simple lien vers l'accueil)
+    if (innerWidth > 700 && t.closest('.hnav a[data-contact], .jnav a[data-contact]')) { e.preventDefault(); e.stopImmediatePropagation(); opened ? close() : open(); return; }
+    const so = t.closest('.jmt .lbl .so a');   // réseaux : tant que l'adresse du profil n'est pas posée (href="#"), le clic ne fait rien
+    if (so) { if (so.getAttribute('href') === '#') { e.preventDefault(); e.stopPropagation(); } return; }
+    if (t.closest('.jmt .bm')) {   // le courriel : un clic le copie (comme « contact » sur mobile)
+      e.preventDefault(); e.stopPropagation();
+      const done = (ok) => { const c = m.querySelector('.bmc'); if (c) { c.textContent = ok ? 'copié' : ''; clearTimeout(c.__t); c.__t = setTimeout(() => { c.textContent = ''; }, 2400); } if (!ok) location.href = 'mailto:info@jprousseau.com'; };
+      try { navigator.clipboard.writeText('info@jprousseau.com').then(() => done(true), () => done(false)); } catch (err) { done(false); }
+      return; }
     if (!m || !t.closest('.jmt')) return;
     if (innerWidth > 700 && opened && !t.closest('a, button')) {   // 13 nov. : un clic dans le noir, hors de la boîte, referme
       const cs = getComputedStyle(m), sx = parseFloat(cs.getPropertyValue('--s')), ty = parseFloat(cs.getPropertyValue('--t'));

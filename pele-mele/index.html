@@ -1072,7 +1072,7 @@
     .jmt .cols { left: var(--pad) !important; right: var(--pad) !important; top: var(--t) !important; bottom: var(--t) !important; }
     .jmt .bar { left: var(--pad); right: var(--pad); top: var(--t); height: 64px; }
     .jmt .bar button, .jmt .bar a { font-size: clamp(14px, 1.05vw, 18px) !important; }
-    .jmt ul { padding: calc(var(--t) + 84px) var(--pad) 0; }
+    .jmt ul { padding: calc(var(--t) + 20px) var(--pad) 0; }   /* 14 nov. : remonté : « fermer » est à droite, les mots montent jusqu'en haut de la boîte */
     .jmt .big { left: calc(var(--pad) + 2 * var(--mc)); right: auto; bottom: calc(var(--t) + 24px); }   /* 14 nov. : sur les 3 dernières colonnes (3 à 5) */
     .jmt .big svg { width: calc(3 * var(--mcol) + 2 * var(--g)); height: auto; max-width: none; }   /* 13 nov. : 3 colonnes */
   }
@@ -1082,16 +1082,38 @@
   .jmt.inst, .jmt.inst *, .jmt.inst::before, html.jmt-inst .jmt-back { transition: none !important; }
   /* 14 nov. : à côté du JPR (colonnes 1 et 2), une étiquette inspirée de la plaque sous le Macintosh. (2) : en PP Mori, plus épurée,
      sans titre ; les sceaux deviennent de vrais pictogrammes (comme les sceaux d'homologation de la plaque) */
-  .jmt .lbl { display: none; }
+  .jmt .lbl, .jmt .bm, .jmt .bmc { display: none; }
   @media (min-width: 701px) {
     .jmt .lbl { display: grid; grid-template-columns: 1fr; align-items: end;   /* 14 nov. (3) : sans les sceaux */
       position: absolute; z-index: 2; pointer-events: none;
-      left: var(--pad); bottom: calc(var(--t) + 24px); width: calc(1.5 * var(--mcol) + .5 * var(--g)); height: var(--bh, 120px);   /* 14 nov. : 1 colonne et demie */ box-sizing: border-box;
+      left: var(--pad); bottom: calc(var(--t) + 24px); width: calc(1.5 * var(--mcol) + .5 * var(--g)); height: auto; max-height: calc(var(--bh, 120px) + 4em);   /* 14 nov. : 1 colonne et demie ; le contenu se pose en bas */ box-sizing: border-box;
       font: 400 clamp(8.5px, calc(var(--mcol) * .078), 13px)/1.25 "PP Mori", "Host Grotesk", "Helvetica Neue", Arial, sans-serif; letter-spacing: -.005em; color: #1d1c1a;
       opacity: 0; translate: 0 12px; transition: opacity .5s ease, translate .8s cubic-bezier(.16, 1, .3, 1); }
     .jmt.words .lbl { opacity: 1; translate: 0 0; transition-delay: .35s; }
     .jmt .lbl p { margin: 0; }
     .jmt .lbl .mut { color: #6f6c64; }
+    /* 14 nov. : la boîte devient le « contact » à l'ordinateur : le courriel (un clic le copie), puis les coordonnées, au-dessus de l'encadré */
+    .jmt .lbl .mail { display: inline-block; pointer-events: auto; color: inherit; font-size: 1.55em; letter-spacing: -.02em; line-height: 1.1; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; cursor: pointer; }
+    .jmt .lbl .mail:hover { text-decoration-thickness: 2px; }
+    .jmt .lbl .cpd { margin-left: .6em; font-size: .82em; color: #6f6c64; }
+    .jmt .lbl .mail + .cpd + p { margin-top: .55em; }
+    .jmt .lbl .cau { margin-top: .9em !important; }
+    /* 14 nov. : à l'ordinateur, la boîte est le contact : plus de mots de menu (le menu du haut suffit), le courriel en grand à leur place ; un clic le copie */
+    #jmt > ul { display: none !important; }
+    .jmt .bm { display: block; position: absolute; z-index: 2; left: var(--pad); top: calc(var(--t) + 60px); color: inherit; text-decoration: none; white-space: nowrap;
+      font-size: var(--bmfs, 64px); line-height: 1.04; letter-spacing: -.04em; cursor: pointer;
+      opacity: 0; translate: 0 .5em; transition: opacity .45s ease, translate .6s cubic-bezier(.2, .8, .2, 1); }
+    .jmt.words .bm { opacity: 1; translate: 0 0; }
+    .jmt .bm span { display: block; width: max-content; margin-left: calc(var(--k) * var(--mc)); }   /* 14 nov. : en 3 parties, en escalier sur les colonnes 1, 2 et 3 */
+    .jmt .bm:hover span { text-decoration: underline; text-decoration-thickness: .04em; text-underline-offset: .12em; }
+    .jmt .bm:hover { text-decoration: none; text-decoration-thickness: .04em; text-underline-offset: .12em; }
+    .jmt .bmc { display: block; position: absolute; z-index: 2; left: var(--pad); top: calc(var(--t) + 60px + var(--bmfs, 64px) * 3.2); font-size: clamp(13px, 1.05vw, 18px); color: #6f6c64; }
+    .jmt .bar { justify-content: flex-end; pointer-events: none; }
+    .jmt .bar > * { pointer-events: auto; }   /* 14 nov. : « fermer » à droite */
+    .jmt .bar .ct { display: none; }   /* « contact » dans la barre : retiré, la boîte est le contact */
+    .jmt .lbl .so { margin-top: .5em; }
+    .jmt .lbl .so a { pointer-events: auto; color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; margin-right: 1.1em; }
+    .jmt .lbl .so a:hover { text-decoration-thickness: 2px; }
     .jmt .lbl .cau { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .7em; margin-top: 0; padding: .45em .6em; border: 1px solid currentColor; text-align: center; text-transform: uppercase; font-size: .82em; line-height: 1.15; letter-spacing: .02em; }
     .jmt .lbl .cau b { display: block; background: #1d1c1a; color: #F2F0EB; font-weight: 400; letter-spacing: .12em; padding: .14em 0 .06em; margin-bottom: .3em; }
     .jmt .lbl .cau svg { width: 2.3em; height: auto; display: block; }
@@ -1121,7 +1143,7 @@
     m.className = 'jmt';
     m.innerHTML = `<div class="vl" aria-hidden="true"></div><div class="cols" aria-hidden="true">${[0, 1, 2, 3, 4].map((k) => `<i style="--k:${k}"></i>`).join('')}</div>`
       + `<div class="bar"><button type="button" class="x">fermer</button><a href="#" class="ct">contact</a></div>`
-      + `<ul>${items().map(li).join('')}</ul><div class="big" aria-hidden="true">${LOGO}</div><div class="lbl" aria-hidden="true"><div><div class="cau"><svg viewBox="0 0 24 21" aria-hidden="true"><path d="M12 0 24 21H0Z" fill="currentColor"/><path d="M12 18.2C7.3 14.9 7.6 11.2 9.9 10.9c.95-.12 1.7.45 2.1 1.15.4-.7 1.15-1.27 2.1-1.15 2.3.3 2.6 4-2.1 7.3Z" fill="#F2F0EB"/></svg><div><b>Attention</b>Risque de coup de cœur<br>Ouvrir sans crainte</div><svg viewBox="0 0 24 21" aria-hidden="true"><path d="M12 0 24 21H0Z" fill="currentColor"/><path d="M11 7h2l-.4 7.3h-1.2zM12 15.9a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5Z" fill="#F2F0EB"/></svg></div></div></div>`;
+      + `<ul>${items().map(li).join('')}</ul><a class="bm" href="mailto:info@jprousseau.com" aria-label="info@jprousseau.com"><span style="--k:0">info@</span><span style="--k:1">jprousseau</span><span style="--k:2">.com</span></a><span class="bmc" aria-live="polite"></span><div class="big" aria-hidden="true">${LOGO}</div><div class="lbl"><div><p>Jean-Philippe Rousseau</p><p class="mut">Directeur artistique, Montréal</p><p class="mut">Ouvert aux collaborations et aux mandats à distance.</p><p class="so"><a href="#" data-soc="instagram">Instagram</a><a href="#" data-soc="x">X</a><a href="#" data-soc="linkedin">LinkedIn</a></p></div></div>`;
     m.classList.add('show');
     // le gros JPR : le ® reprend sa taille d'origine (le petit logo le grossit 1,6× pour rester lisible), et le cadre colle aux formes, d'une marge à l'autre
     const big = m.querySelector('.big svg');
@@ -1153,6 +1175,10 @@
     m.querySelectorAll('li a').forEach((a, i) => { a.style.fontSize = '100px'; const w = a.getBoundingClientRect().width / 100; a.style.fontSize = '';
       fs = Math.min(fs, (colsW - (K[i] || 0) * mc - 2) / w); });
     m.style.setProperty('--fs', Math.floor(fs) + 'px');
+    const bm = m.querySelector('.bm'); if (desk && bm) { bm.style.fontSize = '100px'; let f = 400;
+      bm.querySelectorAll('span').forEach((sp, k) => { const w = sp.getBoundingClientRect().width / 100; f = Math.min(f, (colsW - k * mc - 2) / w); });
+      bm.style.fontSize = ''; const ph = innerHeight - 2 * parseFloat(m.style.getPropertyValue('--t')), bh = parseFloat(m.style.getPropertyValue('--bh')) || 120;
+      f = Math.min(f, (ph - 60 - bh - 72) / (3 * 1.04)) * .85; m.style.setProperty('--bmfs', Math.floor(f) + 'px'); /* 14 nov. : -15 % */ }
     return true;
   };
 
@@ -1208,11 +1234,14 @@
       void root.offsetWidth; root.classList.add('jmt-recul'); }
     else { root.classList.remove('jmt-recul'); setTimeout(() => { if (root.classList.contains('jmt-recul')) return; document.querySelectorAll('.jmt-back').forEach((el) => { el.classList.remove('jmt-back'); el.style.removeProperty('--jrx'); el.style.removeProperty('--jry'); }); }, 880); }
   };
+  // 14 nov. : adresses des profils (à compléter) ; vide = lien inactif
+  const SOC = { instagram: '', x: '', linkedin: '' };
+  const soc = () => m.querySelectorAll('.lbl .so a').forEach((a) => { const u = SOC[a.dataset.soc]; if (u) { a.href = u; a.target = '_blank'; a.rel = 'noopener'; } });
   const mk = () => { if (!m) { m = document.createElement('div'); m.id = 'jmt'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-label', 'Menu'); document.body.appendChild(m); } };
   const open = async () => {
     if (busy || opened) return; busy = true;
     window.__jmtPause = true;   // 14 nov. : ce qui bouge derrière (le Mac de l'accueil) se fige pendant que le menu est ouvert
-    mk(); draw = build();
+    mk(); draw = build(); soc();
     document.documentElement.style.overflow = 'hidden';
     btns().forEach((b) => { b.setAttribute('aria-expanded', 'true'); b.setAttribute('aria-controls', 'jmt'); });
     void m.offsetWidth; m.classList.add('full'); recul(true); await wait(300);
@@ -1252,7 +1281,7 @@
   const arrive = async () => {
     const root = document.documentElement;
     // tout de suite (la police est déjà en cache, venant de la page précédente) : la boîte ne doit jamais manquer entre les deux pages
-    window.__jmtPause = true; busy = true; mk(); draw = build();
+    window.__jmtPause = true; busy = true; mk(); draw = build(); soc();
     root.style.overflow = 'hidden'; m.classList.add('inst', 'full', 'colon', 'words'); root.classList.add('jmt-inst'); recul(true);
     opened = true; startMorph(); mt0 = performance.now() - 2000;
     await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
@@ -1267,7 +1296,15 @@
   document.addEventListener('click', (e) => {
     const t = e.target.closest ? e.target : e.target.parentElement;
     if (t.closest('.mnav-btn')) { e.preventDefault(); e.stopPropagation(); open(); return; }
-    if (innerWidth > 700 && t.closest('.hnav a[aria-label="JPR, accueil"], .jnav a[aria-label="JPR, accueil"], .jlogo a[aria-label="JPR, accueil"]')) { e.preventDefault(); e.stopImmediatePropagation(); opened ? close() : open(); return; }   // 13 nov. : à l'ordinateur, le logo ouvre le menu
+    // 14 nov. : à l'ordinateur, c'est « contact » qui ouvre la boîte (avant : le logo, qui redevient un simple lien vers l'accueil)
+    if (innerWidth > 700 && t.closest('.hnav a[data-contact], .jnav a[data-contact]')) { e.preventDefault(); e.stopImmediatePropagation(); opened ? close() : open(); return; }
+    const so = t.closest('.jmt .lbl .so a');   // réseaux : tant que l'adresse du profil n'est pas posée (href="#"), le clic ne fait rien
+    if (so) { if (so.getAttribute('href') === '#') { e.preventDefault(); e.stopPropagation(); } return; }
+    if (t.closest('.jmt .bm')) {   // le courriel : un clic le copie (comme « contact » sur mobile)
+      e.preventDefault(); e.stopPropagation();
+      const done = (ok) => { const c = m.querySelector('.bmc'); if (c) { c.textContent = ok ? 'copié' : ''; clearTimeout(c.__t); c.__t = setTimeout(() => { c.textContent = ''; }, 2400); } if (!ok) location.href = 'mailto:info@jprousseau.com'; };
+      try { navigator.clipboard.writeText('info@jprousseau.com').then(() => done(true), () => done(false)); } catch (err) { done(false); }
+      return; }
     if (!m || !t.closest('.jmt')) return;
     if (innerWidth > 700 && opened && !t.closest('a, button')) {   // 13 nov. : un clic dans le noir, hors de la boîte, referme
       const cs = getComputedStyle(m), sx = parseFloat(cs.getPropertyValue('--s')), ty = parseFloat(cs.getPropertyValue('--t'));
