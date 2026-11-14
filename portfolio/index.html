@@ -2100,29 +2100,26 @@
   };
   // 14 nov. : départ par le menu. Le trait quitte le mot de la page en cours et file vers le mot choisi (le bord avant part le premier, l'autre suit),
   // puis on change de page. Un drapeau d'onglet (sessionStorage, ni témoin ni envoi) dit à la page d'arrivée de rouvrir le menu tel quel.
-  const strike = (a) => { const r = a.getBoundingClientRect(), f = parseFloat(getComputedStyle(a).fontSize) || 46;
-    return { x0: r.left - .02 * f, x1: r.right + .02 * f, y: r.top + r.height * .54, h: Math.max(1, .055 * f) }; };
+  // 14 nov. (2) : en vases communicants : le trait du mot de départ se vide (il se retire vers sa fin) pendant que celui du mot choisi
+  // se remplit (il se trace depuis son début), au même rythme : ce que l'un perd, l'autre le gagne. Aucun trait ne voyage entre les deux.
   const go = (a) => {
     busy = true;
-    const src = m.querySelector('li a[aria-current]'), B = strike(a);
-    const A = src ? strike(src) : { x0: (B.x0 + B.x1) / 2, x1: (B.x0 + B.x1) / 2, y: B.y, h: B.h };
-    const ln = document.createElement('i'); ln.className = 'jln'; ln.setAttribute('aria-hidden', 'true'); m.appendChild(ln);
-    if (src) { const st = src.querySelector('.st'); st.style.transition = 'none'; st.style.transform = 'scaleX(0)'; }
-    const fwd = B.x0 + B.x1 >= A.x0 + A.x1, lead = .18, T = 620, t0 = performance.now(), sm = (t) => t * t * (3 - 2 * t);
-    const place = (x0, x1, y, h) => { ln.style.transform = `translate(${x0.toFixed(1)}px, ${(y - h / 2).toFixed(1)}px)`; ln.style.width = Math.max(0, x1 - x0).toFixed(1) + 'px'; ln.style.height = h.toFixed(2) + 'px'; };
-    place(A.x0, A.x1, A.y, A.h);
+    const src = m.querySelector('li a[aria-current]'), s0 = src && src.querySelector('.st'), s1 = a.querySelector('.st');
     const leave = () => { try { sessionStorage.setItem('jmtGo', String(Date.now())); } catch (e) {}
       const b = document.createElement('a'); b.href = a.href; b.target = a.target || '_top'; b.setAttribute('data-jmt-go', ''); b.hidden = true; document.body.appendChild(b); b.click(); };
-    const f = (now) => { const k = Math.min(1, (now - t0) / T), kf = sm(Math.min(1, k / (1 - lead))), ks = sm(Math.max(0, (k - lead) / (1 - lead))), km = sm(k);
-      const l = A.x0 + (B.x0 - A.x0) * (fwd ? ks : kf), r = A.x1 + (B.x1 - A.x1) * (fwd ? kf : ks);
-      place(l, Math.max(l, r), A.y + (B.y - A.y) * km, A.h + (B.h - A.h) * km);
-      if (k < 1) requestAnimationFrame(f); else setTimeout(leave, 110); };
+    if (s0) { s0.style.transition = 'none'; s0.style.transformOrigin = '100% 50%'; }
+    if (s1) { s1.style.transition = 'none'; s1.style.transformOrigin = '0 50%'; }
+    const T = 640, t0 = performance.now(), ez = (t) => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    const f = (now) => { const k = Math.min(1, (now - t0) / T), e = ez(k);
+      if (s0) s0.style.transform = `scaleX(${(1 - e).toFixed(4)})`;
+      if (s1) s1.style.transform = `scaleX(${e.toFixed(4)})`;
+      if (k < 1) requestAnimationFrame(f); else setTimeout(leave, 120); };
     requestAnimationFrame(f);
   };
   // arrivée par le menu : il est déjà ouvert, sans animation, le trait sur la page d'arrivée ; un temps, puis il se referme sur la nouvelle page
   const arrive = async () => {
     const root = document.documentElement;
-    await Promise.race([document.fonts ? document.fonts.ready : Promise.resolve(), new Promise((r) => setTimeout(r, 350))]);
+    // tout de suite (la police est déjà en cache, venant de la page précédente) : la boîte ne doit jamais manquer entre les deux pages
     busy = true; mk(); draw = build();
     root.style.overflow = 'hidden'; m.classList.add('inst', 'full', 'colon', 'words'); root.classList.add('jmt-inst'); recul(true);
     opened = true; startMorph(); mt0 = performance.now() - 2000;
@@ -2132,7 +2129,7 @@
   };
   if (document.documentElement.classList.contains('jmt-arrive')) arrive();
   // retour arrière (page gardée en mémoire) : le menu était resté ouvert en plein départ, on le referme
-  addEventListener('pageshow', (e) => { if (!e.persisted || !m) return; const ln = m.querySelector('.jln'); if (ln) ln.remove(); busy = false; if (opened) close(true); });
+  addEventListener('pageshow', (e) => { if (!e.persisted || !m) return; busy = false; if (opened) close(true); });
   // en capture : passe avant l'ancien menu (#jmenu) et avant la transition de page
   document.addEventListener('click', (e) => {
     const t = e.target.closest ? e.target : e.target.parentElement;
