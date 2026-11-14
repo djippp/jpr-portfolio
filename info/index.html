@@ -1280,7 +1280,8 @@
   /* 13 nov. : le blanc cassé ne prend plus tout l'écran : un panneau aux coins arrondis, entouré de noir (comme un écran dans son cadre) */
   .jmt.full { background: #000; -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
   .jmt::before { content: ""; position: absolute; z-index: 0; inset: max(8px, env(safe-area-inset-top, 0px)) max(8px, env(safe-area-inset-right, 0px)) max(8px, env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px));
-    border-radius: 12px; background: #F2F0EB; opacity: 0; scale: .97; transition: opacity .5s cubic-bezier(.4, 0, .2, 1), scale .7s cubic-bezier(.22, 1, .36, 1); }
+    border-radius: 0; background: #F2F0EB; opacity: 0;   /* 14 nov. : coins carrés, comme toutes les images du site */
+    scale: .97; transition: opacity .5s cubic-bezier(.4, 0, .2, 1), scale .7s cubic-bezier(.22, 1, .36, 1); }
   .jmt.full::before { opacity: 1; scale: 1; }
   .jmt .cols { top: 8px !important; bottom: 8px !important; }
   .jmt .bar { position: absolute; z-index: 3; left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); top: 0; height: 56px; display: flex; justify-content: space-between; align-items: center; }
@@ -1322,7 +1323,7 @@
      une colonne d'espace à gauche et à droite (--s), en hauteur l'écran en 5 rangées : 1 vide en haut, 3 pour le menu, 1 vide en bas (--t = 1/5) ; la grille de 5 à l'intérieur */
   @media (min-width: 701px) {
     .jmt { --s: 22.7vw; --t: 20vh; --ip: 32px; --g: 16px; --pad: calc(var(--s) + var(--ip)); --mcol: calc((100vw - 2 * var(--pad) - 4 * var(--g)) / 5); --mc: calc(var(--mcol) + var(--g)); }
-    .jmt::before { inset: var(--t) var(--s) !important; border-radius: 14px; }
+    .jmt::before { inset: var(--t) var(--s) !important; border-radius: 0; }
     /* 14 nov. : un verre dépoli plutôt qu'un voile sombre : moins noir, flou plus doux, couleurs ravivées ; on lit les formes du site qui recule derrière */
     /* 14 nov. (2) : flou plus léger (8 px), posé une fois pour toutes sur un calque qui apparaît en fondu d'opacité :
        le navigateur n'a plus à recalculer un flou qui change à chaque image, d'où une ouverture plus douce */
@@ -1343,6 +1344,24 @@
      toujours floue ; le menu s'y rouvre à l'identique, puis se referme sur la nouvelle page */
   .jmt .jln { position: absolute; z-index: 3; left: 0; top: 0; background: currentColor; pointer-events: none; }
   .jmt.inst, .jmt.inst *, .jmt.inst::before, html.jmt-inst .jmt-back { transition: none !important; }
+  /* 14 nov. : à côté du JPR (colonnes 1 et 2), une étiquette inspirée de la plaque sous le Macintosh. (2) : en PP Mori, plus épurée,
+     sans titre ; les sceaux deviennent de vrais pictogrammes (comme les sceaux d'homologation de la plaque) */
+  .jmt .lbl { display: none; }
+  @media (min-width: 701px) {
+    .jmt .lbl { display: grid; grid-template-columns: 1fr; align-items: end;   /* 14 nov. (3) : sans les sceaux */
+      position: absolute; z-index: 2; pointer-events: none;
+      left: var(--pad); bottom: calc(var(--t) + 24px); width: calc(1.5 * var(--mcol) + .5 * var(--g)); height: var(--bh, 120px);   /* 14 nov. : 1 colonne et demie */ box-sizing: border-box;
+      font: 400 clamp(8.5px, calc(var(--mcol) * .078), 13px)/1.25 "PP Mori", "Host Grotesk", "Helvetica Neue", Arial, sans-serif; letter-spacing: -.005em; color: #1d1c1a;
+      opacity: 0; translate: 0 12px; transition: opacity .5s ease, translate .8s cubic-bezier(.16, 1, .3, 1); }
+    .jmt.words .lbl { opacity: 1; translate: 0 0; transition-delay: .35s; }
+    .jmt .lbl p { margin: 0; }
+    .jmt .lbl .mut { color: #6f6c64; }
+    .jmt .lbl .cau { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .7em; margin-top: 0; padding: .45em .6em; border: 1px solid currentColor; text-align: center; text-transform: uppercase; font-size: .82em; line-height: 1.15; letter-spacing: .02em; }
+    .jmt .lbl .cau b { display: block; background: #1d1c1a; color: #F2F0EB; font-weight: 400; letter-spacing: .12em; padding: .14em 0 .06em; margin-bottom: .3em; }
+    .jmt .lbl .cau svg { width: 2.3em; height: auto; display: block; }
+    .jmt .lbl .sx { display: flex; flex-direction: column; gap: .7em; align-items: center; text-align: center; text-transform: uppercase; font-size: .72em; line-height: 1.1; letter-spacing: .04em; }
+    .jmt .lbl .sx svg { display: block; width: 4.4em; height: auto; margin: 0 auto .35em; }
+  }
   @media (prefers-reduced-motion: reduce) { .jmt, .jmt li a, .jmt .cols i, .jmt .st { transition: none !important; } .jmt li a, .jmt .big svg { filter: none !important; } }
 </style>
 <script>
@@ -1366,7 +1385,7 @@
     m.className = 'jmt';
     m.innerHTML = `<div class="vl" aria-hidden="true"></div><div class="cols" aria-hidden="true">${[0, 1, 2, 3, 4].map((k) => `<i style="--k:${k}"></i>`).join('')}</div>`
       + `<div class="bar"><button type="button" class="x">fermer</button><a href="#" class="ct">contact</a></div>`
-      + `<ul>${items().map(li).join('')}</ul><div class="big" aria-hidden="true">${LOGO}</div>`;
+      + `<ul>${items().map(li).join('')}</ul><div class="big" aria-hidden="true">${LOGO}</div><div class="lbl" aria-hidden="true"><div><div class="cau"><svg viewBox="0 0 24 21" aria-hidden="true"><path d="M12 0 24 21H0Z" fill="currentColor"/><path d="M12 18.2C7.3 14.9 7.6 11.2 9.9 10.9c.95-.12 1.7.45 2.1 1.15.4-.7 1.15-1.27 2.1-1.15 2.3.3 2.6 4-2.1 7.3Z" fill="#F2F0EB"/></svg><div><b>Attention</b>Risque de coup de cœur<br>Ouvrir sans crainte</div><svg viewBox="0 0 24 21" aria-hidden="true"><path d="M12 0 24 21H0Z" fill="currentColor"/><path d="M11 7h2l-.4 7.3h-1.2zM12 15.9a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5Z" fill="#F2F0EB"/></svg></div></div></div>`;
     m.classList.add('show');
     // le gros JPR : le ® reprend sa taille d'origine (le petit logo le grossit 1,6× pour rester lisible), et le cadre colle aux formes, d'une marge à l'autre
     const big = m.querySelector('.big svg');
