@@ -3090,7 +3090,7 @@ window.__TRASH = (() => {
 <script>
 /* menu : « contact » copie l'adresse courriel et l'affiche en très grand, plein écran (clic, Échap ou quelques secondes : retour) ; « info » arrive bientôt */
 (() => {
-  const EMAIL = 'info@jprousseau.com', DUR = 4500;   // 7 nov. : 4,5 s (avant : 3 s)
+  const EMAIL = 'contact@jpr.cool', DUR = 4500;   // 7 nov. : 4,5 s (avant : 3 s)
   const TOUCH = matchMedia('(hover: none)').matches;   // mobile : pas de fermeture automatique, l'écran reste jusqu'au prochain toucher
   const t = document.createElement('div'); t.className = 'jcopy'; t.setAttribute('role', 'dialog'); t.setAttribute('aria-live', 'polite'); t.setAttribute('aria-modal', 'true');
   document.body.appendChild(t);
@@ -3465,7 +3465,7 @@ window.__TRASH = (() => {
     m.className = 'jmt';
     m.innerHTML = `<div class="vl" aria-hidden="true"></div><div class="cols" aria-hidden="true">${[0, 1, 2, 3, 4].map((k) => `<i style="--k:${k}"></i>`).join('')}</div>`
       + `<div class="bar"><button type="button" class="x">fermer</button><a href="#" class="ct">contact</a></div>`
-      + `<ul>${items().map(li).join('')}</ul><a class="bm" href="mailto:info@jprousseau.com" aria-label="info@jprousseau.com"><span style="--k:0">info@</span><span style="--k:1">jprousseau</span><span style="--k:2">.com</span></a><span class="bmc" aria-live="polite"></span><div class="big" aria-hidden="true">${LOGO}</div><div class="lbl"><div><p>Jean-Philippe Rousseau</p><p class="mut">Directeur artistique, Montréal</p><p class="mut">Ouvert aux collaborations et aux mandats à distance.</p><p class="so"><a href="#" data-soc="instagram">Instagram</a><a href="#" data-soc="x">X</a><a href="#" data-soc="linkedin">LinkedIn</a></p></div></div>`;
+      + `<ul>${items().map(li).join('')}</ul><a class="bm" href="mailto:contact@jpr.cool" aria-label="contact@jpr.cool"><span style="--k:0">contact@</span><span style="--k:1">jpr</span><span style="--k:2">.cool</span></a><span class="bmc" aria-live="polite"></span><div class="big" aria-hidden="true">${LOGO}</div><div class="lbl"><div><p>Jean-Philippe Rousseau</p><p class="mut">Directeur artistique, Montréal</p><p class="mut">Ouvert aux collaborations et aux mandats à distance.</p><p class="so"><a href="#" data-soc="instagram">Instagram</a><a href="#" data-soc="x">X</a><a href="#" data-soc="linkedin">LinkedIn</a></p></div></div>`;
     m.classList.add('show');
     // le gros JPR : le ® reprend sa taille d'origine (le petit logo le grossit 1,6× pour rester lisible), et le cadre colle aux formes, d'une marge à l'autre
     const big = m.querySelector('.big svg');
@@ -3624,8 +3624,8 @@ window.__TRASH = (() => {
     if (so) { if (so.getAttribute('href') === '#') { e.preventDefault(); e.stopPropagation(); } return; }
     if (t.closest('.jmt .bm')) {   // le courriel : un clic le copie (comme « contact » sur mobile)
       e.preventDefault(); e.stopPropagation();
-      const done = (ok) => { const c = m.querySelector('.bmc'); if (c) { c.textContent = ok ? 'copié' : ''; clearTimeout(c.__t); c.__t = setTimeout(() => { c.textContent = ''; }, 2400); } if (!ok) location.href = 'mailto:info@jprousseau.com'; };
-      try { navigator.clipboard.writeText('info@jprousseau.com').then(() => done(true), () => done(false)); } catch (err) { done(false); }
+      const done = (ok) => { const c = m.querySelector('.bmc'); if (c) { c.textContent = ok ? 'copié' : ''; clearTimeout(c.__t); c.__t = setTimeout(() => { c.textContent = ''; }, 2400); } if (!ok) location.href = 'mailto:contact@jpr.cool'; };
+      try { navigator.clipboard.writeText('contact@jpr.cool').then(() => done(true), () => done(false)); } catch (err) { done(false); }
       return; }
     if (!m || !t.closest('.jmt')) return;
     if (innerWidth > 700 && opened && !t.closest('a, button')) {   // 13 nov. : un clic dans le noir, hors de la boîte, referme

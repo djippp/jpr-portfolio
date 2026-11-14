@@ -466,6 +466,7 @@
     ["Jardins Mirabel", "Image de marque · Site web", "", 300, 333, "projects/jardins-mirabel-cover.webp", "https://kryzalid.net/portfolio/jardins-mirabel/"],
     ["Collège Sainte-Marcelline", "Image de marque · UX/UI", "", 330, 341, "projects/sainte-marcelline-cover.webp", "https://kryzalid.net/portfolio/college-sainte-marcelline/"],
     ["Kryzalid", "Site web · UX/UI", "", 360, 270, "projects/kryzalid/01.webp", "https://kryzalid.net/"],
+    ["Sporevo", "Kryzalid", "", 360, 326, "projects/sporevo-cover.webp", ""],
     ["Anti-Troll Kit", "Image de marque · Vidéo", "", 380, 295, "projects/anti-troll-cover.webp", "https://kryzalid.net/en/portfolio/anti-troll-kit/"],
     ["Hôpital de Montréal pour enfants", "Illustration · UX/UI", "", 380, 328, "projects/hme-cover3.webp", "https://kryzalid.net/en/portfolio/montreal-childrens-hospital/"],
     ["Institut Douglas", "Kryzalid", "", 370, 247, "projects/douglas-cover3.webp", "https://kryzalid.net/en/portfolio/douglas-mental-health-university-institute/"],
@@ -475,6 +476,7 @@
     ["Novalait", "Kryzalid", "", 270, 405, "projects/novalait-cover.webp", "https://kryzalid.net/en/portfolio/novalait/"],
     ["Ville de Terrebonne", "Site web · UX/UI", "", 370, 247, "projects/terrebonne-cover3.webp", "https://kryzalid.net/portfolio/ville-de-terrebonne/"],
     ["Collège international Marie de France", "Kryzalid", "", 300, 375, "projects/marie-de-france-cover.webp", "https://kryzalid.net/en/portfolio/college-international-marie-de-france/"],
+    ["Naya", "Kryzalid", "", 330, 330, "", ""],   // visuel à venir : carte vide en attendant
     // (la carte « porte » vers le Pêle-mêle a été retirée : la spirale finit sur un projet ; le menu mène au Pêle-mêle)
   ];
   // réglages de l'hélice (valeurs par défaut de la maquette)
@@ -512,7 +514,7 @@
       a.addEventListener('pointerenter', () => { clearInterval(tk); tk = setInterval(() => { f = (f + 1) % 3; im.src = `projects/pm-${f}.png`; }, 320); });
       a.addEventListener('pointerleave', () => { clearInterval(tk); im.src = 'projects/pm-0.png'; a.style.setProperty('--jx', '0px'); });
     } else
-    a.innerHTML = `<div class="in"><img src="${img}" alt="" decoding="async" onerror="this.remove()"></div><div class="cap"><div class="nm"><span>${name}</span></div><div class="ct">${cat}</div></div>`;
+    a.innerHTML = `<div class="in">${img ? `<img src="${img}" alt="" decoding="async" onerror="this.remove()">` : ''}</div><div class="cap"><div class="nm"><span>${name}</span></div><div class="ct">${cat}</div></div>`;
     scene.appendChild(a); return a;
   });
 
@@ -885,7 +887,7 @@
   const NP = PIDX.length;
   // images de chaque projet : [source, format] ; null = emplacement à remplir (en attendant les vrais visuels)
   const AR = 1106 / 1230;
-  const GALLERY = PROJECTS.map((p) => [[p[5], AR], [null, 16 / 10], [null, 16 / 10], [null, 4 / 5]]);
+  const GALLERY = PROJECTS.map((p) => [[p[5] || null, AR], [null, 16 / 10], [null, 16 / 10], [null, 4 / 5]]);
   // vrais visuels : après l'image du projet (la même que la carte de la spirale), une suite d'images pleine largeur ;
   // une paire [[a], [b]] s'affiche côte à côte, à la même hauteur (chaque image garde son format, rien n'est recadré)
   const REAL = {
@@ -949,7 +951,7 @@
     t.innerHTML = `<i></i>`;
     t.addEventListener('click', () => goProject(i));
     t.addEventListener('pointerenter', () => {
-      peek.querySelector('img').src = PROJECTS[i][5]; peek.querySelector('span').textContent = PROJECTS[i][0];
+      peek.querySelector('img').src = PROJECTS[i][5] || ''; peek.querySelector('span').textContent = PROJECTS[i][0];
       peek.style.top = (t.offsetTop + t.offsetHeight / 2 - 70) + 'px'; peek.classList.add('on'); lb.classList.add('dim');
     });
     t.addEventListener('pointerleave', () => { peek.classList.remove('on'); lb.classList.remove('dim'); });
@@ -1009,7 +1011,7 @@
     $('lbMeta').innerHTML = rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${k === 'Agence' ? `<a class="kz ag" href="${p[6] || 'https://kryzalid.net'}" target="_blank" rel="noopener">${v}&nbsp;<span aria-hidden="true">↗</span><span class="sr"> (voir le projet sur kryzalid.net)</span></a>${vp}` : v}</dd></div>`).join('');
     // précédent / suivant : vignette + nom
     const pv = PIDX[(k - 1 + NP) % NP], nx = PIDX[(k + 1) % NP];
-    [[$('lbPrevP'), pv], [$('lbNextP2'), nx]].forEach(([b, j]) => { b.querySelector('img').src = PROJECTS[j][5]; b.querySelector('b').textContent = PROJECTS[j][0]; b.setAttribute('aria-label', (b === $('lbPrevP') ? 'Projet précédent : ' : 'Projet suivant : ') + PROJECTS[j][0]); });
+    [[$('lbPrevP'), pv], [$('lbNextP2'), nx]].forEach(([b, j]) => { b.querySelector('img').src = PROJECTS[j][5] || ''; b.querySelector('b').textContent = PROJECTS[j][0]; b.setAttribute('aria-label', (b === $('lbPrevP') ? 'Projet précédent : ' : 'Projet suivant : ') + PROJECTS[j][0]); });
     const more = $('lbMore'); if (p[6]) { more.href = p[6]; more.hidden = false; } else more.hidden = true;
     ticks.forEach((t, j) => (j === k ? t.setAttribute('aria-current', 'true') : t.removeAttribute('aria-current')));
     lb.setAttribute('aria-label', `Projet : ${p[0]}`);
@@ -1683,7 +1685,7 @@
 <script>
 /* menu : « contact » copie l'adresse courriel et l'affiche en très grand, plein écran (clic, Échap ou quelques secondes : retour) ; « info » arrive bientôt */
 (() => {
-  const EMAIL = 'info@jprousseau.com', DUR = 4500;   // 7 nov. : 4,5 s (avant : 3 s)
+  const EMAIL = 'contact@jpr.cool', DUR = 4500;   // 7 nov. : 4,5 s (avant : 3 s)
   const TOUCH = matchMedia('(hover: none)').matches;   // mobile : pas de fermeture automatique, l'écran reste jusqu'au prochain toucher
   const t = document.createElement('div'); t.className = 'jcopy'; t.setAttribute('role', 'dialog'); t.setAttribute('aria-live', 'polite'); t.setAttribute('aria-modal', 'true');
   document.body.appendChild(t);
@@ -2058,7 +2060,7 @@
     m.className = 'jmt';
     m.innerHTML = `<div class="vl" aria-hidden="true"></div><div class="cols" aria-hidden="true">${[0, 1, 2, 3, 4].map((k) => `<i style="--k:${k}"></i>`).join('')}</div>`
       + `<div class="bar"><button type="button" class="x">fermer</button><a href="#" class="ct">contact</a></div>`
-      + `<ul>${items().map(li).join('')}</ul><a class="bm" href="mailto:info@jprousseau.com" aria-label="info@jprousseau.com"><span style="--k:0">info@</span><span style="--k:1">jprousseau</span><span style="--k:2">.com</span></a><span class="bmc" aria-live="polite"></span><div class="big" aria-hidden="true">${LOGO}</div><div class="lbl"><div><p>Jean-Philippe Rousseau</p><p class="mut">Directeur artistique, Montréal</p><p class="mut">Ouvert aux collaborations et aux mandats à distance.</p><p class="so"><a href="#" data-soc="instagram">Instagram</a><a href="#" data-soc="x">X</a><a href="#" data-soc="linkedin">LinkedIn</a></p></div></div>`;
+      + `<ul>${items().map(li).join('')}</ul><a class="bm" href="mailto:contact@jpr.cool" aria-label="contact@jpr.cool"><span style="--k:0">contact@</span><span style="--k:1">jpr</span><span style="--k:2">.cool</span></a><span class="bmc" aria-live="polite"></span><div class="big" aria-hidden="true">${LOGO}</div><div class="lbl"><div><p>Jean-Philippe Rousseau</p><p class="mut">Directeur artistique, Montréal</p><p class="mut">Ouvert aux collaborations et aux mandats à distance.</p><p class="so"><a href="#" data-soc="instagram">Instagram</a><a href="#" data-soc="x">X</a><a href="#" data-soc="linkedin">LinkedIn</a></p></div></div>`;
     m.classList.add('show');
     // le gros JPR : le ® reprend sa taille d'origine (le petit logo le grossit 1,6× pour rester lisible), et le cadre colle aux formes, d'une marge à l'autre
     const big = m.querySelector('.big svg');
@@ -2217,8 +2219,8 @@
     if (so) { if (so.getAttribute('href') === '#') { e.preventDefault(); e.stopPropagation(); } return; }
     if (t.closest('.jmt .bm')) {   // le courriel : un clic le copie (comme « contact » sur mobile)
       e.preventDefault(); e.stopPropagation();
-      const done = (ok) => { const c = m.querySelector('.bmc'); if (c) { c.textContent = ok ? 'copié' : ''; clearTimeout(c.__t); c.__t = setTimeout(() => { c.textContent = ''; }, 2400); } if (!ok) location.href = 'mailto:info@jprousseau.com'; };
-      try { navigator.clipboard.writeText('info@jprousseau.com').then(() => done(true), () => done(false)); } catch (err) { done(false); }
+      const done = (ok) => { const c = m.querySelector('.bmc'); if (c) { c.textContent = ok ? 'copié' : ''; clearTimeout(c.__t); c.__t = setTimeout(() => { c.textContent = ''; }, 2400); } if (!ok) location.href = 'mailto:contact@jpr.cool'; };
+      try { navigator.clipboard.writeText('contact@jpr.cool').then(() => done(true), () => done(false)); } catch (err) { done(false); }
       return; }
     if (!m || !t.closest('.jmt')) return;
     if (innerWidth > 700 && opened && !t.closest('a, button')) {   // 13 nov. : un clic dans le noir, hors de la boîte, referme
