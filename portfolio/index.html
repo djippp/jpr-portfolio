@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">   <!-- 9 nov. : couleur de la barre du navigateur (Chrome Android ; Safari prend le fond de la page) -->
 <title>JPR Portfolio</title>
-<style>html.jmt-arrive::after{display:none!important}html.jmt-arrive::before{content:"";position:fixed;inset:0;z-index:8499;background:rgba(14,14,14,.22);-webkit-backdrop-filter:blur(14px) saturate(1.6) brightness(.82);backdrop-filter:blur(14px) saturate(1.6) brightness(.82);pointer-events:none;animation:ja-kill 0s 3s forwards}@media (max-width:700px){html.jmt-arrive::before{background:#000}}@keyframes ja-kill{to{visibility:hidden}}@view-transition{navigation:auto}::view-transition-old(root){animation:none;opacity:1;mix-blend-mode:normal}::view-transition-new(root){animation:ja-in .45s cubic-bezier(.4,0,.2,1) both;mix-blend-mode:normal}@keyframes ja-in{from{opacity:0}}</style><script>try{var g=+sessionStorage.getItem("jmtGo");sessionStorage.removeItem("jmtGo");if(g&&Date.now()-g<4000&&!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("jmt-arrive");var l=document.createElement("link");l.rel="expect";l.href="#jmtready";l.setAttribute("blocking","render");document.head.appendChild(l)}}catch(e){}addEventListener("pagereveal",function(e){if(e.viewTransition&&!document.documentElement.classList.contains("jmt-arrive"))e.viewTransition.skipTransition()})</script>
+<style>html.jmt-arrive::after{display:none!important}html.jmt-arrive::before{content:"";position:fixed;inset:0;z-index:8499;background:rgba(14,14,14,.16);-webkit-backdrop-filter:blur(8px) saturate(1.5) brightness(.86);backdrop-filter:blur(8px) saturate(1.5) brightness(.86);pointer-events:none;animation:ja-kill 0s 3s forwards}@media (max-width:700px){html.jmt-arrive::before{background:#000}}@keyframes ja-kill{to{visibility:hidden}}@view-transition{navigation:auto}::view-transition-old(root){animation:none;opacity:1;mix-blend-mode:normal}::view-transition-new(root){animation:ja-in .45s cubic-bezier(.4,0,.2,1) both;mix-blend-mode:normal}@keyframes ja-in{from{opacity:0}}</style><script>try{var g=+sessionStorage.getItem("jmtGo");sessionStorage.removeItem("jmtGo");if(g&&Date.now()-g<4000&&!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("jmt-arrive");var l=document.createElement("link");l.rel="expect";l.href="#jmtready";l.setAttribute("blocking","render");document.head.appendChild(l)}}catch(e){}addEventListener("pagereveal",function(e){if(e.viewTransition&&!document.documentElement.classList.contains("jmt-arrive"))e.viewTransition.skipTransition()})</script>
 <style>html.pt-in::after{content:"";position:fixed;inset:0;z-index:5999;background:#000;pointer-events:none;animation:pt-kill 0s 3s forwards}@keyframes pt-kill{to{visibility:hidden}}</style><script>if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("pt-in")</script>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -471,7 +471,7 @@
     ["Lait carboneutre", "Kryzalid", "", 265, 355, "projects/lait-carboneutre.webp", "https://kryzalid.net/en/portfolio/carbon-neutral-milk-living-laboratory/"],
     ["Société québécoise de la déficience intellectuelle", "Kryzalid", "", 375, 300, "projects/sqdi-cover.webp", "https://kryzalid.net/en/portfolio/quebec-intellectual-disability-society/"],
     ["Cohab", "Image de marque · Site web", "", 330, 330, "projects/cohab-cover.webp", "https://kryzalid.net/portfolio/cohab/"],
-    ["Novalait", "Kryzalid", "", 300, 400, "projects/novalait.webp", "https://kryzalid.net/en/portfolio/novalait/"],
+    ["Novalait", "Kryzalid", "", 270, 405, "projects/novalait-cover.webp", "https://kryzalid.net/en/portfolio/novalait/"],
     ["Ville de Terrebonne", "Site web · UX/UI", "", 370, 210, "projects/terrebonne-cover.webp", "https://kryzalid.net/portfolio/ville-de-terrebonne/"],
     ["Collège international Marie de France", "Kryzalid", "", 300, 375, "projects/marie-de-france-cover.webp", "https://kryzalid.net/en/portfolio/college-international-marie-de-france/"],
     // (la carte « porte » vers le Pêle-mêle a été retirée : la spirale finit sur un projet ; le menu mène au Pêle-mêle)
@@ -1912,7 +1912,7 @@
   /* 13 nov. : le blanc cassé ne prend plus tout l'écran : un panneau aux coins arrondis, entouré de noir (comme un écran dans son cadre) */
   .jmt.full { background: #000; -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
   .jmt::before { content: ""; position: absolute; z-index: 0; inset: max(8px, env(safe-area-inset-top, 0px)) max(8px, env(safe-area-inset-right, 0px)) max(8px, env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px));
-    border-radius: 12px; background: #F2F0EB; opacity: 0; scale: .97; transition: opacity .42s cubic-bezier(.4, 0, .2, 1), scale .55s cubic-bezier(.2, .8, .2, 1); }
+    border-radius: 12px; background: #F2F0EB; opacity: 0; scale: .97; transition: opacity .5s cubic-bezier(.4, 0, .2, 1), scale .7s cubic-bezier(.22, 1, .36, 1); }
   .jmt.full::before { opacity: 1; scale: 1; }
   .jmt .cols { top: 8px !important; bottom: 8px !important; }
   .jmt .bar { position: absolute; z-index: 3; left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); top: 0; height: 56px; display: flex; justify-content: space-between; align-items: center; }
@@ -1946,7 +1946,8 @@
   @media (prefers-reduced-motion: reduce) { .jmt .big svg { transition: none !important; } }
   /* 13 nov. : à l'ordinateur, le site recule quand le menu s'ouvre (chaque bloc rapetisse vers le centre de l'écran), puis revient */
   /* scale/translate (propriétés individuelles) : s'ajoutent au transform de chaque bloc au lieu de le remplacer, donc le Mac reste où il est */
-  .jmt-back { transition: scale .7s cubic-bezier(.2, .8, .2, 1), translate .7s cubic-bezier(.2, .8, .2, 1) !important; }
+  .jmt .vl { display: none; }
+  .jmt-back { transition: scale .85s cubic-bezier(.22, 1, .36, 1), translate .85s cubic-bezier(.22, 1, .36, 1) !important; }
   /* 14 nov. : finalement, le menu du haut reste visible et recule avec le reste du site */
   html.jmt-recul .jmt-back { scale: .92 !important; translate: var(--jrx, 0) var(--jry, 0) !important; }
   /* 13 nov. : version ordinateur (ouverte par le logo JPR du menu) : une boîte plus petite au milieu de l'écran, entourée de noir :
@@ -1955,7 +1956,13 @@
     .jmt { --s: 22.7vw; --t: 20vh; --ip: 32px; --g: 16px; --pad: calc(var(--s) + var(--ip)); --mcol: calc((100vw - 2 * var(--pad) - 4 * var(--g)) / 5); --mc: calc(var(--mcol) + var(--g)); }
     .jmt::before { inset: var(--t) var(--s) !important; border-radius: 14px; }
     /* 14 nov. : un verre dépoli plutôt qu'un voile sombre : moins noir, flou plus doux, couleurs ravivées ; on lit les formes du site qui recule derrière */
-    .jmt.full { background: rgba(14, 14, 14, .22); -webkit-backdrop-filter: blur(14px) saturate(1.6) brightness(.82); backdrop-filter: blur(14px) saturate(1.6) brightness(.82); }   /* 13 nov. : plus de contour noir plein : le site reste visible derrière, fortement voilé et flou */
+    /* 14 nov. (2) : flou plus léger (8 px), posé une fois pour toutes sur un calque qui apparaît en fondu d'opacité :
+       le navigateur n'a plus à recalculer un flou qui change à chaque image, d'où une ouverture plus douce */
+    .jmt, .jmt.full { background: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
+    .jmt .vl { display: block; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: rgba(14, 14, 14, .16);
+      -webkit-backdrop-filter: blur(8px) saturate(1.5) brightness(.86); backdrop-filter: blur(8px) saturate(1.5) brightness(.86);
+      opacity: 0; transition: opacity .65s cubic-bezier(.4, 0, .2, 1); will-change: opacity; }
+    .jmt.full .vl { opacity: 1; }   /* 13 nov. : plus de contour noir plein : le site reste visible derrière, fortement voilé et flou */
     .jmt .cols { left: var(--pad) !important; right: var(--pad) !important; top: var(--t) !important; bottom: var(--t) !important; }
     .jmt .bar { left: var(--pad); right: var(--pad); top: var(--t); height: 64px; }
     .jmt .bar button, .jmt .bar a { font-size: clamp(14px, 1.05vw, 18px) !important; }
@@ -1988,7 +1995,7 @@
 
   const build = () => {
     m.className = 'jmt';
-    m.innerHTML = `<div class="cols" aria-hidden="true">${[0, 1, 2, 3, 4].map((k) => `<i style="--k:${k}"></i>`).join('')}</div>`
+    m.innerHTML = `<div class="vl" aria-hidden="true"></div><div class="cols" aria-hidden="true">${[0, 1, 2, 3, 4].map((k) => `<i style="--k:${k}"></i>`).join('')}</div>`
       + `<div class="bar"><button type="button" class="x">fermer</button><a href="#" class="ct">contact</a></div>`
       + `<ul>${items().map(li).join('')}</ul><div class="big" aria-hidden="true">${LOGO}</div>`;
     m.classList.add('show');
@@ -2075,7 +2082,7 @@
         el.style.setProperty('--jrx', (k * (innerWidth / 2 - r.left - o[0])).toFixed(1) + 'px'); el.style.setProperty('--jry', (k * (innerHeight / 2 - r.top - o[1])).toFixed(1) + 'px');
         el.classList.add('jmt-back'); });
       void root.offsetWidth; root.classList.add('jmt-recul'); }
-    else { root.classList.remove('jmt-recul'); setTimeout(() => { if (root.classList.contains('jmt-recul')) return; document.querySelectorAll('.jmt-back').forEach((el) => { el.classList.remove('jmt-back'); el.style.removeProperty('--jrx'); el.style.removeProperty('--jry'); }); }, 720); }
+    else { root.classList.remove('jmt-recul'); setTimeout(() => { if (root.classList.contains('jmt-recul')) return; document.querySelectorAll('.jmt-back').forEach((el) => { el.classList.remove('jmt-back'); el.style.removeProperty('--jrx'); el.style.removeProperty('--jry'); }); }, 880); }
   };
   const mk = () => { if (!m) { m = document.createElement('div'); m.id = 'jmt'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-label', 'Menu'); document.body.appendChild(m); } };
   const open = async () => {
@@ -2093,7 +2100,7 @@
     if (busy || !opened) return; busy = true;
     m.classList.remove('words'); await wait(fast ? 0 : 280);
     m.classList.remove('colon'); await wait(fast ? 0 : 140);
-    window.__jmtPause = false; recul(false); m.classList.remove('full'); await wait(fast ? 0 : 420);
+    window.__jmtPause = false; recul(false); m.classList.remove('full'); await wait(fast ? 0 : 600);
     m.classList.remove('show'); document.documentElement.style.overflow = ''; opened = false; busy = false;
     btns().forEach((b) => b.setAttribute('aria-expanded', 'false'));
     if (nofocus) return;
