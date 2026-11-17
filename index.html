@@ -159,9 +159,9 @@
     top: 2.44%; height: calc(var(--u) * 63.464);
     width: calc(var(--u) * 54.637); transform-origin: 0 50%;
     backface-visibility: hidden; -webkit-backface-visibility: hidden;   /* un flanc qui tourne le dos n'est pas dessiné */
-    background: url(mac3d/classic-side-real.webp) 0 0 / 100% 100% no-repeat;
-    -webkit-mask: url(mac3d/classic-side-real.webp) 0 0 / 100% 100% no-repeat;
-            mask: url(mac3d/classic-side-real.webp) 0 0 / 100% 100% no-repeat;
+    background: url(mac3d/v3/side-right.webp) 0 0 / 100% 100% no-repeat;
+    -webkit-mask: url(mac3d/v3/side-right.webp) 0 0 / 100% 100% no-repeat;
+            mask: url(mac3d/v3/side-right.webp) 0 0 / 100% 100% no-repeat;
   }
   .face.left::before, .face.right::before {   /* reflet qui balaie le plastique pendant le tour */
     content: ""; position: absolute; inset: 0; z-index: 1;
@@ -169,26 +169,32 @@
   }
   .face.left  {               /* pivoté de l'autre côté pour regarder vers l'extérieur ; texture miroir */
     left: calc(25.95% - var(--u) * 54.637); transform-origin: 100% 50%;
-    background-image: url(mac3d/classic-side-left.webp);
-    -webkit-mask-image: url(mac3d/classic-side-left.webp); mask-image: url(mac3d/classic-side-left.webp);
+    background-image: url(mac3d/v3/side-left.webp);
+    -webkit-mask-image: url(mac3d/v3/side-left.webp); mask-image: url(mac3d/v3/side-left.webp);
     transform: translateZ(calc(var(--u) * -.3)) rotateY(-90deg); filter: brightness(var(--lL, .8)); }
   .face.right { left: 73.98%; transform: translateZ(calc(var(--u) * -.3)) rotateY(90deg); filter: brightness(var(--lR, .6));
-    background-image: url(mac3d/classic-side-right.webp); }   /* côté droit : pas de grille de haut-parleur */
+    background-image: url(mac3d/v3/side-right.webp);
+    -webkit-mask-image: url(mac3d/v3/side-right.webp); mask-image: url(mac3d/v3/side-right.webp); }   /* 17 nov. (atelier) : textures de flanc nettoyées en haut (plus d'arête ni de poignée photographiées) */   /* côté droit : pas de grille de haut-parleur */
 
   /* le pied en retrait : sous la bande du logo, la façade recule de 4.877 u (relevé sur la vue de côté) */
   .face.foot {
-    left: 25.95%; width: 48.03%; top: 84.57%; height: calc(var(--u) * 8.703);
+    left: 25.95%; width: 48.03%; top: 84.57%; height: calc(var(--u) * 7.895);   /* 17 nov. (atelier) : s'arrête au dessous (avant : 8.703, dépassait de 0,8 u) */
     transform: translateZ(calc(var(--u) * -4.877));
     backface-visibility: hidden; -webkit-backface-visibility: hidden;
     background:
       linear-gradient(180deg, rgba(20,16,8,.55), rgba(20,16,8,.18) 28%, transparent 60%),   /* ombre portée par la bande */
-      url(mac3d/classic-foot.webp) 0 0 / 100% 100% no-repeat;
+      url(mac3d/v3/foot.webp) 0 0 / 100% 100% no-repeat;
     filter: brightness(var(--lF, .9));
   }
+  .face.nook {                 /* 17 nov. (atelier) : petit mur au fond de chaque coin arrondi de la bande (là où le pied commence) */
+    top: calc(var(--u) * (56.38 - 1.7)); width: calc(var(--u) * 1.7); height: calc(var(--u) * 1.7);
+    transform: translateZ(calc(var(--u) * -4.877)); background: rgb(191,185,170); filter: brightness(.5);
+    backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .face.nook.l { left: 25.95%; -webkit-mask: radial-gradient(circle at 100% 0, transparent 70.5%, #000 71%); mask: radial-gradient(circle at 100% 0, transparent 70.5%, #000 71%); }
+  .face.nook.r { left: calc(73.98% - var(--u) * 1.7); -webkit-mask: radial-gradient(circle at 0 0, transparent 70.5%, #000 71%); mask: radial-gradient(circle at 0 0, transparent 70.5%, #000 71%); }
   .face.notch {                /* dessous de la bande du logo, qui surplombe le pied */
-    left: 25.95%; width: 48.03%; top: 84.57%; height: calc(var(--u) * 4.877); transform-origin: 50% 0;
-    clip-path: inset(0 round calc(var(--u) * 1.1) calc(var(--u) * 1.1) 0 0);   /* coins avant arrondis comme le bas de la bande */
-    transform: rotateX(-90deg); background: url(mac3d/classic-notch.webp) 0 0 / 100% 100% no-repeat, #8d877a; filter: brightness(.55);
+    left: calc(25.95% + var(--u) * 1.7); width: calc(48.03% - var(--u) * 3.4); top: 84.57%; height: calc(var(--u) * 4.877); transform-origin: 50% 0;   /* 17 nov. (atelier) : s'arrête aux coins arrondis */
+    transform: rotateX(-90deg); background: url(mac3d/v3/notch.webp) 0 0 / 100% 100% no-repeat, #8d877a; filter: brightness(.55);
     backface-visibility: hidden; -webkit-backface-visibility: hidden;
   }
 
@@ -202,24 +208,25 @@
   /* dessus + chanfrein : des bandes qui suivent exactement le haut de la silhouette du flanc (relevé au sous-pixel),
      pour que le flanc ne dépasse jamais du dessus ni du chanfrein. Générées dans le script du Mac. */
   .face.tp { left: 0; top: 0; transform-origin: 0 0; }
-  .face.tp.ch { background: url(mac3d/classic-chamfer.webp) no-repeat; }   /* photo : poignée et aérations du haut */
-  .face.tp.tv { background: url(mac3d/classic-top.webp) no-repeat; }        /* photo vue de dessus, redressée : coutures, bandeau avant, creux de la poignée */
+  .face.tp.ch { background: url(mac3d/v3/chamfer.webp) no-repeat; }   /* photo : poignée et aérations du haut */
+  .face.tp.tv { background: url(mac3d/v3/top.webp) no-repeat; }        /* photo vue de dessus, redressée : coutures, bandeau avant, creux de la poignée */
   .face.tp.fil, .face.bb { background: none; }                               /* arêtes arrondies : teinte unie, du dessus vers le flanc */
   .face.bottom {
     top: calc(var(--u) * 64.275); height: calc(var(--u) * 47.960); transform-origin: 50% 0;   /* s’arrête avant l'arrondi du bas du dos */
     transform: translateZ(calc(var(--u) * -4.877)) rotateX(-90deg);   /* commence sous le pied en retrait */
     backface-visibility: hidden; -webkit-backface-visibility: hidden;
-    background: url(mac3d/classic-bottom.webp) 0 0 / 100% 100% no-repeat;   /* photo vue de dessous : pieds, aérations, étiquette, trappe */
+    background: url(mac3d/v3/bottom.webp) 0 0 / 100% 100% no-repeat;   /* photo vue de dessous : pieds, aérations, étiquette, trappe */
     filter: brightness(.5);
   }
   .face.back {                 /* dos : la photo redressée (étiquette, prise, interrupteur, aérations, ports) */
     top: calc(var(--u) * 14.808); height: calc(var(--u) * 49.467);
     transform: translateZ(calc(var(--u) * -54.937)) rotateY(180deg);
-    clip-path: inset(0 0 calc(var(--u) * 2.1) 0 round calc(var(--u) * 1.9) calc(var(--u) * 1.9) 0 0);   /* coins du haut arrondis ; le bas laisse place à l'arête arrondie */
+    clip-path: inset(0 0 calc(var(--u) * 2.1) 0);   /* 17 nov. (atelier) : coins du haut carrés (l'arrondi laissait un petit trou sous la fin de l'arête du chanfrein) ; le bas laisse place à l'arête arrondie */
     backface-visibility: hidden; -webkit-backface-visibility: hidden;
-    background: url(mac3d/classic-back.webp) 0 0 / 100% 100% no-repeat;
+    background: url(mac3d/v3/back.webp) 0 0 / 100% 100% no-repeat;
     filter: brightness(var(--lB, .7));
   }
+
 
   [hidden] { display: none !important; }
 
@@ -610,6 +617,8 @@
     <div class="face right"></div>
     <div class="face foot"></div>
     <div class="face notch"></div>
+    <div class="face nook l"></div>
+    <div class="face nook r"></div>
     <div class="screen front"><img src="mac3d/ville-titre.png" alt="" decoding="async"></div>
     <div class="glare front"></div>
     <img class="case front" src="mac3d/classic-case.webp" alt="" decoding="async">
@@ -782,38 +791,35 @@
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const MAX = MAX_DEG * (reduce ? 0.5 : 1);
 
-  // bord arrondi de la façade
-  const frag = document.createDocumentFragment();
-  for (let i = 8; i >= 1; i--) {
-    const img = new Image();
-    img.src = 'mac3d/classic-side.png'; img.alt = ''; img.className = 'slice front';
-    img.style.setProperty('--i', i);
-    img.style.filter = `brightness(${(1.0 - i * 0.008).toFixed(3)})`;
-    frag.appendChild(img);
-  }
-  obj.querySelector('.screen').before(frag);
+  // 17 nov. (atelier) : l'épaisseur de la façade n'est plus faite de 8 photos empilées (on voyait leurs 8 bords en biais) :
+  // c'est une vraie bordure, une bande fine qui relie le contour de la façade au corps du Mac (voir rim dans shell())
 
   // ---------- la coque : dessus, chanfrein et arêtes arrondies, posés exactement sur les flancs ----------
   // Profil [profondeur, hauteur] en u (depuis l'avant et le haut de l'image) : dessus plat, puis le chanfrein relevé sur la
   // silhouette du flanc (enveloppe extérieure). Le long de ce profil : le dessus (bandes) et, de chaque côté, une arête
   // arrondie de rayon 1.9 u (8 facettes) qui rejoint le flanc. Les flancs sont coupés juste sous l'arrondi : aucun jour,
   // aucun débord, et l'arrondi continue celui des coins de la façade.
-  const SH = { BOT: 64.275, DEP: 54.937, RB: 2.1, XL: 25.95, XR: 73.98, R: 1.9, PR: [[0.3, 1.7], [44.636, 1.7], [45.173, 1.813], [45.398, 1.829], [45.567, 1.856], [45.625, 1.873], [45.737, 1.916], [45.85, 1.97], [46.076, 2.11], [46.132, 2.154], [46.584, 2.593], [48.672, 4.86], [49.236, 5.594], [54.598, 14.035], [54.655, 14.143], [54.937, 14.808]], CH0: 2, D: 54.637, TOP: 1.627, HS: 63.464 };
-  const shellEls = [];
+  const SH = { RC: 1.7, BOT: 64.275, DEP: 54.937, RB: 2.1, XL: 25.95, XR: 73.98, R: 1.9, PR: [[0.3, 1.7], [44.636, 1.7], [45.6, 1.86], [46.15, 2.17], [46.584, 2.593], [49.0, 5.29], [54.598, 14.035], [54.937, 14.808]], CH0: 2, D: 54.637, TOP: 1.627, HS: 63.464 };
+  const shellEls = [], RIM_N = 4 * 5 + 3;   // place pour le niveau de détail le plus fin
   {
     const back = obj.querySelector('.face.back');
     const n = SH.PR.length - 1, NF = 8;
-    for (let i = 0; i < n * (1 + 2 * NF) + 6; i++) { const d = document.createElement('div'); d.className = 'face tp'; back.after(d); shellEls.push(d); }
+    for (let i = 0; i < n * (1 + 2 * NF) + 6 + 8 + RIM_N; i++) { const d = document.createElement('div'); d.className = 'face tp'; back.after(d); shellEls.push(d); }
     // les flancs, coupés juste sous l'arrondi (polygone en % de chaque flanc)
     const off = SH.PR.map((q, i) => {
       const a = SH.PR[Math.max(0, i - 1)], b = SH.PR[Math.min(n, i + 1)];
       let tz = b[0] - a[0], ty = b[1] - a[1]; const l = Math.hypot(tz, ty); tz /= l; ty /= l;
-      return [q[0] - SH.R * ty, q[1] + SH.R * tz];   // décalé vers l'intérieur, perpendiculairement au profil
+      return [q[0] - (SH.R - .12) * ty, q[1] + (SH.R - .12) * tz];   // 17 nov. (atelier) : le flanc glisse un peu sous l’arête arrondie : plus de fine ligne sombre entre les deux   // décalé vers l'intérieur, perpendiculairement au profil
     });
     const poly = (mirror) => {
       const pt = (z, y) => `${(mirror ? 100 - (z - 0.3) / SH.D * 100 : (z - 0.3) / SH.D * 100).toFixed(3)}% ${((y - SH.TOP) / SH.HS * 100).toFixed(3)}%`;
       const last = off[off.length - 1];
-      return 'polygon(' + [pt(0.3, off[0][1]), ...off.map(([z, y]) => pt(Math.max(0.3, z), y)), pt(SH.D + 0.3, last[1]), pt(SH.D + 0.3, SH.TOP + SH.HS), pt(0.3, SH.TOP + SH.HS)].join(', ') + ')';
+      // 17 nov. (atelier) : le flanc monte jusqu'au haut du dos (plus de triangle vide sous la fin de l'arête),
+      // s'arrête au dessous (avec l'arrondi dos-dessous) et suit le retrait du pied à l'avant
+      const { BOT, RB, DEP } = SH, FOOT_Y = 56.38, FOOT_Z = 4.877, arc = [];
+      for (let k = 0; k <= 4; k++) { const p = k / 4 * Math.PI / 2; arc.push(pt(DEP - RB + RB * Math.cos(p), BOT - RB + RB * Math.sin(p))); }
+      return 'polygon(' + [pt(0.3, off[0][1]), ...off.map(([z, y]) => pt(Math.max(0.3, z), y)), pt(DEP, SH.PR[SH.PR.length - 1][1]), ...arc,
+        pt(FOOT_Z, BOT), pt(FOOT_Z, FOOT_Y - SH.RC), pt(0.3, FOOT_Y - SH.RC)].join(', ') + ')';
     };
     obj.querySelector('.face.right').style.clipPath = poly(false);
     obj.querySelector('.face.left').style.clipPath = poly(true);
@@ -821,6 +827,7 @@
   const shell = (u) => {
     const P = (x, y, z) => [x * u, y * u, -z * u];
     const quad = (el, O, A, B) => {   // O : coin ; A : le long du profil ; B : en travers
+      el.style.display = '';
       const o = P(...O), a = P(...A), b = P(...B);
       const X = [b[0] - o[0], b[1] - o[1], b[2] - o[2]], Yv = [a[0] - o[0], a[1] - o[1], a[2] - o[2]];
       const w = Math.hypot(...X), hh = Math.hypot(...Yv);
@@ -829,7 +836,7 @@
       el.style.width = w.toFixed(2) + 'px'; el.style.height = hh.toFixed(2) + 'px';
       el.style.transform = `matrix3d(${x.map((v) => v.toFixed(6))},0,${y.map((v) => v.toFixed(6))},0,${zz.map((v) => v.toFixed(6))},0,${o.map((v) => v.toFixed(3))},1)`;
     };
-    const { XL, XR, R, PR, CH0 } = SH, n = PR.length - 1, NF = 8, ov = 0.05;
+    const { XL, XR, R, PR, CH0 } = SH, n = PR.length - 1, NF = 4, ov = 0.1;   // 17 nov. : 4 bandes par arrondi (avant : 8)
     let s = 0, sc = 0;
     const segs = [];
     for (let i = 0; i < n; i++) {
@@ -839,6 +846,18 @@
     }
     const LC = s - sc, sc0 = sc;   // sc0 : longueur du dessus (photo vue de dessus), LC : du chanfrein
     let e = 0;
+    // 17 nov. (atelier) : ombrage lissé, sans ajouter de faces : la teinte de chaque bande est un dégradé qui part de la valeur
+    // de sa voisine (ombrage « de Gouraud ») au lieu d'un aplat ; plus de paliers ni de lignes entre les bandes
+    const segLum = segs.map((g) => 1 - 0.15 * Math.min(1, Math.max(0, Math.atan2(g.y1 - g.y0, g.z1 - g.z0))));
+    const vLum = segs.map((g, i) => i ? (segLum[i - 1] + segLum[i]) / 2 : segLum[0]).concat([segLum[n - 1]]);
+    const C = [191, 185, 170], rgbK = (k) => `rgb(${C.map((c) => Math.round(Math.min(255, c * k))).join(',')})`;
+    // dégradé en travers d'une facette d'arête arrondie : la couleur à chaque bord est calculée dans le CSS à partir des lumières
+    // du moment (--lT, --lL…), donc deux facettes voisines ont exactement la même teinte à leur bord commun, quel que soit l'angle
+    const across = (el, f, p0, p1) => {   // f(φ) : expression CSS de la luminosité à l'angle φ
+      const col = (p) => `rgb(${C.map((c) => `calc(${c} * (${f(p)}))`).join(', ')})`;
+      el.style.backgroundColor = 'transparent'; el.style.filter = 'none';
+      el.style.backgroundImage = `linear-gradient(90deg, ${col(p0)}, ${col(p1)})`;
+    };
     for (let i = 0; i < n; i++) {
       const g = segs[i], tz = (g.z1 - g.z0) / g.len, ty = (g.y1 - g.y0) / g.len;
       const ch = i >= CH0, slope = Math.min(1, Math.max(0, Math.atan2(g.y1 - g.y0, g.z1 - g.z0)));
@@ -849,20 +868,23 @@
       // le dessus
       const top = shellEls[e++];
       top.className = 'face tp' + (ch ? ' ch' : ' tv');
-      quad(top, at(-a0, XL + R, 0), at(g.len + a1, XL + R, 0), at(-a0, XR - R, 0));
-      top.style.filter = `brightness(calc(var(--lT, .95) * ${lum}))`;
+      quad(top, at(-a0, XL + R - .08, 0), at(g.len + a1, XL + R - .08, 0), at(-a0, XR - R + .08, 0));   // déborde un peu sous les arêtes arrondies
+      top.style.filter = 'brightness(var(--lT, .95))';
+      const lumG = `linear-gradient(rgba(0,0,0,${(1 - vLum[i]).toFixed(3)}), rgba(0,0,0,${(1 - vLum[i + 1]).toFixed(3)}))`;
+      top.style.backgroundImage = `${lumG}, url(mac3d/v3/${ch ? 'chamfer' : 'top'}.webp)`; top.style.backgroundRepeat = 'no-repeat'; top.style.backgroundColor = 'rgb(191,185,170)';   // le débord hors de la photo reste du plastique
       if (ch) {
-        top.style.backgroundSize = `${((XR - XL) * u).toFixed(2)}px ${(LC * u).toFixed(2)}px`;
-        top.style.backgroundPosition = `${(-R * u).toFixed(2)}px ${(-(g.s - sc - a0) * u).toFixed(2)}px`;
+        top.style.backgroundSize = `100% 100%, ${((XR - XL) * u).toFixed(2)}px ${(LC * u).toFixed(2)}px`;
+        top.style.backgroundPosition = `0 0, ${((-R + .08) * u).toFixed(2)}px ${(-(g.s - sc - a0) * u).toFixed(2)}px`;
       } else {
-        top.style.backgroundSize = `${((XR - XL) * u).toFixed(2)}px ${(sc0 * u).toFixed(2)}px`;
-        top.style.backgroundPosition = `${(-R * u).toFixed(2)}px ${(-(g.s - a0) * u).toFixed(2)}px`;
+        top.style.backgroundSize = `100% 100%, ${((XR - XL) * u).toFixed(2)}px ${(sc0 * u).toFixed(2)}px`;
+        top.style.backgroundPosition = `0 0, ${((-R + .08) * u).toFixed(2)}px ${(-(g.s - a0) * u).toFixed(2)}px`;
       }
       // les arêtes arrondies, de chaque côté : de φ = 0 (le flanc) à φ = 90° (le dessus)
       for (const side of [-1, 1]) {
         const cx = side < 0 ? XL + R : XR - R;
         for (let f = 0; f < NF; f++) {
-          const p0 = f / NF * Math.PI / 2, p1 = (f + 1) / NF * Math.PI / 2;
+          // 17 nov. (atelier) : chaque facette déborde un peu sur ses voisines : plus de fines lignes sombres entre elles
+          const OV = .045, p0 = Math.max(0, f / NF * Math.PI / 2 - OV), p1 = Math.min(Math.PI / 2, (f + 1) / NF * Math.PI / 2 + OV);
           const X0 = cx + side * R * Math.cos(p0), N0 = R - R * Math.sin(p0);
           const X1 = cx + side * R * Math.cos(p1), N1 = R - R * Math.sin(p1);
           const el = shellEls[e++];
@@ -871,7 +893,9 @@
           const m = Math.sin((p0 + p1) / 2);   // 1 = tourné vers le haut, 0 = vers le côté
           el.style.filter = `brightness(calc(var(--lT, .95) * ${(m * lum).toFixed(3)} + var(${side < 0 ? '--lL' : '--lR'}, .8) * ${(1 - m).toFixed(3)}))`;
           // teinte : celle du dessus (photo vue de dessus) vers celle du flanc (photo de profil)
-          el.style.backgroundColor = `rgb(${[[196, 181], [193, 177], [182, 164]].map(([t, sd]) => Math.round(sd + (t - sd) * m)).join(',')})`;
+          const sideL = side < 0 ? '--lL' : '--lR';
+          el.style.filter = '';
+          across(el, (p) => `var(--lT, .95) * ${(Math.sin(p) * lum).toFixed(4)} + var(${sideL}, .8) * ${(1 - Math.sin(p)).toFixed(4)}`, p0, p1);
         }
       }
     }
@@ -884,9 +908,54 @@
       el.className = 'face tp bb';
       quad(el, pt(XL, p0), pt(XR, p0), pt(XL, p1));
       const m = Math.sin((p0 + p1) / 2);   // 0 = tourné vers l'arrière, 1 = vers le bas
-      el.style.backgroundColor = 'rgb(176,171,158)';
-      el.style.filter = `brightness(calc(var(--lB, .7) * ${(1 - m).toFixed(3)} + ${(0.4 * m).toFixed(3)}))`;
+      across(el, (p) => `var(--lB, .7) * ${(1 - Math.sin(p)).toFixed(4)} + ${(0.4 * Math.sin(p)).toFixed(4)}`, p0, p1);
     }
+    // 17 nov. (atelier) : coins arrondis sous la bande du logo (rayon 1.7 u, comme les coins de la façade),
+    // du flanc au dessous de la bande, sur la profondeur du retrait du pied
+    { const RC = SH.RC, FY = 56.38, FZ = 4.877, NC = 4, OV = .045;
+      for (const side of [-1, 1]) {
+        const cx = side < 0 ? XL + RC : XR - RC, cy = FY - RC;
+        for (let f = 0; f < NC; f++) {
+          const p0 = Math.max(0, f / NC * Math.PI / 2 - OV), p1 = Math.min(Math.PI / 2, (f + 1) / NC * Math.PI / 2 + OV);
+          const P0 = [cx + side * RC * Math.cos(p0), cy + RC * Math.sin(p0)], P1 = [cx + side * RC * Math.cos(p1), cy + RC * Math.sin(p1)];
+          const el = shellEls[e++];
+          el.className = 'face tp fil cf';
+          quad(el, [P0[0], P0[1], 0.3], [P0[0], P0[1], FZ], [P1[0], P1[1], 0.3]);
+          const m = Math.sin((p0 + p1) / 2);   // 0 = tourné vers le côté, 1 = vers le bas
+          across(el, (p) => `var(${side < 0 ? '--lL' : '--lR'}, .8) * ${(1 - Math.sin(p)).toFixed(4)} + ${(0.55 * Math.sin(p)).toFixed(4)}`, p0, p1);
+        }
+      }
+    }
+    // l'épaisseur de la façade : une bande qui part du contour de la façade (z = 0, coins arrondis de la photo)
+    // et rejoint le corps à z = 0.3 (flancs, arêtes arrondies du dessus, coins arrondis de la bande) ; ouverte en bas (dessous de la bande)
+    { const FX0 = 25.78, FX1 = 74.15, FY0 = 1.63, FY1 = 56.38, FR = 1.65, BZ = 0.3, RT = SH.R, RCb = SH.RC, PT = SH.PR[0][1];
+      // coins : [centre avant, rayon avant, centre arrière, rayon arrière, angle de départ] ; l'angle suit l'écran (y vers le bas)
+      const corners = [
+        [[FX0 + FR, FY1 - FR], FR, [XL + RCb, FY1 - RCb], RCb, 90],     // bas gauche → gauche
+        [[FX0 + FR, FY0 + FR], FR, [XL + RT, PT + RT], RT, 180],        // haut gauche
+        [[FX1 - FR, FY0 + FR], FR, [XR - RT, PT + RT], RT, 270],        // haut droit
+        [[FX1 - FR, FY1 - FR], FR, [XR - RCb, FY1 - RCb], RCb, 0],      // droite → bas droit
+      ];
+      const Fp = [], Bp = [], Th = [];
+      for (const [fc, fr, bc, br, a0] of corners) for (let k = 0; k <= 3; k++) {
+        const t = (a0 + k / 3 * 90) * Math.PI / 180;
+        Fp.push([fc[0] + fr * Math.cos(t), fc[1] + fr * Math.sin(t), 0]); Bp.push([bc[0] + br * Math.cos(t), bc[1] + br * Math.sin(t), BZ]); Th.push(t);
+      }
+      const lit = (t) => {   // éclairage selon la direction de la bordure : gauche, dessus, droite ou dessous
+        const w = [Math.max(0, -Math.cos(t)), Math.max(0, -Math.sin(t)), Math.max(0, Math.cos(t)), Math.max(0, Math.sin(t))], sw = w[0] + w[1] + w[2] + w[3];
+        return `var(--lL, .8) * ${(w[0] / sw).toFixed(4)} + var(--lT, .95) * ${(w[1] / sw).toFixed(4)} + var(--lR, .6) * ${(w[2] / sw).toFixed(4)} + ${(0.55 * w[3] / sw).toFixed(4)}`;
+      };
+      for (let i = 0; i < Fp.length - 1; i++) {
+        const el = shellEls[e++];
+        if (Math.hypot(Fp[i + 1][0] - Fp[i][0], Fp[i + 1][1] - Fp[i][1]) < 1e-6) { el.style.display = 'none'; continue; }   // jonction entre deux coins au même angle
+        el.style.display = ''; el.className = 'face tp rim';
+        quad(el, Fp[i], Bp[i], Fp[i + 1]);
+        const col = (t) => `rgb(${C.map((c) => `calc(${c} * (${lit(t)}))`).join(', ')})`;
+        el.style.backgroundColor = 'transparent'; el.style.filter = 'none';
+        el.style.backgroundImage = `linear-gradient(90deg, ${col(Th[i])}, ${col(Th[i + 1])})`;
+      }
+    }
+    for (let k = e; k < shellEls.length; k++) shellEls[k].style.display = 'none';   // facettes en trop au niveau de détail choisi
   };
   window.__macShell = shell;
 
@@ -1121,7 +1190,7 @@
     const c = (v, lo, hi) => Math.max(lo, Math.min(hi, v)).toFixed(3);
     st.setProperty('--lL', c(0.86 + sn * 0.35, 0.35, 1.08));
     st.setProperty('--lR', c(0.58 - sn * 0.35, 0.3, 1.0));
-    st.setProperty('--lT', c(0.98 + tn * 0.4, 0.5, 1.1));
+    st.setProperty('--lT', c(0.98 - tn * 0.3, 0.75, 1.1));   // 17 nov. : le dessus s'éclaire quand il se tourne vers nous (c'était inversé)
     st.setProperty('--lB', c(0.62 - cs * 0.2, 0.4, 0.9));
     st.setProperty('--spec', lerp(130, -30, clamp01(((spin % 180) - 25) / 130)).toFixed(1) + '%');
     st.setProperty('--gx', (30 + cx * 35).toFixed(1) + '%');
