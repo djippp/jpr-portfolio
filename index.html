@@ -178,7 +178,8 @@
 
   /* le pied en retrait : sous la bande du logo, la façade recule de 4.877 u (relevé sur la vue de côté) */
   .face.foot {
-    left: 25.95%; width: 48.03%; top: 84.57%; height: calc(var(--u) * 7.895);   /* 17 nov. (atelier) : s'arrête au dessous (avant : 8.703, dépassait de 0,8 u) */
+    left: 25.95%; width: 48.03%; top: 84.57%; height: calc(var(--u) * 7.895);
+    clip-path: inset(0 round 0 0 calc(var(--u) * 1.7) calc(var(--u) * 1.7));   /* 17 nov. : coins du bas arrondis */   /* 17 nov. (atelier) : s'arrête au dessous (avant : 8.703, dépassait de 0,8 u) */
     transform: translateZ(calc(var(--u) * -4.877));
     backface-visibility: hidden; -webkit-backface-visibility: hidden;
     background:
@@ -214,6 +215,7 @@
   .face.bottom {
     top: calc(var(--u) * 64.275); height: calc(var(--u) * 47.960); transform-origin: 50% 0;   /* s’arrête avant l'arrondi du bas du dos */
     transform: translateZ(calc(var(--u) * -4.877)) rotateX(-90deg);   /* commence sous le pied en retrait */
+    left: calc(25.95% + var(--u) * 1.6); width: calc(48.03% - var(--u) * 3.2);   /* 17 nov. : s'arrête aux arêtes arrondies flanc / dessous */
     backface-visibility: hidden; -webkit-backface-visibility: hidden;
     background: url(mac3d/v3/bottom.webp) 0 0 / 100% 100% no-repeat;   /* photo vue de dessous : pieds, aérations, étiquette, trappe */
     filter: brightness(.5);
@@ -804,7 +806,7 @@
   {
     const back = obj.querySelector('.face.back');
     const n = SH.PR.length - 1, NF = 8;
-    for (let i = 0; i < n * (1 + 2 * NF) + 6 + 8 + RIM_N; i++) { const d = document.createElement('div'); d.className = 'face tp'; back.after(d); shellEls.push(d); }
+    for (let i = 0; i < n * (1 + 2 * NF) + 6 + 8 + 8 + RIM_N; i++) { const d = document.createElement('div'); d.className = 'face tp'; back.after(d); shellEls.push(d); }
     // les flancs, coupés juste sous l'arrondi (polygone en % de chaque flanc)
     const off = SH.PR.map((q, i) => {
       const a = SH.PR[Math.max(0, i - 1)], b = SH.PR[Math.min(n, i + 1)];
@@ -817,9 +819,10 @@
       // 17 nov. (atelier) : le flanc monte jusqu'au haut du dos (plus de triangle vide sous la fin de l'arête),
       // s'arrête au dessous (avec l'arrondi dos-dessous) et suit le retrait du pied à l'avant
       const { BOT, RB, DEP } = SH, FOOT_Y = 56.38, FOOT_Z = 4.877, arc = [];
-      for (let k = 0; k <= 4; k++) { const p = k / 4 * Math.PI / 2; arc.push(pt(DEP - RB + RB * Math.cos(p), BOT - RB + RB * Math.sin(p))); }
+      const pc = Math.asin((RB - SH.RC) / RB);   // 17 nov. : l'arc du dos s'arrête où commence l'arête arrondie flanc / dessous
+      for (let k = 0; k <= 4; k++) { const p = k / 4 * pc; arc.push(pt(DEP - RB + RB * Math.cos(p), BOT - RB + RB * Math.sin(p))); }
       return 'polygon(' + [pt(0.3, off[0][1]), ...off.map(([z, y]) => pt(Math.max(0.3, z), y)), pt(DEP, SH.PR[SH.PR.length - 1][1]), ...arc,
-        pt(FOOT_Z, BOT), pt(FOOT_Z, FOOT_Y - SH.RC), pt(0.3, FOOT_Y - SH.RC)].join(', ') + ')';
+        pt(FOOT_Z, BOT - SH.RC), pt(FOOT_Z, FOOT_Y - SH.RC), pt(0.3, FOOT_Y - SH.RC)].join(', ') + ')';
     };
     obj.querySelector('.face.right').style.clipPath = poly(false);
     obj.querySelector('.face.left').style.clipPath = poly(true);
@@ -953,6 +956,20 @@
         const col = (t) => `rgb(${C.map((c) => `calc(${c} * (${lit(t)}))`).join(', ')})`;
         el.style.backgroundColor = 'transparent'; el.style.filter = 'none';
         el.style.backgroundImage = `linear-gradient(90deg, ${col(Th[i])}, ${col(Th[i + 1])})`;
+      }
+    }
+    // 17 nov. (atelier) : arêtes arrondies entre les flancs et le dessous (rayon 1.7 u), du pied jusqu'à l'arrondi du dos
+    { const RC = SH.RC, FZ = 4.877, Z1 = SH.DEP - SH.RB, NC = 4, OV = .045;
+      for (const side of [-1, 1]) {
+        const cx = side < 0 ? SH.XL + RC : SH.XR - RC, cy = SH.BOT - RC;
+        for (let f = 0; f < NC; f++) {
+          const p0 = Math.max(0, f / NC * Math.PI / 2 - OV), p1 = Math.min(Math.PI / 2, (f + 1) / NC * Math.PI / 2 + OV);
+          const X = (p) => cx + side * RC * Math.cos(p), Y = (p) => cy + RC * Math.sin(p);
+          const el = shellEls[e++];
+          el.className = 'face tp fil pb';
+          quad(el, [X(p0), Y(p0), FZ - .05], [X(p0), Y(p0), Z1 + .05], [X(p1), Y(p1), FZ - .05]);
+          across(el, (p) => `var(${side < 0 ? '--lL' : '--lR'}, .8) * ${(1 - Math.sin(p)).toFixed(4)} + ${(0.5 * Math.sin(p)).toFixed(4)}`, p0, p1);
+        }
       }
     }
     for (let k = e; k < shellEls.length; k++) shellEls[k].style.display = 'none';   // facettes en trop au niveau de détail choisi
