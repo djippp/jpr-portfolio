@@ -193,9 +193,13 @@
     backface-visibility: hidden; -webkit-backface-visibility: hidden; }
   .face.nook.l { left: 25.95%; -webkit-mask: radial-gradient(circle at 100% 0, transparent 70.5%, #000 71%); mask: radial-gradient(circle at 100% 0, transparent 70.5%, #000 71%); }
   .face.nook.r { left: calc(73.98% - var(--u) * 1.7); -webkit-mask: radial-gradient(circle at 0 0, transparent 70.5%, #000 71%); mask: radial-gradient(circle at 0 0, transparent 70.5%, #000 71%); }
+  /* 17 nov. (atelier) : plus de bordure entre la façade et le corps : la photo recule au plan où commence le corps (z = 0,3 u) ;
+     son contour est découpé dans l'image (case-cut.webp) sur celui du corps */
+  .obj img.case { transform: translateZ(calc(var(--u) * -.3)); }
+  .face .edge { display: none; }
   .face.notch {                /* dessous de la bande du logo, qui surplombe le pied */
-    left: calc(25.95% + var(--u) * 1.7); width: calc(48.03% - var(--u) * 3.4); top: 84.57%; height: calc(var(--u) * 4.877); transform-origin: 50% 0;   /* 17 nov. (atelier) : s'arrête aux coins arrondis */
-    transform: rotateX(-90deg); background: url(mac3d/v3/notch.webp) 0 0 / 100% 100% no-repeat, #8d877a; filter: brightness(.55);
+    left: calc(25.95% + var(--u) * 1.7); width: calc(48.03% - var(--u) * 3.4); top: 84.57%; height: calc(var(--u) * 4.577); transform-origin: 50% 0;   /* 17 nov. (atelier) : s'arrête aux coins arrondis ; part du plan de la façade (0,3 u) */
+    transform: translateZ(calc(var(--u) * -.3)) rotateX(-90deg); background: url(mac3d/v3/notch.webp) 0 0 / 100% 100% no-repeat, #8d877a; filter: brightness(.55);
     backface-visibility: hidden; -webkit-backface-visibility: hidden;
   }
 
@@ -213,7 +217,7 @@
   .face.tp.tv { background: url(mac3d/v3/top.webp) no-repeat; }        /* photo vue de dessus, redressée : coutures, bandeau avant, creux de la poignée */
   .face.tp.fil, .face.bb { background: none; }                               /* arêtes arrondies : teinte unie, du dessus vers le flanc */
   .face.bottom {
-    top: calc(var(--u) * 64.275); height: calc(var(--u) * 47.960); transform-origin: 50% 0;   /* s’arrête avant l'arrondi du bas du dos */
+    top: calc(var(--u) * 64.275); height: calc(var(--u) * 50.060); transform-origin: 50% 0;   /* 17 nov. (atelier) : dos droit : va jusqu'au dos */
     transform: translateZ(calc(var(--u) * -4.877)) rotateX(-90deg);   /* commence sous le pied en retrait */
     left: calc(25.95% + var(--u) * 1.6); width: calc(48.03% - var(--u) * 3.2);   /* 17 nov. : s'arrête aux arêtes arrondies flanc / dessous */
     backface-visibility: hidden; -webkit-backface-visibility: hidden;
@@ -223,7 +227,7 @@
   .face.back {                 /* dos : la photo redressée (étiquette, prise, interrupteur, aérations, ports) */
     top: calc(var(--u) * 14.808); height: calc(var(--u) * 49.467);
     transform: translateZ(calc(var(--u) * -54.937)) rotateY(180deg);
-    clip-path: inset(0 0 calc(var(--u) * 2.1) 0);   /* 17 nov. (atelier) : coins du haut carrés (l'arrondi laissait un petit trou sous la fin de l'arête du chanfrein) ; le bas laisse place à l'arête arrondie */
+    clip-path: var(--bclip);   /* 17 nov. (atelier) : dos droit jusqu'en bas, coins du bas arrondis comme l'arête flanc / dessous */   /* (avant) coins du haut carrés (l'arrondi laissait un petit trou sous la fin de l'arête du chanfrein) ; le bas laisse place à l'arête arrondie */
     backface-visibility: hidden; -webkit-backface-visibility: hidden;
     background: url(mac3d/v3/back.webp) 0 0 / 100% 100% no-repeat;
     filter: brightness(var(--lB, .7));
@@ -623,7 +627,7 @@
     <div class="face nook r"></div>
     <div class="screen front"><img src="mac3d/ville-titre.png" alt="" decoding="async"></div>
     <div class="glare front"></div>
-    <img class="case front" src="mac3d/classic-case.webp" alt="" decoding="async">
+    <img class="case front" src="mac3d/v3/case-cut.webp" alt="" decoding="async">
   </div>
 </div>
 
@@ -797,21 +801,23 @@
   // c'est une vraie bordure, une bande fine qui relie le contour de la façade au corps du Mac (voir rim dans shell())
 
   // ---------- la coque : dessus, chanfrein et arêtes arrondies, posés exactement sur les flancs ----------
+  const TW = 1, NS = 'http://www.w3.org/2000/svg';   // 17 nov. : (repris de l'atelier) TW = 0 seulement dans la vue polygones de l'atelier
   // Profil [profondeur, hauteur] en u (depuis l'avant et le haut de l'image) : dessus plat, puis le chanfrein relevé sur la
   // silhouette du flanc (enveloppe extérieure). Le long de ce profil : le dessus (bandes) et, de chaque côté, une arête
   // arrondie de rayon 1.9 u (8 facettes) qui rejoint le flanc. Les flancs sont coupés juste sous l'arrondi : aucun jour,
   // aucun débord, et l'arrondi continue celui des coins de la façade.
-  const SH = { RC: 1.7, BOT: 64.275, DEP: 54.937, RB: 2.1, XL: 25.95, XR: 73.98, R: 1.9, PR: [[0.3, 1.7], [44.636, 1.7], [45.6, 1.86], [46.15, 2.17], [46.584, 2.593], [49.0, 5.29], [54.598, 14.035], [54.937, 14.808]], CH0: 2, D: 54.637, TOP: 1.627, HS: 63.464, PJ: 3 };
-  const shellEls = [], RIM_N = 4 * 5 + 3;   // place pour le niveau de détail le plus fin
+  const SH = { RC: 1.7, BOT: 64.275, DEP: 54.937, RB: 2.1, XL: 25.95, XR: 73.98, R: 1.9, PR: [[0.3, 1.7], [44.636, 1.7], [45.6, 1.86], [46.584, 2.593], [49.0, 5.29], [54.598, 14.035], [54.937, 14.808]], CH0: 2, D: 54.637, TOP: 1.627, HS: 63.464, PJ: 3, TAP: 3 };   // TAP : longueur où l'arête flanc / dessous s'amincit jusqu'au coin vif du dos
+  const shellEls = [], RIM_N = 2 * (2 * 9 + 2 * 5);   // 17 nov. : la bordure en triangles (2 par facette), coins du haut jusqu'à 8 segments   // place pour le niveau de détail le plus fin
   {
     const back = obj.querySelector('.face.back');
     const n = SH.PR.length - 1, NF = 8;
-    for (let i = 0; i < n * (1 + 2 * NF) + 6 + 8 + 8 + 48 + RIM_N; i++) { const d = document.createElement('div'); d.className = 'face tp'; back.after(d); shellEls.push(d); }
+    for (let i = 0; i < n * (1 + 2 * NF) + 6 + 8 + 8 + 48 + RIM_N; i++) { const d = document.createElement('div'); d.className = 'face tp'; const sv = document.createElementNS(NS, 'svg'); sv.setAttribute('class', 'edge'); sv.setAttribute('viewBox', '0 0 100 100'); sv.setAttribute('preserveAspectRatio', 'none'); sv.appendChild(document.createElementNS(NS, 'polygon')); sv.appendChild(document.createElementNS(NS, 'path')); d.appendChild(sv); back.after(d); shellEls.push(d); }
     // les flancs, coupés juste sous l'arrondi (polygone en % de chaque flanc)
     const off = SH.PR.map((q, i) => {
-      const a = SH.PR[Math.max(0, i - 1)], b = SH.PR[Math.min(n, i + 1)];
-      let tz = b[0] - a[0], ty = b[1] - a[1]; const l = Math.hypot(tz, ty); tz /= l; ty /= l;
-      return [q[0] - (SH.R - .12) * ty, q[1] + (SH.R - .12) * tz];   // 17 nov. (atelier) : le flanc glisse un peu sous l’arête arrondie : plus de fine ligne sombre entre les deux   // décalé vers l'intérieur, perpendiculairement au profil
+      // 17 nov. : décalage en onglet (comme les bandes de l'arrondi) : le bord du flanc tombe pile sur l'arête de la première bande, plis compris
+      const nrm = (j) => { const a = SH.PR[j], b = SH.PR[j + 1], l = Math.hypot(b[0] - a[0], b[1] - a[1]); return [-(b[1] - a[1]) / l, (b[0] - a[0]) / l]; };
+      const n1 = nrm(Math.max(0, i - 1)), n2 = nrm(Math.min(n - 1, i)), k = 1 + n1[0] * n2[0] + n1[1] * n2[1], d = SH.R - .12 * TW;
+      return [q[0] + d * (n1[0] + n2[0]) / k, q[1] + d * (n1[1] + n2[1]) / k];   // 17 nov. (atelier) : le flanc glisse un peu sous l’arête arrondie : plus de fine ligne sombre entre les deux   // décalé vers l'intérieur, perpendiculairement au profil
     });
     const poly = (mirror) => {
       const pt = (z, y) => `${(mirror ? 100 - (z - 0.3) / SH.D * 100 : (z - 0.3) / SH.D * 100).toFixed(3)}% ${((y - SH.TOP) / SH.HS * 100).toFixed(3)}%`;
@@ -819,18 +825,26 @@
       // 17 nov. (atelier) : le flanc monte jusqu'au haut du dos (plus de triangle vide sous la fin de l'arête),
       // s'arrête au dessous (avec l'arrondi dos-dessous) et suit le retrait du pied à l'avant
       const { BOT, RB, DEP } = SH, FOOT_Y = 56.38, FOOT_Z = 4.877, arc = [];
-      // 17 nov. : sous l'arrondi du dos, le flanc suit le bord du raccord arrondi (rayon qui passe de 1.7 u au dessous à 0 au dos), un peu dessous
-      for (let k = 0; k <= SH.PJ; k++) { const p = k / SH.PJ * Math.PI / 2, rho = RB - SH.RC * Math.sin(p) + .04 * Math.sin(p); arc.push(pt(DEP - RB + rho * Math.cos(p), BOT - RB + rho * Math.sin(p))); }
+      // 17 nov. (2) : sous l'arrondi du dos, le flanc suit l'arrondi entier (4 cordes, comme les bandes du dos), puis remonte au bout de l'arête flanc / dessous
+      arc.push(pt(DEP, BOT - SH.RC + .04 * TW));   // 17 nov. (4) : dos droit : le flanc descend tout droit jusqu'à l'arête arrondie flanc / dessous
       return 'polygon(' + [pt(0.3, off[0][1]), ...off.map(([z, y]) => pt(Math.max(0.3, z), y)), pt(DEP, SH.PR[SH.PR.length - 1][1]), ...arc,
-        pt(FOOT_Z, BOT - SH.RC + .04), pt(FOOT_Z, FOOT_Y - SH.RC), pt(0.3, FOOT_Y - SH.RC)].join(', ') + ')';
+        pt(FOOT_Z, BOT - SH.RC + .04 * TW), pt(FOOT_Z, FOOT_Y - SH.RC), pt(0.3, FOOT_Y - SH.RC)].join(', ') + ')';
     };
     obj.querySelector('.face.right').style.clipPath = poly(false);
     obj.querySelector('.face.left').style.clipPath = poly(true);
   }
   const shell = (u) => {
     const P = (x, y, z) => [x * u, y * u, -z * u];
+    // 17 nov. : découpe d'une face (points en % de la face) ; la vue polygones trace la même découpe en arête (une seule ligne, centrée)
+    const clip = (el, pts) => { if (TW) el.style.clipPath = 'polygon(' + pts.map(([x, y]) => `${(+x).toFixed(3)}% ${(+y).toFixed(3)}%`).join(', ') + ')';
+      const pg = el.querySelector('.edge polygon'); if (pg) pg.setAttribute('points', pts.map(([x, y]) => `${(+x).toFixed(3)},${(+y).toFixed(3)}`).join(' '));
+      const ph = el.querySelector('.edge path'); if (ph) ph.setAttribute('d', 'M' + pts.map(([x, y]) => `${(+x).toFixed(3)} ${(+y).toFixed(3)}`).join('L') + 'Z'); };
+    // 17 nov. : soudures : une arête partagée n'est tracée que par une seule des deux faces (pas deux traits superposés qui se hachurent)
+    const lines = (el, segs2) => { const ph = el.querySelector('.edge path'); if (ph) ph.setAttribute('d', segs2.map(([[x0, y0], [x1, y1]]) => `M${(+x0).toFixed(3)} ${(+y0).toFixed(3)}L${(+x1).toFixed(3)} ${(+y1).toFixed(3)}`).join('')); };
     const quad = (el, O, A, B) => {   // O : coin ; A : le long du profil ; B : en travers
       el.style.display = ''; el.style.clipPath = '';
+      const pg = el.querySelector('.edge polygon'); if (pg) pg.setAttribute('points', '0,0 100,0 100,100 0,100');
+      const ph = el.querySelector('.edge path'); if (ph) ph.setAttribute('d', 'M0 0H100V100H0Z');
       const o = P(...O), a = P(...A), b = P(...B);
       const X = [b[0] - o[0], b[1] - o[1], b[2] - o[2]], Yv = [a[0] - o[0], a[1] - o[1], a[2] - o[2]];
       const w = Math.hypot(...X), hh = Math.hypot(...Yv);
@@ -839,7 +853,7 @@
       el.style.width = w.toFixed(2) + 'px'; el.style.height = hh.toFixed(2) + 'px';
       el.style.transform = `matrix3d(${x.map((v) => v.toFixed(6))},0,${y.map((v) => v.toFixed(6))},0,${zz.map((v) => v.toFixed(6))},0,${o.map((v) => v.toFixed(3))},1)`;
     };
-    const { XL, XR, R, PR, CH0 } = SH, n = PR.length - 1, NF = 4, ov = 0.1;   // 17 nov. : 4 bandes par arrondi (avant : 8)
+    const { XL, XR, R, PR, CH0 } = SH, n = PR.length - 1, NF = 4, ov = 0.02 * TW;   // 17 nov. : chevauchement réduit (0,1 → 0,02) : aux plis du profil, il faisait dépasser de petits triangles   // 17 nov. : 4 bandes par arrondi (avant : 8)
     let s = 0, sc = 0;
     const segs = [];
     for (let i = 0; i < n; i++) {
@@ -865,14 +879,22 @@
       const g = segs[i], tz = (g.z1 - g.z0) / g.len, ty = (g.y1 - g.y0) / g.len;
       const ch = i >= CH0, slope = Math.min(1, Math.max(0, Math.atan2(g.y1 - g.y0, g.z1 - g.z0)));
       const a0 = i ? ov : 0, a1 = i < n - 1 ? ov : 0;   // léger chevauchement le long du profil : aucune ligne
+      // 17 nov. : aux plis du profil, une bande enfoncée de dn sous la surface se raccourcit de dn · tan(φ/2) (φ : angle du pli) :
+      // chaque bande d'arrondi est coupée en onglet aux deux bouts, comme un cadre ; plus de pointes qui se croisent
+      const turn = (j) => { if (j <= 0 || j >= n) return 0; const a = segs[j - 1], b = segs[j];
+        const d1 = [(a.z1 - a.z0) / a.len, (a.y1 - a.y0) / a.len], d2 = [(b.z1 - b.z0) / b.len, (b.y1 - b.y0) / b.len];
+        return Math.tan(Math.atan2(d1[0] * d2[1] - d1[1] * d2[0], d1[0] * d2[0] + d1[1] * d2[1]) / 2); };
+      const kS = turn(i), kE = turn(i + 1);
+      const sAt = (dn) => i ? dn * kS - ov : 0, eAt = (dn) => i < n - 1 ? g.len - dn * kE + ov : g.len;
       // point du profil à l'abscisse t, en x, enfoncé de dn perpendiculairement au profil
       const at = (t, x, dn) => [x, g.y0 + ty * t + tz * dn, g.z0 + tz * t - ty * dn];
       const lum = (1 - 0.15 * slope).toFixed(3);
       // le dessus
       const top = shellEls[e++];
       top.className = 'face tp' + (ch ? ' ch' : ' tv');
-      quad(top, at(-a0, XL + R - .08, 0), at(g.len + a1, XL + R - .08, 0), at(-a0, XR - R + .08, 0));   // déborde un peu sous les arêtes arrondies
+      quad(top, at(-a0, XL + R - .08 * TW, 0), at(g.len + a1, XL + R - .08 * TW, 0), at(-a0, XR - R + .08 * TW, 0));   // déborde un peu sous les arêtes arrondies
       top.style.filter = 'brightness(var(--lT, .95))';
+      lines(top, [[[0, 0], [0, 100]], [[100, 0], [100, 100]]].concat(i ? [[[0, 0], [100, 0]]] : [], i === n - 1 ? [[[0, 100], [100, 100]]] : []));
       const lumG = `linear-gradient(rgba(0,0,0,${(1 - vLum[i]).toFixed(3)}), rgba(0,0,0,${(1 - vLum[i + 1]).toFixed(3)}))`;
       top.style.backgroundImage = `${lumG}, url(mac3d/v3/${ch ? 'chamfer' : 'top'}.webp)`; top.style.backgroundRepeat = 'no-repeat'; top.style.backgroundColor = 'rgb(191,185,170)';   // le débord hors de la photo reste du plastique
       if (ch) {
@@ -887,12 +909,18 @@
         const cx = side < 0 ? XL + R : XR - R;
         for (let f = 0; f < NF; f++) {
           // 17 nov. (atelier) : chaque facette déborde un peu sur ses voisines : plus de fines lignes sombres entre elles
-          const OV = .045, p0 = Math.max(0, f / NF * Math.PI / 2 - OV), p1 = Math.min(Math.PI / 2, (f + 1) / NF * Math.PI / 2 + OV);
-          const X0 = cx + side * R * Math.cos(p0), N0 = R - R * Math.sin(p0);
-          const X1 = cx + side * R * Math.cos(p1), N1 = R - R * Math.sin(p1);
+          // 17 nov. : facettes posées exactement sur les cordes de l'arrondi, prolongées un peu le long de la corde (plus de débord en pointe à l'avant)
+          const p0 = f / NF * Math.PI / 2, p1 = (f + 1) / NF * Math.PI / 2, EX = .03 * TW;
+          let X0 = cx + side * R * Math.cos(p0), N0 = R - R * Math.sin(p0);
+          let X1 = cx + side * R * Math.cos(p1), N1 = R - R * Math.sin(p1);
+          { const dx = X1 - X0, dy = N1 - N0, dl = Math.hypot(dx, dy); X0 -= dx / dl * EX; N0 -= dy / dl * EX; X1 += dx / dl * EX; N1 += dy / dl * EX; }
           const el = shellEls[e++];
           el.className = 'face tp fil';
-          quad(el, at(-a0, X0, N0), at(g.len + a1, X0, N0), at(-a0, X1, N1));
+          { const s0 = sAt(N0), s1 = sAt(N1), e0 = eAt(N0), e1 = eAt(N1), sm = Math.min(s0, s1), em = Math.max(e0, e1), H = em - sm;
+            quad(el, at(sm, X0, N0), at(em, X0, N0), at(sm, X1, N1));
+            const fy = (v) => (v - sm) / H * 100;
+            clip(el, [[0, fy(s0)], [100, fy(s1)], [100, fy(e1)], [0, fy(e0)]]);
+            lines(el, [].concat(f < NF - 1 ? [[[100, fy(s1)], [100, fy(e1)]]] : [], i ? [[[0, fy(s0)], [100, fy(s1)]]] : [], i === n - 1 ? [[[0, fy(e0)], [100, fy(e1)]]] : [])); }
           const m = Math.sin((p0 + p1) / 2);   // 1 = tourné vers le haut, 0 = vers le côté
           el.style.filter = `brightness(calc(var(--lT, .95) * ${(m * lum).toFixed(3)} + var(${side < 0 ? '--lL' : '--lR'}, .8) * ${(1 - m).toFixed(3)}))`;
           // teinte : celle du dessus (photo vue de dessus) vers celle du flanc (photo de profil)
@@ -904,15 +932,13 @@
     }
     // l'arête arrondie entre le dos et le dessous (rayon RB, comme sur la silhouette du profil)
     const { BOT, DEP, RB } = SH;
-    for (let f = 0; f < 6; f++) {
-      const p0 = f / 6 * Math.PI / 2, p1 = (f + 1) / 6 * Math.PI / 2;
+    for (let f = 0; f < 0; f++) {   // 17 nov. (4) : plus d'arrondi entre le dos et le dessous (dos droit)
+      const p0 = f / 4 * Math.PI / 2, p1 = (f + 1) / 4 * Math.PI / 2;
       const pt = (x, p) => [x, BOT - RB + RB * Math.sin(p), DEP - RB + RB * Math.cos(p)];
       const el = shellEls[e++];
       el.className = 'face tp bb';
       quad(el, pt(XL, p0), pt(XR, p0), pt(XL, p1));
-      // 17 nov. : se rétrécit de chaque côté là où le raccord arrondi flanc / dessous tourne avec lui (rayon 1.7 u · sin φ)
-      const a0 = ((SH.RC * Math.sin(p0) - .03) / (XR - XL) * 100).toFixed(3), a1 = ((SH.RC * Math.sin(p1) - .03) / (XR - XL) * 100).toFixed(3);
-      el.style.clipPath = `polygon(0 ${a0}%, 100% ${a1}%, 100% ${(100 - a1).toFixed(3)}%, 0 ${(100 - a0).toFixed(3)}%)`;
+      lines(el, f < 3 ? [[[100, 0], [100, 100]]] : []);   // soudures : seulement le pli vers la bande suivante (les autres bords : dos, dessous, flancs)
       across(el, (p) => `var(--lB, .7) * ${(1 - Math.sin(p)).toFixed(4)} + ${(0.5 * Math.sin(p)).toFixed(4)}`, p0, p1);
     }
     // 17 nov. (atelier) : coins arrondis sous la bande du logo (rayon 1.7 u, comme les coins de la façade),
@@ -921,11 +947,13 @@
       for (const side of [-1, 1]) {
         const cx = side < 0 ? XL + RC : XR - RC, cy = FY - RC;
         for (let f = 0; f < NC; f++) {
-          const p0 = Math.max(0, f / NC * Math.PI / 2 - OV), p1 = Math.min(Math.PI / 2, (f + 1) / NC * Math.PI / 2 + OV);
+          const p0 = f / NC * Math.PI / 2, p1 = (f + 1) / NC * Math.PI / 2;   // 17 nov. : sur les cordes exactes, prolongées le long de la corde
           const P0 = [cx + side * RC * Math.cos(p0), cy + RC * Math.sin(p0)], P1 = [cx + side * RC * Math.cos(p1), cy + RC * Math.sin(p1)];
+          { const dx = P1[0] - P0[0], dy = P1[1] - P0[1], dl = Math.hypot(dx, dy); P0[0] -= dx / dl * .03 * TW; P0[1] -= dy / dl * .03 * TW; P1[0] += dx / dl * .03 * TW; P1[1] += dy / dl * .03 * TW; }
           const el = shellEls[e++];
           el.className = 'face tp fil cf';
           quad(el, [P0[0], P0[1], 0.3], [P0[0], P0[1], FZ], [P1[0], P1[1], 0.3]);
+          lines(el, [[[0, 100], [100, 100]]].concat(f < NC - 1 ? [[[100, 0], [100, 100]]] : []));   // soudures : le bout arrière (au pied) et l'arête vers la bande suivante
           const m = Math.sin((p0 + p1) / 2);   // 0 = tourné vers le côté, 1 = vers le bas
           across(el, (p) => `var(${side < 0 ? '--lL' : '--lR'}, .8) * ${(1 - Math.sin(p)).toFixed(4)} + ${(0.55 * Math.sin(p)).toFixed(4)}`, p0, p1);
         }
@@ -942,28 +970,52 @@
         [[FX1 - FR, FY1 - FR], FR, [XR - RCb, FY1 - RCb], RCb, 0],      // droite → bas droit
       ];
       const Fp = [], Bp = [], Th = [];
-      for (const [fc, fr, bc, br, a0] of corners) for (let k = 0; k <= 3; k++) {
-        const t = (a0 + k / 3 * 90) * Math.PI / 180;
+      for (const [fc, fr, bc, br, a0] of corners) { const nk = br === RT ? 4 : 4; for (let k = 0; k <= nk; k++) {   // 17 nov. : autant de segments que de bandes de l'arrondi qu'il rejoint
+        const t = (a0 + k / nk * 90) * Math.PI / 180;
         Fp.push([fc[0] + fr * Math.cos(t), fc[1] + fr * Math.sin(t), 0]); Bp.push([bc[0] + br * Math.cos(t), bc[1] + br * Math.sin(t), BZ]); Th.push(t);
-      }
+      } }
       const lit = (t) => {   // éclairage selon la direction de la bordure : gauche, dessus, droite ou dessous
         const w = [Math.max(0, -Math.cos(t)), Math.max(0, -Math.sin(t)), Math.max(0, Math.cos(t)), Math.max(0, Math.sin(t))], sw = w[0] + w[1] + w[2] + w[3];
         return `var(--lL, .8) * ${(w[0] / sw).toFixed(4)} + var(--lT, .95) * ${(w[1] / sw).toFixed(4)} + var(--lR, .6) * ${(w[2] / sw).toFixed(4)} + ${(0.55 * w[3] / sw).toFixed(4)}`;
       };
-      for (let i = 0; i < Fp.length - 1; i++) {
+      // 17 nov. : chaque facette de la bordure en deux triangles (avant et arrière n'ont pas le même rayon : un parallélogramme laissait
+      // de petits jours et des pointes entre les facettes) ; chaque triangle est agrandi d'un poil pour recouvrir les joints
+      const col = (t) => `rgb(${C.map((c) => `calc(${c} * (${lit(t)}))`).join(', ')})`;
+      const tri = (O, A, B, c0, c1) => {
         const el = shellEls[e++];
-        if (Math.hypot(Fp[i + 1][0] - Fp[i][0], Fp[i + 1][1] - Fp[i][1]) < 1e-6) { el.style.display = 'none'; continue; }   // jonction entre deux coins au même angle
-        el.style.display = ''; el.className = 'face tp rim';
-        quad(el, Fp[i], Bp[i], Fp[i + 1]);
-        const col = (t) => `rgb(${C.map((c) => `calc(${c} * (${lit(t)}))`).join(', ')})`;
+        const g = [0, 1, 2].map((i) => (O[i] + A[i] + B[i]) / 3);
+        const grow = (P) => { const d = Math.hypot(P[0] - g[0], P[1] - g[1], P[2] - g[2]) || 1; return P.map((v, i) => v + (v - g[i]) / d * .02); };
+        el.className = 'face tp rim';
+        quad(el, grow(O), grow(A), grow(B));
+        clip(el, [[0, 0], [100, 0], [0, 100]]);
         el.style.backgroundColor = 'transparent'; el.style.filter = 'none';
-        el.style.backgroundImage = `linear-gradient(90deg, ${col(Th[i])}, ${col(Th[i + 1])})`;
+        el.style.backgroundImage = `linear-gradient(90deg, ${c0}, ${c1})`;
+      };
+      // 17 nov. : contour de la façade = contour du corps à z = 0,3 (cordes des arrondis), un poil plus grand pour recouvrir le bout des bandes
+      { const dl = .03 * TW, pts = [], H = 100 * 1024 / 1536;   // y en % de la hauteur de l'image
+        const arc = (cx, cy, r, sx, sy, n, rev) => { for (let k = 0; k <= n; k++) { const q = (rev ? n - k : k) / n * Math.PI / 2; pts.push([cx + sx * (r + dl) * Math.cos(q), cy + sy * (r + dl) * Math.sin(q)]); } };
+        arc(XL + RT, PT + RT, RT, -1, -1, 4, false);    // haut gauche : du flanc au dessus
+        arc(XR - RT, PT + RT, RT, 1, -1, 4, true);      // haut droit : du dessus au flanc
+        arc(XR - RCb, FY1 - RCb, RCb, 1, 1, 4, false);     // bas droit (bande du logo)
+        arc(XL + RCb, FY1 - RCb, RCb, -1, 1, 4, true);     // bas gauche
+        obj.style.setProperty('--fclip', 'polygon(' + pts.map(([x, y]) => `${x.toFixed(3)}% ${(y / H * 100).toFixed(3)}%`).join(', ') + ')');
+        obj.style.setProperty('--fmask', `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 ${H.toFixed(4)}' preserveAspectRatio='none'><polygon points='${pts.map(([x, y]) => `${x.toFixed(3)},${y.toFixed(3)}`).join(' ')}'/></svg>`)}")`);
+        // 17 nov. : vue polygones : le contour de la façade tracé en arête, pile sur le bout des bandes du corps (arêtes soudées)
+        { const plc = obj.querySelector('.pl.case');
+          if (plc) { let sv = plc.querySelector('svg.edge');
+            if (!sv) { sv = document.createElementNS(NS, 'svg'); sv.setAttribute('class', 'edge'); sv.setAttribute('viewBox', '0 0 100 100'); sv.setAttribute('preserveAspectRatio', 'none'); sv.appendChild(document.createElementNS(NS, 'polygon')); plc.appendChild(sv); }
+            sv.firstChild.setAttribute('points', pts.map(([x, y]) => `${x.toFixed(3)},${(y / H * 100).toFixed(3)}`).join(' ')); } } }
+      const FACADE_RIM = false;   // 17 nov. : la bordure (épaisseur de la façade) est retirée
+      for (let i = 0; i < (FACADE_RIM ? Fp.length - 1 : 0); i++) {
+        if (Math.hypot(Fp[i + 1][0] - Fp[i][0], Fp[i + 1][1] - Fp[i][1]) < 1e-6) continue;   // jonction entre deux coins au même angle
+        tri(Fp[i], Bp[i], Fp[i + 1], col(Th[i]), col(Th[i + 1]));
+        tri(Bp[i + 1], Fp[i + 1], Bp[i], col(Th[i + 1]), col(Th[i]));
       }
     }
     // 17 nov. (atelier) : arêtes arrondies entre les flancs et le dessous (rayon 1.7 u), du pied jusqu'à l'arrondi du dos
     // (17 nov. : facettes posées exactement sur les cordes, prolongées un peu le long de la corde : le contour vu de face
     //  est le même polygone que les coins du pied, et aucune fente entre deux facettes)
-    { const RC = SH.RC, FZ = 4.877, Z1 = DEP - RB, NC = 4, EX = .03;
+    { const RC = SH.RC, FZ = 4.877, Z1 = DEP - RB, NC = 4, EX = .03 * TW;
       for (const side of [-1, 1]) {
         const cx = side < 0 ? XL + RC : XR - RC, cy = BOT - RC;
         for (let f = 0; f < NC; f++) {
@@ -972,38 +1024,17 @@
           let dx = X(p1) - X(p0), dy = Y(p1) - Y(p0); const dl = Math.hypot(dx, dy); dx *= EX / dl; dy *= EX / dl;
           const el = shellEls[e++];
           el.className = 'face tp fil pb';
-          quad(el, [X(p0) - dx, Y(p0) - dy, FZ - .05], [X(p0) - dx, Y(p0) - dy, Z1 + .03], [X(p1) + dx, Y(p1) + dy, FZ - .05]);
+          quad(el, [X(p0) - dx, Y(p0) - dy, FZ - .05 * TW], [X(p0) - dx, Y(p0) - dy, DEP], [X(p1) + dx, Y(p1) + dy, FZ - .05 * TW]);
+          lines(el, [[[0, 0], [100, 0]], [[0, 100], [100, 100]]].concat(f < NC - 1 ? [[[100, 0], [100, 100]]] : []));   // soudures : les deux bouts (coin du pied, coin du dos) et l'arête vers la bande suivante
           across(el, (p) => `var(${side < 0 ? '--lL' : '--lR'}, .8) * ${(1 - Math.sin(p)).toFixed(4)} + ${(0.5 * Math.sin(p)).toFixed(4)}`, p0, p1);
         }
       }
-      // 17 nov. : le coin du dos, où l'arête flanc / dessous rejoint l'arrondi du dos : le raccord tourne avec l'arrondi du dos
-      // (φ : 0 au dos, π/2 au dessous) et son rayon diminue jusqu'à 0 au dos (rayon 1.7 u · sin φ), en triangles
-      const NP = SH.PJ, TE = .02;
-      for (const side of [-1, 1]) {
-        const V = (p, t) => { const r = RC * Math.sin(p), rho = RB - r + r * Math.sin(t), x = r * (1 - Math.cos(t));
-          return [side < 0 ? XL + x : XR - x, BOT - RB + rho * Math.sin(p), DEP - RB + rho * Math.cos(p)]; };
-        const L = (p, t) => `var(${side < 0 ? '--lL' : '--lR'}, .8) * ${(1 - Math.sin(t)).toFixed(4)} + var(--lB, .7) * ${(Math.sin(t) * (1 - Math.sin(p))).toFixed(4)} + ${(0.5 * Math.sin(t) * Math.sin(p)).toFixed(4)}`;
-        const col = (x) => `rgb(${C.map((c) => `calc(${c} * (${x}))`).join(', ')})`;
-        const tri = (O, A, B, l0, l1) => {   // triangle O, A, B (un peu agrandi : aucun jour entre voisins) ; dégradé de O vers B
-          const el = shellEls[e++];
-          if (Math.hypot(B[0] - O[0], B[1] - O[1], B[2] - O[2]) < 1e-4 || Math.hypot(A[0] - O[0], A[1] - O[1], A[2] - O[2]) < 1e-4) { el.style.display = 'none'; return; }
-          const g = [0, 1, 2].map((i) => (O[i] + A[i] + B[i]) / 3);
-          const grow = (Q) => { const d = Math.hypot(Q[0] - g[0], Q[1] - g[1], Q[2] - g[2]); return Q.map((v, i) => v + (v - g[i]) / d * TE); };
-          el.className = 'face tp fil pc';
-          quad(el, grow(O), grow(A), grow(B));
-          el.style.clipPath = 'polygon(0 0, 100% 0, 0 100%)';
-          el.style.backgroundColor = 'transparent'; el.style.filter = 'none';
-          el.style.backgroundImage = `linear-gradient(90deg, ${col(l0)}, ${col(l1)})`;
-        };
-        for (let j = 0; j < NP; j++) {
-          const q0 = j / NP * Math.PI / 2, q1 = (j + 1) / NP * Math.PI / 2, qm = (q0 + q1) / 2;
-          for (let k = 0; k < NC; k++) {
-            const t0 = k / NC * Math.PI / 2, t1 = (k + 1) / NC * Math.PI / 2;
-            tri(V(q0, t0), V(q1, t0), V(q0, t1), L(qm, t0), L(qm, t1));
-            tri(V(q1, t1), V(q0, t1), V(q1, t0), L(qm, t1), L(qm, t0));
-          }
-        }
-      }
+      // 17 nov. (4) : dos droit : l'arête flanc / dessous va jusqu'au dos ; le dos est découpé en arrondi à ses coins du bas (mêmes cordes)
+      { const BL = 25.9, BW = 48.13, BT = 14.808, BH = BOT - BT, pts = [[0, 0], [100, 0]];
+        for (let k = 0; k <= NC; k++) { const q = k / NC * Math.PI / 2; pts.push([XR - RC + RC * Math.cos(q), BOT - RC + RC * Math.sin(q)]); }
+        for (let k = NC; k >= 0; k--) { const q = k / NC * Math.PI / 2; pts.push([XL + RC - RC * Math.cos(q), BOT - RC + RC * Math.sin(q)]); }
+        const pc = pts.map(([x, y], i) => i < 2 ? `${x}% ${y}%` : `${((x - BL) / BW * 100).toFixed(3)}% ${((y - BT) / BH * 100).toFixed(3)}%`);
+        obj.style.setProperty('--bclip', `polygon(${pc.join(', ')})`); }
     }
     for (let k = e; k < shellEls.length; k++) shellEls[k].style.display = 'none';   // facettes en trop au niveau de détail choisi
   };
