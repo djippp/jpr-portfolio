@@ -178,15 +178,18 @@
 
   /* le pied en retrait : sous la bande du logo, la façade recule de 4.877 u (relevé sur la vue de côté) */
   .face.foot {
-    left: 25.95%; width: 48.03%; top: 84.57%; height: calc(var(--u) * 7.895);
+    left: 25.95%; width: 48.03%; top: calc(84.57% - var(--u) * 1.7); height: calc(var(--u) * 9.595);   /* 17 nov. (atelier) : monte de 1,7 u : remplit les coins derrière les arrondis de la bande (plus de petit mur à part) */
     clip-path: polygon(0 0, 100% 0, calc(100% - var(--u) * 0.0000) calc(100% - var(--u) * 1.7000), calc(100% - var(--u) * 0.1294) calc(100% - var(--u) * 1.0494), calc(100% - var(--u) * 0.4979) calc(100% - var(--u) * 0.4979), calc(100% - var(--u) * 1.0494) calc(100% - var(--u) * 0.1294), calc(100% - var(--u) * 1.7000) calc(100% - var(--u) * 0.0000), calc(var(--u) * 1.7000) calc(100% - var(--u) * 0.0000), calc(var(--u) * 1.0494) calc(100% - var(--u) * 0.1294), calc(var(--u) * 0.4979) calc(100% - var(--u) * 0.4979), calc(var(--u) * 0.1294) calc(100% - var(--u) * 1.0494), calc(var(--u) * 0.0000) calc(100% - var(--u) * 1.7000));   /* 17 nov. : coins du bas arrondis en 4 facettes, exactement comme l'arête flanc / dessous */   /* 17 nov. (atelier) : s'arrête au dessous (avant : 8.703, dépassait de 0,8 u) */
     transform: translateZ(calc(var(--u) * -4.877));
     backface-visibility: hidden; -webkit-backface-visibility: hidden;
     background:
-      linear-gradient(180deg, rgba(20,16,8,.55), rgba(20,16,8,.18) 28%, transparent 60%),   /* ombre portée par la bande */
-      url(mac3d/v3/foot.webp) 0 0 / 100% 100% no-repeat;
+      linear-gradient(rgba(20,16,8,.55), rgba(20,16,8,.55)) 0 0 / 100% calc(var(--u) * 1.7) no-repeat,   /* la partie ajoutée : même ombre que le haut du pied */
+      linear-gradient(180deg, rgba(20,16,8,.55), rgba(20,16,8,.18) 28%, transparent 60%) 0 calc(var(--u) * 1.7) / 100% calc(100% - var(--u) * 1.7) no-repeat,   /* ombre portée par la bande */
+      url(mac3d/v3/foot.webp) 0 calc(var(--u) * 1.7) / 100% calc(100% - var(--u) * 1.7) no-repeat,
+      rgb(191,185,170);
     filter: brightness(var(--lF, .9));
   }
+  .face.nook { display: none !important; }   /* 17 nov. (atelier) : remplacé par le haut du pied, prolongé */
   .face.nook {                 /* 17 nov. (atelier) : petit mur au fond de chaque coin arrondi de la bande (là où le pied commence) */
     top: calc(var(--u) * (56.38 - 1.7)); width: calc(var(--u) * 1.7); height: calc(var(--u) * 1.7);
     transform: translateZ(calc(var(--u) * -4.877)); background: rgb(191,185,170); filter: brightness(.5);
@@ -827,7 +830,7 @@
       const { BOT, RB, DEP } = SH, FOOT_Y = 56.38, FOOT_Z = 4.877, arc = [];
       // 17 nov. (2) : sous l'arrondi du dos, le flanc suit l'arrondi entier (4 cordes, comme les bandes du dos), puis remonte au bout de l'arête flanc / dessous
       arc.push(pt(DEP, BOT - SH.RC + .04 * TW));   // 17 nov. (4) : dos droit : le flanc descend tout droit jusqu'à l'arête arrondie flanc / dessous
-      return 'polygon(' + [pt(0.3, off[0][1]), ...off.map(([z, y]) => pt(Math.max(0.3, z), y)), pt(DEP, SH.PR[SH.PR.length - 1][1]), ...arc,
+      return 'polygon(' + [pt(0.3, off[0][1]), ...off.map(([z, y]) => pt(Math.max(0.3, z), y)), pt(DEP, SH.PR[n][1] + (SH.R - .12 * TW) * Math.hypot(SH.PR[n][0] - SH.PR[n - 1][0], SH.PR[n][1] - SH.PR[n - 1][1]) / (SH.PR[n][0] - SH.PR[n - 1][0])), ...arc,   // 17 nov. : le bord du flanc suit l'arrondi jusqu'au dos
         pt(FOOT_Z, BOT - SH.RC + .04 * TW), pt(FOOT_Z, FOOT_Y - SH.RC), pt(0.3, FOOT_Y - SH.RC)].join(', ') + ')';
     };
     obj.querySelector('.face.right').style.clipPath = poly(false);
@@ -885,7 +888,7 @@
         const d1 = [(a.z1 - a.z0) / a.len, (a.y1 - a.y0) / a.len], d2 = [(b.z1 - b.z0) / b.len, (b.y1 - b.y0) / b.len];
         return Math.tan(Math.atan2(d1[0] * d2[1] - d1[1] * d2[0], d1[0] * d2[0] + d1[1] * d2[1]) / 2); };
       const kS = turn(i), kE = turn(i + 1);
-      const sAt = (dn) => i ? dn * kS - ov : 0, eAt = (dn) => i < n - 1 ? g.len - dn * kE + ov : g.len;
+      const sAt = (dn) => i ? dn * kS - ov : 0, eAt = (dn) => i < n - 1 ? g.len - dn * kE + ov : g.len + dn * ty / tz;   // 17 nov. : le dernier segment va jusqu'au plan du dos (l'arrondi s'y pose exactement)
       // point du profil à l'abscisse t, en x, enfoncé de dn perpendiculairement au profil
       const at = (t, x, dn) => [x, g.y0 + ty * t + tz * dn, g.z0 + tz * t - ty * dn];
       const lum = (1 - 0.15 * slope).toFixed(3);
@@ -1030,10 +1033,14 @@
         }
       }
       // 17 nov. (4) : dos droit : l'arête flanc / dessous va jusqu'au dos ; le dos est découpé en arrondi à ses coins du bas (mêmes cordes)
-      { const BL = 25.9, BW = 48.13, BT = 14.808, BH = BOT - BT, pts = [[0, 0], [100, 0]];
+      { const BL = TW ? 25.9 : XL, BW = TW ? 48.13 : XR - XL, BT = 14.808, BH = BOT - BT, pts = [];   // vue polygones : pile entre les flancs
+        // 17 nov. : coins du haut : la courbe où l'arête arrondie du chanfrein rencontre le plan du dos (plus de coin carré qui dépasse)
+        { const a = PR[n - 1], b = PR[n], tzl = (b[0] - a[0]) / Math.hypot(b[0] - a[0], b[1] - a[1]);
+          for (let k = 0; k <= NF; k++) { const q = k / NF * Math.PI / 2; pts.push([XL + R - R * Math.cos(q), BT + (R - R * Math.sin(q)) / tzl]); }
+          for (let k = NF; k >= 0; k--) { const q = k / NF * Math.PI / 2; pts.push([XR - R + R * Math.cos(q), BT + (R - R * Math.sin(q)) / tzl]); } }
         for (let k = 0; k <= NC; k++) { const q = k / NC * Math.PI / 2; pts.push([XR - RC + RC * Math.cos(q), BOT - RC + RC * Math.sin(q)]); }
         for (let k = NC; k >= 0; k--) { const q = k / NC * Math.PI / 2; pts.push([XL + RC - RC * Math.cos(q), BOT - RC + RC * Math.sin(q)]); }
-        const pc = pts.map(([x, y], i) => i < 2 ? `${x}% ${y}%` : `${((x - BL) / BW * 100).toFixed(3)}% ${((y - BT) / BH * 100).toFixed(3)}%`);
+        const pc = pts.map(([x, y]) => `${((x - BL) / BW * 100).toFixed(3)}% ${((y - BT) / BH * 100).toFixed(3)}%`);
         obj.style.setProperty('--bclip', `polygon(${pc.join(', ')})`); }
     }
     for (let k = e; k < shellEls.length; k++) shellEls[k].style.display = 'none';   // facettes en trop au niveau de détail choisi
