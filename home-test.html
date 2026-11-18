@@ -4134,6 +4134,9 @@ window.__TRASH = (() => {
     background: var(--w); color: var(--k); border: 1px solid var(--k); box-shadow: 1px 1px 0 var(--k);
     font: 400 15px/1.25 "Pixelify Sans", "Chicago", "Geneva", ui-monospace, monospace; letter-spacing: 0; text-align: left; -webkit-font-smoothing: auto; -webkit-text-stroke: 0; }
   .jtb[hidden] { display: none; }
+  html.mouse-on .jtb, html.mouse-on .jtb * { cursor: auto !important; }   /* le vrai curseur dans le panneau */
+  html.mouse-on .jtb :is(button, label, input), html.mouse-on .jtb label * { cursor: pointer !important; }
+  html.mouse-on .jtb .jdim, html.mouse-on .jtb .jdim * { cursor: ew-resize !important; }
   .jtb-bar { position: relative; height: 19px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--k);
     padding: 0 2px; background: repeating-linear-gradient(var(--k) 0 1px, transparent 1px 2px) 0 4px / 100% 11px no-repeat content-box; cursor: default; user-select: none; }
   .jtb-bar span { padding: 0 7px; background: var(--w); font-weight: 700; font-size: 14px; line-height: 19px; }
@@ -4205,6 +4208,9 @@ window.__TRASH = (() => {
   <div class="jtb-foot"><button type="button" class="jtb-da">Tout au choix du DA</button></div>
 </div>`;
   document.body.appendChild(w);
+  // au-dessus du panneau, la souris du Mac (accueil) rend la main au vrai curseur, comme au-dessus du pied de page
+  w.addEventListener('pointerenter', () => { window.__footHover = true; });
+  w.addEventListener('pointerleave', () => { window.__footHover = false; });
   const $ = (s) => w.querySelector(s), dim = $('.jdim'), ph = $('#jtbPh'), an = $('#jtbAn');
   if (!document.getElementById('obj')) $('.jtb-ep').remove();   // l'époque : seulement là où il y a l'ordinateur (l'accueil)
   const calm = () => J.get('jpr-anim') === 'reduites';
